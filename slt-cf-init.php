@@ -25,7 +25,10 @@ function slt_cf_init() {
 	wp_register_style( 'jquery-datepicker-smoothness', $slt_custom_fields['datepicker_css_url'] );
 	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ) );
 	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js?sensor=false' );
-	wp_register_script( 'slt-cf-gmaps', $slt_js_gmaps, array( 'jquery-ui-core' ) );
+	$gmaps_deps = array( 'jquery', 'jquery-ui-core' );
+	if ( ! class_exists( 'JCP_UseGoogleLibraries' ) )
+		$gmaps_deps[] = 'jquery-ui-autocomplete'; // Autocomplete included in Google's jQuery UI core
+	wp_register_script( 'slt-cf-gmaps', $slt_js_gmaps, $gmaps_deps );
 	// Google Maps for front and admin
 	if ( SLT_CF_USE_GMAPS ) {
 		wp_enqueue_script( 'google-maps-api' );
@@ -40,7 +43,7 @@ function slt_cf_init() {
 function slt_cf_admin_init() {
 	global $slt_cf_admin_notices, $slt_custom_fields, $pagenow, $wp_version;
 	$requested_file = basename( $_SERVER['SCRIPT_FILENAME'] );
-	
+
 	// Decide now which notices to output
 	$slt_cf_admin_notices = array();
 	if ( $slt_custom_fields['options']['alert-07-cleanup'] && ! ( $pagenow == 'tools.php' && array_key_exists( 'page', $_GET ) && $_GET['page'] == 'slt_cf_data_tools' ) )
@@ -93,12 +96,12 @@ function slt_cf_admin_init() {
 	// Deal with any form submissions for admin screen
 	if ( array_key_exists( 'slt-cf-form', $_POST ) && check_admin_referer( 'slt-cf-' . $_POST['slt-cf-form'], '_slt_cf_nonce' ) )
 		call_user_func( 'slt_cf_' . $_POST['slt-cf-form'] . '_form_process' );
-		
+
 }
 
 /**
  * Add any admin menus
- * 
+ *
  * @since	0.7
  * @return	void
  */
@@ -122,11 +125,11 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 	$unset_boxes = array();
 	$field_names = array();
 	foreach ( $slt_custom_fields['boxes'] as $box_key => &$box ) {
-	
+
 		// Initialize
 		if ( ! is_array( $box['type'] ) )
 			$box['type'] = array( $box['type'] );
-	
+
 		// Delete this box if it's not relevant to the current request
 		if ( ! in_array( $request_type, $box['type'] ) ) {
 			$unset_boxes[] = $box_key;
@@ -134,11 +137,11 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 		}
 
 		// Check if required parameters are present
-		if ( ! slt_cf_required_params( array( 'type', 'id', 'title' ), 'box', $box ) ) {		
+		if ( ! slt_cf_required_params( array( 'type', 'id', 'title' ), 'box', $box ) ) {
 			$unset_boxes[] = $box_key;
 			continue;
 		}
-		
+
 		// Set defaults
 		$box_defaults = array(
 			'cloning'		=> false,
@@ -148,39 +151,39 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			'fields'		=> array()
 		);
 		$box = array_merge( $box_defaults, $box );
-		
+
 		// Check if parameters are the right types
 		if (
 			! slt_cf_params_type( array( 'id', 'title', 'context', 'priority', 'description' ), 'string', 'box', $box ) ||
 			! slt_cf_params_type( array( 'cloning' ), 'boolean', 'box', $box ) ||
 			! slt_cf_params_type( array( 'fields', 'type' ), 'array', 'box', $box )
-		) {		
+		) {
 			$unset_boxes[] = $box_key;
 			continue;
 		}
-		
+
 		// Special context settings
 		if ( $box['context'] == 'above-content' ) {
 			$box['context'] = 'normal';
 			$box['priority'] = 'high';
 			$box['above_content'] = true;
 		}
-	
+
 		// Loop through fields
 		$unset_fields = array();
 		foreach ( $box['fields'] as $field_key => &$field ) {
-			
+
 			// Any defaults that need setting early
 			if ( ! array_key_exists( 'type', $field ) )
 				$field['type'] = 'text';
-		
+
 			// Check if required parameters are present
 			$required_params = array( 'name' );
 			if ( $field['type'] != 'notice' )
 				$required_params[] = 'label';
 			if ( array_key_exists( 'options_type', $field ) && $field['options_type'] == 'terms' )
 				$required_params[] = 'options_query';
-			if ( ! slt_cf_required_params( $required_params, 'field', $field ) ) {		
+			if ( ! slt_cf_required_params( $required_params, 'field', $field ) ) {
 				$unset_fields[] = $field_key;
 				continue;
 			}
@@ -191,25 +194,25 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				$unset_fields[] = $field_key;
 				continue;
 			}
-			
+
 			// Using Google Maps?
 			if ( $field['type'] == 'gmap' && ! SLT_CF_USE_GMAPS ) {
 				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> The field <b>' . $field['name'] . '</b> is a <code>gmap</code> type field, but <code>SLT_CF_USE_GMAPS</code> is set to disable Google Maps.', E_USER_WARNING );
 				$unset_fields[] = $field_key;
 				continue;
 			}
-			
+
 			// Using File Select?
 			if ( $field['type'] == 'file' && ! SLT_CF_USE_FILE_SELECT ) {
 				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> The field <b>' . $field['name'] . '</b> is a <code>file</code> type field, but <code>SLT_CF_USE_FILE_SELECT</code> is set to disable the file select functionality.', E_USER_WARNING );
 				$unset_fields[] = $field_key;
 				continue;
 			}
-			
+
 			// File field type no longer needs the File Select plugin
 			if ( $field['type'] == 'file' && function_exists( 'slt_fs_button' )  )
 				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> File upload fields no longer needs the SLT File Select plugin - you can remove it if you want! If you use that plugin\'s functionality elsewhere, you can now just call the functions provided by this Custom Fields plugin.', E_USER_NOTICE );
-					
+
 			// Set defaults
 			$field_defaults = array(
 				'cloning'					=> false,
@@ -318,7 +321,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile' ), 'boolean', 'field', $field ) ||
 				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities' ), 'array', 'field', $field ) ||
 				! slt_cf_params_type( array( 'width', 'height' ), 'integer', 'field', $field )
-			) {		
+			) {
 				$unset_fields[] = $field_key;
 				continue;
 			}
@@ -328,7 +331,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				$unset_fields[] = $field_key;
 				continue;
 			}
-			
+
 			// Check capability if in admin
 			if ( is_admin() ) {
 				// If object-specific capability check fails
@@ -388,11 +391,11 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			}
 			if ( $field_name_used )
 				continue;
-			
+
 			/****************************************************************************
 			From this point on, this field is considered as valid for the current request
 			****************************************************************************/
-			
+
 			// Gather dynamic options data?
 			if ( $field['options_type'] != 'static' ) {
 
@@ -459,7 +462,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						/** TODO
 						// Hierarchical?
 						if ( $field['hierarchical_options'] && is_string( $field['options_query']['post_type'] ) && is_post_type_hierarchical( $field['options_query']['post_type'] ) ) {
-							
+
 						}
 						*/
 						$current_category = array();
@@ -529,22 +532,22 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 
 				}
 			}
-					
+
 		} // Fields foreach
-			
+
 		// Unset any invalid fields
 		foreach ( array_unique( $unset_fields ) as $field_key )
 			unset( $slt_custom_fields['boxes'][ $box_key ]['fields'][ $field_key ] );
 
 	} // Boxes foreach
-	
+
 	// Unset any invalid boxes
 	$num_boxes = count( $slt_custom_fields['boxes'] );
 	for ( $box_key = 0; $box_key < $num_boxes; $box_key++ ) {
 		if ( count( $slt_custom_fields['boxes'][ $box_key ]['fields'] ) == 0 || in_array( $box_key, $unset_boxes ) )
 			unset( $slt_custom_fields['boxes'][ $box_key ] );
 	}
-	
+
 	// Post-processing of boxes
 	$slt_custom_fields['boxes'] = apply_filters( 'slt_cf_init_boxes', $slt_custom_fields['boxes'] );
 

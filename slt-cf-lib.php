@@ -258,7 +258,7 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 					break;
 			}
 		}
-		
+
 	}
 
 	// Any post exceptions
@@ -272,8 +272,18 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 	return $scope_match;
 }
 
-/* Get posts with ordering first by custom field
-***************************************************************************************/
+/**
+ * Get posts with ordering first by custom field
+ *
+ * @todo Make it work! Currently the second ordering wipes the first. Need to get the order parameters into the SQL.
+ *
+ * @param string $key The key of the custom field to order by first
+ * @param array $query The WP_Query arguments, including secondary order parameters if desired
+ * @param string $custom_order DESC | ASC
+ * @param bool $numeric Is the field being ordered by numberic?
+ * @param string $object_type post | user
+ * @return array An array of post objects
+ */
 function slt_cf_get_posts_by_custom_first( $key, $query = array(), $custom_order = 'DESC', $numeric = false, $object_type = 'post' ) {
 	// First store the second ordering values, following WP defaults
 	global $slt_cf_second_orderby, $slt_cf_second_order;
@@ -284,17 +294,18 @@ function slt_cf_get_posts_by_custom_first( $key, $query = array(), $custom_order
 	$query[ 'orderby' ] = $numeric ? 'meta_value_num' : 'meta_value';
 	$query[ 'order' ] = $custom_order;
 	// Get posts ordered by custom field
-	$posts = new WP_Query( $query );
+	$result = new WP_Query( $query );
 	// Now sort by second parameters
-	usort( $posts, 'slt_cf_order_posts' );
-	return $posts;
+	usort( $result->posts, 'slt_cf_order_posts' );
+	return $result->posts;
 }
 
 // Comparison function to order posts query
 function slt_cf_order_posts( $a, $b ) {
+	global $slt_cf_second_orderby, $slt_cf_second_order;
 	if ( $a->$slt_cf_second_orderby == $b->$slt_cf_second_orderby )
 		return 0;
-	if ( strtolower( $slt_cf_second_order ) == 'desc' ) {
+	if ( strtolower( $slt_cf_second_order ) == 'DESC' ) {
 		return ( $a->$slt_cf_second_orderby > $b->$slt_cf_second_orderby ) ? -1 : 1;
 	} else {
 		return ( $a->$slt_cf_second_orderby < $b->$slt_cf_second_orderby ) ? -1 : 1;
@@ -404,7 +415,7 @@ function slt_cf_simple_formatting( $content, $output = "html", $autop = true ) {
 			'%\*\*([^\*]+)\*\*%',
 			'%\_\_([^\_]+)\_\_%',
 			'%(")(.*?)(").*?((?:http|https)(?::\/{2}[\\w]+)(?:[\/|\\.]?)(?:[^\\s"]*))%'
-		); 
+		);
 		$replacements = array(
 			'<strong>$1</strong>',
 			'<em>$1</em>',
@@ -419,7 +430,7 @@ function slt_cf_simple_formatting( $content, $output = "html", $autop = true ) {
 			'%<(/?)strong>%',
 			'%<(/?)em>%',
 			'%<a href="([^"]*)">([^<]*)</a>%'
-		); 
+		);
 		$replacements = array(
 			'**',
 			'__',
@@ -463,7 +474,7 @@ function slt_cf_reverse_date( $date_string, $sep = '/', $to_timestamp = false ) 
 ***************************************************************************************/
 
 if ( SLT_CF_USE_GMAPS ) :
-	
+
 // Output a map (for display or input)
 function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $width = 0, $height = 0, $location_marker = null, $map_type_id = '', $echo = true, $js_callback = '', $required = true, $object_type = 'post' ) {
 	$output = '';
@@ -480,10 +491,10 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	if ( $location_marker === null )
 		$location_marker = 'true';
 	else
-		$location_marker = $location_marker ? 'true' : 'false';	
+		$location_marker = $location_marker ? 'true' : 'false';
 	if ( empty( $map_type_id ) )
 		$map_type_id = 'roadmap';
-		
+
 	// Values
 	if ( $type == 'output' && $object_type != 'custom' && ( empty( $values ) || $values == 'stored_data' ) ) {
 		// Try to initalize values from current meta
@@ -531,15 +542,15 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 			$values = array();
 		// Defaults if there's no field
 		if ( empty( $width ) )
-			$width = 500;	
+			$width = 500;
 		if ( empty( $height ) )
-			$height = 300;	
+			$height = 300;
 	}
 
 	// Check values is an array
 	if ( ! is_array( $values ) )
 		return false;
-		
+
 	// Check if optional map is flagged to not display for output
 	if ( $type == 'output' && array_key_exists( 'display', $values ) && ! $values["display"] )
 		return false;
@@ -559,7 +570,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	// Sanitize
 	foreach ( $values as $key => $value )
 		$values[ $key ] = str_replace( ' ', '', $value );
-	
+
 	// Name might contain square brackets for PHP $_POST arrays - set the ID right
 	$id = str_replace( array( '[', ']' ), array( '_', '' ), $name ) . '_map_container';
 
@@ -588,7 +599,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 
 	// Map container
 	$output .= '<div id="' . $id . '" class="gmap_' . $type . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"></div>' . "\n";
-	
+
 	// Hidden fields?
 	if ( $type == 'input' ) {
 		foreach ( $values as $key => $value ) {
@@ -596,7 +607,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 				$output .= '<input type="hidden" id="' . esc_attr( $id . "_" . $key ) .'" name="' . esc_attr( $name . "[" . $key . "]" ) .'" value="' . esc_attr( $value ) . '" />' . "\n";
 		}
 	}
-	
+
 	// JavaScript
 	$output .= '<script type="text/javascript">' . "\n";
 	$output .= "jQuery( document ).ready( function($) {\n";
@@ -607,7 +618,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	$output .= " );\n";
 	$output .= "});\n";
 	$output .= "</script>\n";
-	
+
 	// Close wrapper?
 	if ( $type == 'input' && ! $required )
 		$output .= '</div>' . "\n";
@@ -644,9 +655,9 @@ if ( SLT_CF_USE_FILE_SELECT ) :
 
 /**
  * Output file select button
- * 
+ *
  * @since 0.6
- * 
+ *
  * @param string	$name			A name for the input tag.
  * @param int		$value			The current value for the field (a media attachment ID).
  * @param string	$label			A label for the field.
