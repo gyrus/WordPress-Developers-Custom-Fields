@@ -13,6 +13,8 @@ This plugin is aimed at plugin and theme developers who want a set of tools that
 
 Full documentation at [http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/).
 
+Code on [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields).
+
 Issue tracking on [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
 Please note that this plugin isn't suitable for non-developers. It has been intentionally designed without a user interface for defining fields, and some aspects may be "unfriendly" to anyone not comfortable with hands-on WordPress development.
@@ -44,10 +46,10 @@ A box is defined containing one of more custom fields, each with their own setti
 Say you've defined `film` as a Custom Post Type, and you want to create custom fields to set the director and writer for film posts. You would add something like this to your theme's functions.php (or indeed your plugin code):
 
 	<?php
-	
+
 	if ( function_exists( 'slt_cf_register_box') )
 		add_action( 'init', 'register_my_custom_fields' );
-	
+
 	function register_my_custom_fields() {
 		slt_cf_register_box( array(
 			'type'		=> 'post',
@@ -73,16 +75,16 @@ Say you've defined `film` as a Custom Post Type, and you want to create custom f
 			)
 		));
 	}
-	
+
 	?>
 
 Then, when you want to output these values in a loop:
 
 	<?php
-	
+
 	echo '<p>Director: ' . slt_cf_field_value( "director" ) . '</p>';
 	echo '<p>Writer: ' . slt_cf_field_value( "writer" ) . '</p>';
-	
+
 	?>
 
 This is just the beginning! Check the [documentation](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/) for registering boxes and fields, especially the parameters for fields. The most immediately interesting parameters for fields to check out are: `type`, `scope`, `options_type`.
@@ -98,10 +100,11 @@ Note that the internal Google Maps and file selection functionality is designed 
 Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
 == Changelog ==
-= 0.7.3 =
+= 0.7.2.2 =
 * Changed the way the file select JS detects being inside the Media Library overlay, in order to be compatible with the Inline Attachments plugin
 * Added the `edit_on_profile` flag, to signal that even if a user doesn't have the right capabilities to edit a user profile field, they can edit it on their own profile (thanks jbalyo!)
 * Improved error messages
+* Code now on GitHub!
 
 = 0.7.2.1 =
 * Fixed a bug in checkbox / select fields where `single` is set to `false` and no value is selected (thanks Dave Kellam!)
