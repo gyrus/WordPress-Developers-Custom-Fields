@@ -113,7 +113,7 @@ function slt_cf_admin_menus() {
 /* Initialize fields
 ***************************************************************************************/
 function slt_cf_init_fields( $request_type, $scope, $object_id ) {
-	global $slt_custom_fields, $wp_roles, $post;
+	global $slt_custom_fields, $wp_roles, $post, $user_id;
 
 	// Only run once per request
 	static $init_run = false;
@@ -403,14 +403,14 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				if ( array_search( '[OBJECT_ID]', $field['options_query'] ) ) {
 
 					// Object ID
+					$object_id = 0;
 					switch ( $field['options_type'] ) {
 						case 'posts': {
-							global $post;
-							$object_id = $post->ID;
+							if ( property_exists( $post, 'ID' ) )
+								$object_id = $post->ID;
 							break;
 						}
 						case 'users': {
-							global $user_id;
 							$object_id = $user_id;
 							break;
 						}
@@ -424,7 +424,6 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				} else if ( array_key_exists( 'tax_query', $field['options_query'] ) && $request_type == 'post' ) {
 
 					// Taxonomy term IDs
-					global $post;
 					foreach ( $field['options_query']['tax_query'] as &$tax_query ) {
 						if ( is_array( $tax_query ) && array_key_exists( 'terms', $tax_query ) && $tax_query['terms'] == '[TERM_IDS]' && array_key_exists( 'taxonomy', $tax_query ) && taxonomy_exists( $tax_query['taxonomy'] ) ) {
 							$related_terms = get_the_terms( $post->ID, $tax_query['taxonomy'] );
@@ -453,14 +452,13 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 							$field['options_query']['orderby'] = 'category';
 						// Exclude current post?
 						if ( $field[ 'exclude_current' ] ) {
-							global $post;
-							$field['options_query']['post__not_in'][] = $post->ID;
+							if ( property_exists( $post, 'ID' ) )
+								$field['options_query']['post__not_in'][] = $post->ID;
 						}
 						$posts_query = new WP_Query( $field['options_query'] );
 						$posts = $posts_query->posts;
 						$field['options'] = array();
-						/** TODO
-						// Hierarchical?
+						/** @todo Heirarchical post selection
 						if ( $field['hierarchical_options'] && is_string( $field['options_query']['post_type'] ) && is_post_type_hierarchical( $field['options_query']['post_type'] ) ) {
 
 						}
@@ -485,10 +483,8 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						$field['options'] = array();
 						$get_users_args = array();
 						// Exclude current user?
-						if ( $field[ 'exclude_current' ] ) {
-							global $user_id;
+						if ( $field[ 'exclude_current' ] )
 							$get_users_args['exclude'] = $user_id;
-						}
 						// Loop through roles
 						foreach ( $field['options_query'] as $role ) {
 							// Get users for this role
@@ -511,7 +507,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						$args = $field['options_query'];
 						$taxonomies = $args['taxonomies'];
  						$field['options'] = array();
-						/** TODO
+						/** @todo Heirarchical post selection
 					 	if ( $field['hierarchical_options'] ) {
 							$field['options_query']['hierarchical'] = true;
 							slt_cf_hierarchical_terms( $field, '&nbsp;&nbsp;&nbsp;', @intval( $args['child_of'] ) );

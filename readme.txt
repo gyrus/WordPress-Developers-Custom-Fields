@@ -104,6 +104,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Changed the way the file select JS detects being inside the Media Library overlay, in order to be compatible with the Inline Attachments plugin
 * Added the `edit_on_profile` flag, to signal that even if a user doesn't have the right capabilities to edit a user profile field, they can edit it on their own profile (thanks jbalyo!)
 * Improved error messages
+* Fixed init errors when creating a post and there's no post ID
 * Code now on GitHub!
 
 = 0.7.2.1 =
