@@ -400,13 +400,13 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			if ( $field['options_type'] != 'static' ) {
 
 				// Check for any placeholder values in the query
-				if ( array_search( '[OBJECT_ID]', $field['options_query'] ) ) {
+				if ( array_search( '[OBJECT_ID]', $field['options_query'] ) !== false ) {
 
 					// Object ID
 					$object_id = 0;
 					switch ( $field['options_type'] ) {
 						case 'posts': {
-							if ( property_exists( $post, 'ID' ) )
+							if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'ID' ) )
 								$object_id = $post->ID;
 							break;
 						}
