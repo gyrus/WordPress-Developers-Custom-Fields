@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
-Tested up to: 3.3.1
+Tested up to: 3.3.2
 Stable tag: 0.7.2.2
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -100,6 +100,9 @@ Note that the internal Google Maps and file selection functionality is designed 
 Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
 == Changelog ==
+= 0.7.2.3 =
+* Minor fixes to dynamic options data initialization
+
 = 0.7.2.2 =
 * Changed the way the file select JS detects being inside the Media Library overlay, in order to be compatible with the Inline Attachments plugin
 * Added the `edit_on_profile` flag, to signal that even if a user doesn't have the right capabilities to edit a user profile field, they can edit it on their own profile (thanks jbalyo!)

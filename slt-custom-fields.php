@@ -9,7 +9,7 @@ Plugin Name: Developer's Custom Fields
 Plugin URI: http://wordpress.org/extend/plugins/developers-custom-fields/
 Description: Provides theme developers with tools for managing custom fields.
 Author: Steve Taylor
-Version: 0.7.2.2
+Version: 0.7.2.3
 Author URI: http://sltaylor.co.uk
 License: GPLv2
 */
@@ -52,8 +52,12 @@ define( 'SLT_CF_WP_IS_GTE_3_3', version_compare( round( $wp_version, 1 ), '3.3' 
 $slt_custom_fields = array();
 $slt_custom_fields['prefix'] = '_slt_';
 $slt_custom_fields['hide_default_custom_meta_box'] = true;
-$slt_custom_fields['datepicker_css_url'] = plugins_url( 'js/jquery-datepicker/smoothness/jquery-ui-1.8.16.custom.css', __FILE__ );
+/*This should be changed along with the name and structure, so that all ui elements can be styled at one place */
+$slt_custom_fields['ui_css_url'] = plugins_url( 'js/jquery-datepicker/smoothness/jquery-ui-1.8.16.custom.css', __FILE__ );
 $slt_custom_fields['datepicker_default_format'] = 'dd/mm/yy';
+/*Timepicker additions */
+$slt_custom_fields['timepicker_default_format'] = 'hh:mm tt';
+$slt_custom_fields['timepicker_default_ampm'] = true;
 $slt_custom_fields['boxes'] = array();
 if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )
 	$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.css', __FILE__ );

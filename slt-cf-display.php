@@ -84,6 +84,8 @@ function slt_cf_add_attachment_fields( $form_fields, $post ) {
 function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 	global $slt_custom_fields;
 	static $date_output = false;
+	static $time_output = false;
+	static $datetime_output = false;
 
 	// Initialize
 	switch ( $request_type ) {
@@ -407,6 +409,60 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					</script>
 					<?php
 					$date_output = true;
+				}
+				echo $field_description;
+				echo $after_input;
+				break;
+			}
+			case 'time': {
+				/* Only time field
+				*****************************************************************/
+				// Label
+				echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
+				// Input
+				$input_classes[] = 'slt-cf-time';
+				echo $before_input;
+				echo '<input type="text" name="' . $field_name . '" id="' . $field_name . '" value="' . htmlspecialchars( $field_value ) . '" style="' . implode( ';', $input_styles ) . '" class="' . implode( ' ', $input_classes ) . '" />';
+				echo ' <i>' . $field['timepicker_format'] . '</i>';
+				if ( ! $time_output ) {
+					?>
+					<script type="text/javascript">
+						jQuery( document ).ready( function($) {
+							$( 'input.slt-cf-time' ).timepicker({
+								timeFormat: '<?php echo $field['timepicker_format']; ?>',
+								ampm: '<?php echo $field['timepicker_ampm']; ?>'
+							});
+						});
+					</script>
+					<?php
+					$time_output = true;
+				}
+				echo $field_description;
+				echo $after_input;
+				break;
+			}
+			case 'datetime': {
+				/* Date and time field
+				*****************************************************************/
+				// Label
+				echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
+				// Input
+				$input_classes[] = 'slt-cf-datetime';
+				echo $before_input;
+				echo '<input type="text" name="' . $field_name . '" id="' . $field_name . '" value="' . htmlspecialchars( $field_value ) . '" style="' . implode( ';', $input_styles ) . '" class="' . implode( ' ', $input_classes ) . '" />';
+				if ( ! $datetime_output ) {
+					?>
+					<script type="text/javascript">
+						jQuery( document ).ready( function($) {
+							$( 'input.slt-cf-datetime' ).datetimepicker({
+								dateFormat: '<?php echo $field['datepicker_format']; ?>',
+								timeFormat: '<?php echo $field['timepicker_format']; ?>',
+								ampm: '<?php echo $field['timepicker_ampm']; ?>'
+								});
+						});
+					</script>
+					<?php
+					$datetime_output = true;
 				}
 				echo $field_description;
 				echo $after_input;
