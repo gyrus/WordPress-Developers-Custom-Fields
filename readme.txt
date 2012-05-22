@@ -100,8 +100,10 @@ Note that the internal Google Maps and file selection functionality is designed 
 Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
 == Changelog ==
-= 0.7.2.3 =
+= 0.7.3 =
 * Minor fixes to dynamic options data initialization
+* Addition of `time` and `datetime` field types (thanks saurabhshukla!)
+* NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
 
 = 0.7.2.2 =
 * Changed the way the file select JS detects being inside the Media Library overlay, in order to be compatible with the Inline Attachments plugin

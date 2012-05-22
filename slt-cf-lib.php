@@ -4,6 +4,12 @@
 ***************************************************************************************/
 function slt_cf_setting( $key, $value ) {
 	global $slt_custom_fields;
+
+	// Pass renamed settings
+	if ( $key == 'datepicker_css_url' )
+		$key = 'ui_css_url';
+
+	// Set setting
 	if ( is_string( $key ) )
 		$slt_custom_fields[ $key ] = $value;
 }

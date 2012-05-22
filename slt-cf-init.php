@@ -20,9 +20,11 @@ function slt_cf_init() {
 	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ) );
 	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
 		// Register jQuery UI Datepicker for below WP 3.3
-		wp_register_script( 'jquery-ui-datepicker', plugins_url( 'js/jquery-datepicker/jquery-ui-1.8.16.custom.min.js', __FILE__ ), array( 'jquery-ui-core' ), '1.8.16', true );
+		wp_register_script( 'jquery-ui-datepicker', plugins_url( 'js/jquery-ui/jquery-ui-1.8.16.custom.min.js', __FILE__ ), array( 'jquery-ui-core' ), '1.8.16', true );
 	}
-	wp_register_style( 'jquery-datepicker-smoothness', $slt_custom_fields['datepicker_css_url'] );
+	// Register jQuery UI Addon Timepicker for date and time fields
+	wp_register_script( 'jquery-ui-timepicker', plugins_url( 'js/jquery-ui/jquery-ui-timepicker-addon.min.js', __FILE__ ), array( 'jquery-ui-datepicker' ), '1.8.16', true );
+	wp_register_style( 'jquery-ui-smoothness', $slt_custom_fields['ui_css_url'] );
 	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ) );
 	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js?sensor=false' );
 	$gmaps_deps = array( 'jquery', 'jquery-ui-core' );
@@ -64,7 +66,10 @@ function slt_cf_admin_init() {
 	}
 	// Datepicker
 	wp_enqueue_script( 'jquery-ui-datepicker' );
-	wp_enqueue_style( 'jquery-datepicker-smoothness' );
+	wp_enqueue_style( 'jquery-ui-smoothness' );
+	// Timepicker which needs the slider
+	wp_enqueue_script( 'jquery-ui-slider' );
+	wp_enqueue_script( 'jquery-ui-timepicker' );
 	// Make sure forms allow file uploads
 	if ( in_array( $requested_file, array( 'post-new.php', 'post.php' ) ) )
 		add_action( 'post_edit_form_tag' , 'slt_cf_file_upload_form' );
@@ -247,6 +252,8 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'preview_size'				=> 'medium',
 				'group_options'				=> false,
 				'datepicker_format'			=> $slt_custom_fields['datepicker_default_format'],
+				'timepicker_format'			=> $slt_custom_fields['timepicker_default_format'],
+				'timepicker_ampm'			=> $slt_custom_fields['timepicker_default_ampm'],
 				'location_marker'			=> true,
 				'gmap_type'					=> 'roadmap',
 				'edit_on_profile'			=> false
@@ -317,8 +324,8 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 
 			// Check if parameters are the right types
 			if (
-				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format' ), 'string', 'field', $field ) ||
-				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile' ), 'boolean', 'field', $field ) ||
+				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format', 'timepicker_format' ), 'string', 'field', $field ) ||
+				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile', 'timepicker_ampm' ), 'boolean', 'field', $field ) ||
 				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities' ), 'array', 'field', $field ) ||
 				! slt_cf_params_type( array( 'width', 'height' ), 'integer', 'field', $field )
 			) {
