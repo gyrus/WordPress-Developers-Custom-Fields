@@ -1,5 +1,5 @@
 === Developer's Custom Fields ===
-Contributors: gyrus, adriantoll
+Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
