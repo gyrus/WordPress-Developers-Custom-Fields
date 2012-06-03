@@ -452,7 +452,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 							$field['options_query']['orderby'] = 'category';
 						// Exclude current post?
 						if ( $field[ 'exclude_current' ] ) {
-							if ( property_exists( $post, 'ID' ) )
+							if ( is_object( $post ) && property_exists( $post, 'ID' ) )
 								$field['options_query']['post__not_in'][] = $post->ID;
 						}
 						$posts_query = new WP_Query( $field['options_query'] );
