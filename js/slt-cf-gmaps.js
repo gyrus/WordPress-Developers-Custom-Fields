@@ -62,20 +62,15 @@ function slt_cf_gmap_init( container_id, mode, marker_available, marker_latlng, 
 	// IF IT'S AN INPUT MAP
 	if (mode == 'input') {
 
-		// listen for changes to the map zoom
-		google.maps.event.addListener( slt_cf_maps[container_id]['map'], 'zoom_changed', function() {
-			newZoom = this.getZoom();
-			document.getElementById( this['_slt_cf_mapname'] + '_zoom' ).value = newZoom;
-			document.getElementById( this['_slt_cf_mapname'] + '_bounds_sw').value = this.getBounds().getSouthWest().toString().slice(1,-1).replace(' ','');
-			document.getElementById( this['_slt_cf_mapname'] + '_bounds_ne').value = this.getBounds().getNorthEast().toString().slice(1,-1).replace(' ','');
-		});
 
-		// listen for changes to the map center
-		google.maps.event.addListener( slt_cf_maps[container_id]['map'], 'center_changed', function() {
-			newLatLng = this.getCenter().toString().slice(1,-1).replace(' ','');
-			document.getElementById( this['_slt_cf_mapname'] + '_centre_latlng' ).value = newLatLng;
+		// listen for changes to the map bounds
+		google.maps.event.addListener( slt_cf_maps[container_id]['map'], 'bounds_changed', function() {
+
+			// write the new center and bounds for saving with the post
+			document.getElementById( this['_slt_cf_mapname'] + '_centre_latlng' ).value = this.getCenter().toString().slice(1,-1).replace(' ','');
 			document.getElementById( this['_slt_cf_mapname'] + '_bounds_sw').value = this.getBounds().getSouthWest().toString().slice(1,-1).replace(' ','');
 			document.getElementById( this['_slt_cf_mapname'] + '_bounds_ne').value = this.getBounds().getNorthEast().toString().slice(1,-1).replace(' ','');
+
 		});
 
 		// set up the geocoder?
@@ -85,11 +80,12 @@ function slt_cf_gmap_init( container_id, mode, marker_available, marker_latlng, 
 
 			// set up the geocoder bounds
 			boundsSW = jQuery( '#' + container_id + '_bounds_sw' ).val().split(',');
-			geocodeBoundsSW = new google.maps.LatLng( boundsSW[0], boundsSW[1] );
 			boundsNE = jQuery( '#' + container_id + '_bounds_ne' ).val().split(',');
+			geocodeBoundsSW = new google.maps.LatLng( boundsSW[0], boundsSW[1] );
 			geocodeBoundsNE = new google.maps.LatLng( boundsNE[0], boundsNE[1] );
 			slt_cf_maps[container_id]['map']['geocodeBounds'] = new google.maps.LatLngBounds(geocodeBoundsSW,geocodeBoundsNE);
 
+			// initialise the geocoder
 			jQuery( document ).ready( function( $ ) {
 
 				// Write the geocoder
@@ -107,9 +103,9 @@ function slt_cf_gmap_init( container_id, mode, marker_available, marker_latlng, 
 							// deal with the response
 							response($.map(results, function(item) {
 
-								// if it's within a rough rectangle around the default geocoding bounds
+								// if it's within the geocoding bounds
 								addressLatLng = new google.maps.LatLng(item.geometry.location.lat(),item.geometry.location.lng());
-								if ( slt_cf_maps[container_id]['map']['geocodeBounds'].contains(addressLatLng) ) {
+								if ( slt_cf_maps[container_id]['map'].getBounds().contains(addressLatLng) ) {
 
 									// return the address values
                                     console.log( item );
