@@ -94,20 +94,22 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 			$box_key = $custom_data['args']['box'];
 			// Nonce for security
 			wp_nonce_field( slt_cf_prefix( 'post' ) . $slt_custom_fields['boxes'][$box_key]['id'] . '_save', $slt_custom_fields['prefix'] . $slt_custom_fields['boxes'][$box_key]['id'] . '_wpnonce', false, true );
+			// Description
+			if ( $slt_custom_fields['boxes'][ $box_key ][ 'description' ] )
+				echo '<p>' . $slt_custom_fields['boxes'][ $box_key ][ 'description' ] . '</p>';
 			break;
 		}
 		case 'user': {
 			// Get box key and output initial markup
 			$box_key = $custom_data;
 			echo '<h3>' . $slt_custom_fields['boxes'][ $box_key ]['title']. '</h3>';
+			// Description
+			if ( $slt_custom_fields['boxes'][ $box_key ][ 'description' ] )
+				echo '<p>' . $slt_custom_fields['boxes'][ $box_key ][ 'description' ] . '</p>';
 			echo '<table class="form-table">';
 			break;
 		}
 	}
-
-	// Description
-	if ( $slt_custom_fields['boxes'][ $box_key ][ 'description' ] )
-		echo '<p>' . $slt_custom_fields['boxes'][ $box_key ][ 'description' ] . '</p>';
 
 	// Loop through fields for this box
 	foreach ( $slt_custom_fields['boxes'][ $box_key ]['fields'] as $field ) {
@@ -220,17 +222,20 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				$input = $before_input . '<input type="checkbox" name="' . $field_name . '" id="' . $field_name . '" value="1"';
 				if ( $field_value )
 					$input .= ' checked="checked"';
-				$input .=  ' />' . $after_input;
+				$input .=  ' />';
+				if ( $request_type == 'user' )
+					$input .= $field_description;
+				$input .= $after_input;
 				// Label
 				$label = $before_label . ' <label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
 				if ( $request_type == 'post' ) {
 					echo $input;
 					echo $label;
+					echo $field_description;
 				} else if ( $request_type == 'user' ) {
 					echo $label;
 					echo $input;
 				}
-				echo $field_description;
 				break;
 			}
 

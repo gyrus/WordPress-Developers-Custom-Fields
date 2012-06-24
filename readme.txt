@@ -104,6 +104,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Minor fixes to dynamic options data initialization
 * Addition of `time` and `datetime` field types (thanks saurabhshukla!)
 * Make geocoder bounds update when map bounds change so only addresses / locations from within the current map display are suggested
+* Adjusted output of box and field descriptions to fit with user profile screen markup better
 * NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
 
 = 0.7.2.2 =
