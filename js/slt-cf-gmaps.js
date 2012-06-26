@@ -89,7 +89,7 @@ function slt_cf_gmap_init( container_id, mode, marker_available, marker_latlng, 
 			jQuery( document ).ready( function( $ ) {
 
 				// Write the geocoder
-				$( '#' + container_id ).before( '<p class="gmap-address"><label for="' + container_id + '_address">' + slt_cf_gmaps.geocoder_label + ':</label> <input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" /></p>' );
+				$( '#' + container_id ).after( '<p class="gmap-address"><label for="' + container_id + '_address">' + slt_cf_gmaps.geocoder_label + ':</label> <input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" /></p>' );
 
 				// activate the autocomplete functionality
 				$( '#' + container_id + '_address' ).autocomplete({
