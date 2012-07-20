@@ -487,6 +487,10 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	$using_default_name = false;
 	static $map_count = 1;
 
+	// Enqueue scripts
+	wp_enqueue_script( 'google-maps-api' );
+	wp_enqueue_script( 'slt-cf-gmaps' );
+
 	// Defaults
 	if ( empty( $name ) ) {
 		$name = 'gmap_' . $map_count;

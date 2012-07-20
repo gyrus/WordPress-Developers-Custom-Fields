@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
-Tested up to: 3.3.2
+Tested up to: 3.4.1
 Stable tag: 0.7.2.2
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -103,8 +103,10 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 0.7.3 =
 * Minor fixes to dynamic options data initialization
 * Addition of `time` and `datetime` field types (thanks saurabhshukla!)
-* Make geocoder bounds update when map bounds change so only addresses / locations from within the current map display are suggested
 * Adjusted output of box and field descriptions to fit with user profile screen markup better
+* Make geocoder bounds update when map bounds change so only addresses / locations from within the current map display are suggested
+* Moved enqueuing of Google maps JS inside the `slt_cf_gmap()` function, so the scripts are only used where necessary. This is made possible by registering them to be included in the footer - see http://scribu.net/wordpress/conditional-script-loading-revisited.html
+* Added version numbers to scripts to prevent caching issues in future versions
 * NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
 
 = 0.7.2.2 =

@@ -6,6 +6,7 @@
 // Global initialization
 function slt_cf_init() {
 	global $slt_custom_fields;
+
 	// Register scripts and styles
 	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
@@ -17,25 +18,27 @@ function slt_cf_init() {
 		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.min.js', __FILE__ );
 		$slt_js_gmaps = plugins_url( 'js/slt-cf-gmaps.min.js', __FILE__ );
 	}
-	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ) );
+	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ), SLT_CF_VERSION );
 	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
 		// Register jQuery UI Datepicker for below WP 3.3
 		wp_register_script( 'jquery-ui-datepicker', plugins_url( 'js/jquery-ui/jquery-ui-1.8.16.custom.min.js', __FILE__ ), array( 'jquery-ui-core' ), '1.8.16', true );
 	}
+
 	// Register jQuery UI Addon Timepicker for date and time fields
 	wp_register_script( 'jquery-ui-timepicker', plugins_url( 'js/jquery-ui/jquery-ui-timepicker-addon.min.js', __FILE__ ), array( 'jquery-ui-datepicker' ), '1.8.16', true );
 	wp_register_style( 'jquery-ui-smoothness', $slt_custom_fields['ui_css_url'] );
-	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ) );
-	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js?sensor=false' );
+	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ), SLT_CF_VERSION );
+
+	/*
+	 * Google Maps stuff is registered to go in the footer, so it can be enqueued dynamically
+	 * on the front-end, as the map is output
+	 */
+	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js?sensor=false', array(), false, true );
 	$gmaps_deps = array( 'jquery', 'jquery-ui-core' );
 	if ( ! class_exists( 'JCP_UseGoogleLibraries' ) )
 		$gmaps_deps[] = 'jquery-ui-autocomplete'; // Autocomplete included in Google's jQuery UI core
-	wp_register_script( 'slt-cf-gmaps', $slt_js_gmaps, $gmaps_deps );
-	// Google Maps for front and admin
-	if ( SLT_CF_USE_GMAPS ) {
-		wp_enqueue_script( 'google-maps-api' );
-		wp_enqueue_script( 'slt-cf-gmaps' );
-	}
+	wp_register_script( 'slt-cf-gmaps', $slt_js_gmaps, $gmaps_deps, SLT_CF_VERSION, true );
+
 	// Generic hook, mostly for dependent plugins to hook to
 	// See: http://core.trac.wordpress.org/ticket/11308#comment:7
 	do_action( 'slt_cf_init' );
