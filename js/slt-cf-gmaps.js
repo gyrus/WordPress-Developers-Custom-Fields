@@ -66,14 +66,15 @@ function slt_cf_gmap_init( container_id, mode, marker_available, marker_latlng, 
 		// listen for changes to the map bounds
 		google.maps.event.addListener( slt_cf_maps[container_id]['map'], 'bounds_changed', function() {
 
-			// write the new center and bounds for saving with the post
+			// write the new zoom, center and bounds for saving with the post
+			document.getElementById( this['_slt_cf_mapname'] + '_zoom' ).value = this.getZoom();
 			document.getElementById( this['_slt_cf_mapname'] + '_centre_latlng' ).value = this.getCenter().toString().slice(1,-1).replace(' ','');
 			document.getElementById( this['_slt_cf_mapname'] + '_bounds_sw').value = this.getBounds().getSouthWest().toString().slice(1,-1).replace(' ','');
 			document.getElementById( this['_slt_cf_mapname'] + '_bounds_ne').value = this.getBounds().getNorthEast().toString().slice(1,-1).replace(' ','');
 
 		});
 
-		// set up the geocoder?
+		// set up the geocoder
 		if ( jQuery().autocomplete ) {
 
 			geocoder = new google.maps.Geocoder();
