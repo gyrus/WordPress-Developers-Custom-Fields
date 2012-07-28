@@ -139,7 +139,7 @@ function slt_fs_new_upload_button( count ) {
 		jQuery( function( $ ) {
 			media_item_table = $( '#slt-cf-new-upload-button-' + count ).parents( 'table' );
 			$( media_item_table ).find( 'tbody tr:not(.submit), a.wp-post-thumbnail' ).remove();
-			$( media_item_table ).find( 'input[type=button][value=Edit Image]' ).remove();
+			$( media_item_table ).find( 'input[type=button][value="Edit Image"]' ).remove();
 			if ( $( media_item_table ).find( 'tr.submit td.savesend input' ).length )
 				$( media_item_table ).find( 'tr.submit td.savesend input' ).replaceWith( select_button );
 			else
