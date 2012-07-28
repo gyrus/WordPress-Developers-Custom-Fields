@@ -253,7 +253,6 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'autop'						=> false,
 				'wysiwyg_settings'			=> array(), /* Defaults are dealt with below */
 				'preview_size'				=> 'medium',
-				'group_options'				=> false,
 				'datepicker_format'			=> $slt_custom_fields['datepicker_default_format'],
 				'timepicker_format'			=> $slt_custom_fields['timepicker_default_format'],
 				'timepicker_ampm'			=> $slt_custom_fields['timepicker_default_ampm'],
