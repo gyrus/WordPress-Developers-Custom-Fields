@@ -121,7 +121,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 
 		if ( ( $request_type == 'post' && $object->post_status == 'auto-draft' ) || ! slt_cf_field_exists( $field['name'], $request_type, $object->ID ) ) {
 			// Field doesn't exist yet, use a default if set
-			$field_value = $field['default'];
+			$field_value = apply_filters( 'slt_cf_default_value', $field['default'], $field, $request_type, $object->ID );
 		} else {
 			// Get field value
 			$field_value = slt_cf_field_value( $field['name'], $request_type, $object->ID, '', '', false, $field['single'] );

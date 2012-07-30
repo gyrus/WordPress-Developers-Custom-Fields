@@ -107,6 +107,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Make geocoder bounds update when map bounds change so only addresses / locations from within the current map display are suggested
 * Moved enqueuing of Google maps JS inside the `slt_cf_gmap()` function, so the scripts are only used where necessary. This is made possible by registering them to be included in the footer - see http://scribu.net/wordpress/conditional-script-loading-revisited.html
 * Added version numbers to scripts to prevent caching issues in future versions
+* Added slt_cf_default_value filter
 * NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
 
 = 0.7.2.2 =
