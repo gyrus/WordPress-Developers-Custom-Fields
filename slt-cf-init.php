@@ -529,6 +529,11 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
  						break;
 					}
 
+					case 'countries': {
+						$field['options'] = slt_cf_options_preset( 'countries' );
+						break;
+					}
+
 					default: {
 						// Run filter for custom option types
 						$field['options'] = apply_filters( 'slt_cf_populate_options', $field['options'], $request_type, $scope, $object_id, $field );
