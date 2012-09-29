@@ -619,15 +619,14 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	}
 
 	// JavaScript
-	$output .= '<script type="text/javascript">' . "\n";
-	$output .= "jQuery( document ).ready( function($) {\n";
-	$output .= "slt_cf_gmap_init( '{$id}', '{$type}', {$location_marker}, '{$values['marker_latlng']}', '{$values['centre_latlng']}', {$values['zoom']}, '{$map_type_id}'";
+	$inline_script = "jQuery( document ).ready( function($) {\n";
+	$inline_script .= "slt_cf_gmap_init( '{$id}', '{$type}', {$location_marker}, '{$values['marker_latlng']}', '{$values['centre_latlng']}', {$values['zoom']}, '{$map_type_id}'";
 	// Callback?
 	if ( $js_callback )
-		$output .= ", '{$js_callback}'";
-	$output .= " );\n";
-	$output .= "});\n";
-	$output .= "</script>\n";
+		$inline_script .= ", '{$js_callback}'";
+	$inline_script .= " );\n";
+	$inline_script .= "});\n";
+	slt_cf_collect_dynamic_inline_footer_scripts( $inline_script );
 
 	// Close wrapper?
 	if ( $type == 'input' && ! $required )
@@ -639,6 +638,43 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 		echo $output;
 	else
 		return $output;
+}
+
+/**
+ * Helper function to collect Gmaps init scripts for output in footer,
+ * in case jQuery is in footer
+ *
+ * @since	0.7.3
+ *
+ * @param	string	$script									The inline script
+ * @global	array	$slt_cf_dynamic_inline_footer_scripts
+ * @return	void
+ */
+function slt_cf_collect_dynamic_inline_footer_scripts( $script ) {
+	global $slt_cf_dynamic_inline_footer_scripts;
+	if ( ! is_array( $slt_cf_dynamic_inline_footer_scripts ) )
+		$slt_cf_dynamic_inline_footer_scripts = array();
+	$slt_cf_dynamic_inline_footer_scripts[] = $script;
+}
+
+/**
+ * Helper function to output Gmaps init scripts in footer
+ *
+ * @since	0.7.3
+ *
+ * @global	array	$slt_cf_dynamic_inline_footer_scripts
+ * @return	void
+ */
+add_action( 'wp_footer', 'slt_cf_output_dynamic_inline_footer_scripts', 99999, 1 );
+function slt_cf_output_dynamic_inline_footer_scripts( $script ) {
+	global $slt_cf_dynamic_inline_footer_scripts;
+	if ( is_array( $slt_cf_dynamic_inline_footer_scripts ) && ! empty( $slt_cf_dynamic_inline_footer_scripts ) ) {
+		echo '<script type="text/javascript">' . "\n";
+		foreach ( $slt_cf_dynamic_inline_footer_scripts as $script ) {
+			echo $script;
+		}
+		echo '</script>' . "\n";
+	}
 }
 
 endif;
@@ -657,6 +693,7 @@ function slt_cf_gmap_shortcode( $atts ) {
 	// Return a map
 	return slt_cf_gmap( 'output', $name, 'stored_data', $width, $height, null, '', false );
 }
+
 
 /* File Select button functions
 ***************************************************************************************/
