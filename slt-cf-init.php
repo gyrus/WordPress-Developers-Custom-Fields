@@ -7,6 +7,13 @@
 function slt_cf_init() {
 	global $slt_custom_fields;
 
+	// Globals still to initialize (ones that use core functions with filters that aren't exposed if run earlier)
+	$slt_custom_fields['ui_css_url'] = plugins_url( 'js/jquery-ui/smoothness/jquery-ui-1.8.16.custom.css', __FILE__ );
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )
+		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.css', __FILE__ );
+	else
+		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.min.css', __FILE__ );
+
 	// Register scripts and styles
 	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {

@@ -644,7 +644,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
  * Helper function to collect Gmaps init scripts for output in footer,
  * in case jQuery is in footer
  *
- * @since	0.7.3
+ * @since	0.8
  *
  * @param	string	$script									The inline script
  * @global	array	$slt_cf_dynamic_inline_footer_scripts
@@ -660,12 +660,15 @@ function slt_cf_collect_dynamic_inline_footer_scripts( $script ) {
 /**
  * Helper function to output Gmaps init scripts in footer
  *
- * @since	0.7.3
+ * @since	0.8
  *
  * @global	array	$slt_cf_dynamic_inline_footer_scripts
  * @return	void
  */
-add_action( 'wp_footer', 'slt_cf_output_dynamic_inline_footer_scripts', 99999, 1 );
+if ( is_admin() )
+	add_action( 'admin_print_footer_scripts', 'slt_cf_output_dynamic_inline_footer_scripts', 99999, 1 );
+else
+	add_action( 'wp_footer', 'slt_cf_output_dynamic_inline_footer_scripts', 99999, 1 );
 function slt_cf_output_dynamic_inline_footer_scripts( $script ) {
 	global $slt_cf_dynamic_inline_footer_scripts;
 	if ( is_array( $slt_cf_dynamic_inline_footer_scripts ) && ! empty( $slt_cf_dynamic_inline_footer_scripts ) ) {

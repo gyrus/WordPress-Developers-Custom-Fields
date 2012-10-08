@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
-Tested up to: 3.4.1
+Tested up to: 3.5-beta-1
 Stable tag: 0.7.2.2
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -100,15 +100,17 @@ Note that the internal Google Maps and file selection functionality is designed 
 Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
 == Changelog ==
-= 0.7.3 =
+= 0.8 =
+* NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
+* NOTE: The defaults for the `ui_css_url` and `css_url` settings have been moved inside the `slt_cf_init` function. If these values are being changed by the `slt_cf_setting` function, this must be hooked to `init` with a priority of 11 or above to ensure they aren't re-set to the defaults. These defaults have been moved inside `slt_cf_init` because they use `plugins_url`. Now they are exposed to any filters that other plugins might attach to the `plugins_url` filter
 * Minor fixes to dynamic options data initialization
 * Addition of `time` and `datetime` field types (thanks saurabhshukla!)
 * Adjusted output of box and field descriptions to fit with user profile screen markup better
 * Make geocoder bounds update when map bounds change so only addresses / locations from within the current map display are suggested
 * Moved enqueuing of Google maps JS inside the `slt_cf_gmap()` function, so the scripts are only used where necessary. This is made possible by registering them to be included in the footer - see http://scribu.net/wordpress/conditional-script-loading-revisited.html
 * Added version numbers to scripts to prevent caching issues in future versions
-* Added slt_cf_default_value filter
-* NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
+* Added `slt_cf_default_value` filter
+* Fixed issue with deleting a cleared text field on an attachment (thanks Sean Hawkridge!)
 
 = 0.7.2.2 =
 * Changed the way the file select JS detects being inside the Media Library overlay, in order to be compatible with the Inline Attachments plugin
