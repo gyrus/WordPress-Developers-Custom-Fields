@@ -127,6 +127,16 @@ function slt_cf_admin_menus() {
 
 /* Initialize fields
 ***************************************************************************************/
+
+/**
+ * Initialize the registered fields for the given edit request
+ *
+ * @since	0.1
+ * @param	string	$request_type	'post' | 'attachment' | 'user' (corresponds to $type in slt_cf_register_box)
+ * @param	string	$scope			For 'post', post_type; for 'attachment', post_mime_type; for 'user', role
+ * @param	integer	$object_id		ID of object being edited
+ * @return	void
+ */
 function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 	global $slt_custom_fields, $wp_roles, $post, $user_id;
 
@@ -225,8 +235,16 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			}
 
 			// File field type no longer needs the File Select plugin
-			if ( $field['type'] == 'file' && function_exists( 'slt_fs_button' )  )
+			if ( $field['type'] == 'file' && function_exists( 'slt_fs_button' )  ) {
 				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> File upload fields no longer needs the SLT File Select plugin - you can remove it if you want! If you use that plugin\'s functionality elsewhere, you can now just call the functions provided by this Custom Fields plugin.', E_USER_NOTICE );
+			}
+
+			// File field types not allowed for file attachments or user profiles
+			if ( $field['type'] == 'file' && in_array( $request_type, array( 'attachment', 'user' ) ) ) {
+				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> The field <b>' . $field['name'] . '</b> is a <code>file</code> type field, which is not allowed for attachments or user profiles.', E_USER_WARNING );
+				$unset_fields[] = $field_key;
+				continue;
+			}
 
 			// Set defaults
 			$field_defaults = array(

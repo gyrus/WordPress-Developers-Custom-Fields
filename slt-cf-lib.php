@@ -50,12 +50,12 @@ function slt_cf_field_key( $key, $object_type = 'post' ) {
 	return slt_cf_prefix( $object_type ) . $key;
 }
 
-/* Return the right prefix (attachment postmeta shouldn't start with an underscore)
+/* Return the right prefix (attachment postmeta pre-3.5 shouldn't start with an underscore)
 ***************************************************************************************/
 function slt_cf_prefix( $object_type = 'post' ) {
 	global $slt_custom_fields;
 	$prefix = $slt_custom_fields['prefix'];
-	if ( $object_type == 'attachment' && substr( $prefix, 0, 1 ) == '_' )
+	if ( $object_type == 'attachment' && ! SLT_CF_WP_IS_GTE_3_5 && substr( $prefix, 0, 1 ) == '_' )
 		$prefix = substr( $prefix, 1 );
 	return $prefix;
 }

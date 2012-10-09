@@ -3,6 +3,16 @@
 /* Save custom field values
 ***************************************************************************************/
 
+/**
+ * Save custom field values
+ *
+ * @since	0.1
+ * @param	string	$request_type	'post' | 'attachment' | 'user' (corresponds to $type in slt_cf_register_box)
+ * @param	integer	$object_id		ID of object being edited
+ * @param	object	$object			The object being edited
+ * @param	array	$extras			Any extras, e.g. $attachment passed by attachment_fields_to_save filter
+ * @return	mixed
+ */
 function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 	global $slt_custom_fields;
 
@@ -15,12 +25,12 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 	// Loop through boxes
 	foreach ( $slt_custom_fields['boxes'] as $box ) {
 
-		// Check post meta box nonce
+		// Check meta box nonce
 		$nonce_prefix = '';
-		if ( $request_type == 'post' )
+		if ( $request_type == 'post' || ( SLT_CF_WP_IS_GTE_3_5 && $request_type == 'attachment' ) )
 			$nonce_prefix = slt_cf_prefix( $request_type ) . $box['id'];
 
-		if ( $request_type != 'post' || ( isset( $_POST[ $nonce_prefix . '_wpnonce' ] ) && wp_verify_nonce( $_POST[ $nonce_prefix . '_wpnonce' ], $nonce_prefix . '_save' ) ) ) {
+		if ( ! $nonce_prefix || ( isset( $_POST[ $nonce_prefix . '_wpnonce' ] ) && wp_verify_nonce( $_POST[ $nonce_prefix . '_wpnonce' ], $nonce_prefix . '_save' ) ) ) {
 
 			// Loop through fields
 			foreach ( $box['fields'] as $field ) {
@@ -135,8 +145,8 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 
 	} // Boxes foreach
 
-	// Return $post for attachments (it's a filter, not an action!)
-	if ( $request_type == 'attachment' )
+	// Return $post for attachments pre-3.5 (it's a filter, not an action!)
+	if ( $request_type == 'attachment' && ! SLT_CF_WP_IS_GTE_3_5 )
 		return $object;
 
 }

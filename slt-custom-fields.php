@@ -49,6 +49,7 @@ define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', 'slt-custom-fields
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
 define( 'SLT_CF_VERSION', '0.8' );
 define( 'SLT_CF_WP_IS_GTE_3_3', version_compare( round( $wp_version, 1 ), '3.3' ) >= 0 );
+define( 'SLT_CF_WP_IS_GTE_3_5', version_compare( round( $wp_version, 1 ), '3.5' ) >= 0 );
 $slt_custom_fields = array();
 $slt_custom_fields['prefix'] = '_slt_';
 $slt_custom_fields['hide_default_custom_meta_box'] = true;
@@ -112,25 +113,35 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 
 	/* Display hooks
 	***************************************************************************************/
-	add_action( 'add_meta_boxes', 'slt_cf_display_post', 10, 2 );
+	add_action( 'add_meta_boxes', 'slt_cf_display_post_attachment', 10, 2 );
 	add_action( 'do_meta_boxes', 'slt_cf_remove_default_meta_box', 1, 3 );
-	add_filter( 'attachment_fields_to_edit', 'slt_cf_display_attachment', 10, 2 );
 	add_action( 'show_user_profile', 'slt_cf_display_user', 12, 1 );
 	add_action( 'edit_user_profile', 'slt_cf_display_user', 12, 1 );
 
-	// Display for a post screen
-	function slt_cf_display_post( $context, $object ) {
+	// Media attachment handling for pre-3.5
+	if ( ! SLT_CF_WP_IS_GTE_3_5 ) {
+		add_filter( 'attachment_fields_to_edit', 'slt_cf_display_attachment_pre35', 10, 2 );
+	}
+
+	// Display for a post / attachment screen
+	function slt_cf_display_post_attachment( $context, $object ) {
 		global $slt_custom_fields;
-		// Check for context based on object properties in case the are 'link' or 'comment' custom post types
+		// Check for context based on object properties in case the are 'link' or 'comment' core custom post types
 		if ( is_object( $object ) && ! ( isset( $object->comment_ID ) || isset( $object->link_id ) ) ) {
-			slt_cf_init_fields( 'post', $context, $object->ID );
+			$request_type = 'post';
+			$scope = $context;
+			if ( $context == 'attachment' ) {
+				$request_type = 'attachment';
+				$scope = $object->post_mime_type;
+			}
+			slt_cf_init_fields( $request_type, $scope, $object->ID );
 			if ( count( $slt_custom_fields['boxes'] ) )
 				slt_cf_add_meta_boxes( $context );
 		}
 	}
 
-	// Display for an attachment screen
-	function slt_cf_display_attachment( $form_fields, $post ) {
+	// Display for an attachment screen (pre-3.5)
+	function slt_cf_display_attachment_pre35( $form_fields, $post ) {
 		global $slt_custom_fields;
 		slt_cf_init_fields( 'attachment', $post->post_mime_type, $post->ID );
 		if ( count( $slt_custom_fields['boxes'] ) )
@@ -151,9 +162,16 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	/* Save hooks
 	***************************************************************************************/
 	add_action( 'save_post', 'slt_cf_save_post', 1, 2 );
-	add_filter( 'attachment_fields_to_save', 'slt_cf_save_attachment', 10, 2 );
 	add_action( 'personal_options_update', 'slt_cf_save_user', 1, 1 );
 	add_action( 'edit_user_profile_update', 'slt_cf_save_user', 1, 1 );
+
+	// Media attachment handling for pre- and post-3.5
+	if ( ! SLT_CF_WP_IS_GTE_3_5 ) {
+		add_filter( 'attachment_fields_to_save', 'slt_cf_save_attachment_pre35', 10, 2 );
+	} else {
+		add_action( 'add_attachment', 'slt_cf_save_attachment', 1 );
+		add_action( 'edit_attachment', 'slt_cf_save_attachment', 1 );
+	}
 
 	// Save for a post screen
 	function slt_cf_save_post( $post_id, $post ) {
@@ -166,8 +184,20 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 			slt_cf_save( 'post', $post_id, $post );
 	}
 
-	// Save for an attachment screen
-	function slt_cf_save_attachment( $post, $attachment ) {
+	// Save for an attachment screen post-3.5
+	function slt_cf_save_attachment( $post_id ) {
+		global $slt_custom_fields;
+		$post = get_post( $post_id );
+		// Don't bother with post revisions
+		if ( $post->post_type == 'revision' )
+			return;
+		slt_cf_init_fields( 'attachment', $post->post_mime_type, $post_id );
+		if ( count( $slt_custom_fields['boxes'] ) )
+			slt_cf_save( 'attachment', $post_id, $post );
+	}
+
+	// Save for an attachment screen pre-3.5
+	function slt_cf_save_attachment_pre35( $post, $attachment ) {
 		global $slt_custom_fields;
 		slt_cf_init_fields( 'attachment', $post['post_mime_type'], $post['ID'] );
 		if ( count( $slt_custom_fields['boxes'] ) )

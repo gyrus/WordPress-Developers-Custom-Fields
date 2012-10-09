@@ -45,9 +45,15 @@ function slt_cf_add_user_profile_sections( $user ) {
 		slt_cf_display_box( $user, $box_key, 'user' );
 }
 
-/* Add fields to an attachment screen
-* No boxes / sections, just loop through all fields
-***************************************************************************/
+/**
+ * Add fields to an attachment screen for pre-3.5
+ * No boxes / sections, just loop through all fields
+ *
+ * @since	0.6
+ * @param	array	$form_fields
+ * @param	object	$post
+ * @return	array
+ */
 function slt_cf_add_attachment_fields( $form_fields, $post ) {
 	global $slt_custom_fields;
 	foreach ( $slt_custom_fields['boxes'] as $box_key => $box ) {
@@ -68,7 +74,7 @@ function slt_cf_add_attachment_fields( $form_fields, $post ) {
 					break;
 				}
 				case 'text': {
-					$form_fields[ $field_name ]['html'] = slt_cf_input_text( $input_field_name, $form_fields[ $field_name ]['value'], $field['prefix'], $field['suffix'], array(), array(), false );
+					$form_fields[ $field_name ]['html'] = slt_cf_input_text( $input_field_name, $form_fields[ $field_name ]['value'], $field['input_prefix'], $field['input_suffix'], array(), array(), false );
 					break;
 				}
 			}
@@ -79,8 +85,16 @@ function slt_cf_add_attachment_fields( $form_fields, $post ) {
 	return $form_fields;
 }
 
-/* Display a box's fields
-***************************************************************************/
+
+/**
+ * Display a box's fields
+ *
+ * @since		0.1
+ * @param		object	$object
+ * @param		array	$custom_data
+ * @param		string	$request_type	'post' | 'user'; defaults to 'post' for both 'post' and 'attachment' requests
+ * @return		void
+ */
 function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 	global $slt_custom_fields;
 	static $date_output = false;
@@ -114,10 +128,6 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 	// Loop through fields for this box
 	foreach ( $slt_custom_fields['boxes'][ $box_key ]['fields'] as $field ) {
 		$field_name = slt_cf_prefix( $slt_custom_fields['boxes'][ $box_key ]['type'] ) . $field['name'];
-
-		// Skip fields not allowed in this scope
-		if ( $field['type'] == 'file' && $request_type == 'user' )
-			continue;
 
 		if ( ( $request_type == 'post' && $object->post_status == 'auto-draft' ) || ! slt_cf_field_exists( $field['name'], $request_type, $object->ID ) ) {
 			// Field doesn't exist yet, use a default if set
