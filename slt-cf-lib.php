@@ -60,16 +60,31 @@ function slt_cf_prefix( $object_type = 'post' ) {
 	return $prefix;
 }
 
+/* Strip the prefix
+***************************************************************************************/
+function slt_cf_strip_prefix( $key ) {
+	global $slt_custom_fields;
+	$prefix = $slt_custom_fields['prefix'];
+	if ( strlen( $key ) >= strlen( $prefix ) && substr( $key, 0, strlen( $prefix ) ) == $prefix )
+		$key = substr( $key, strlen( $prefix ) );
+	return $key;
+}
+
 /* Get / display custom field value
 ***************************************************************************************/
 function slt_cf_field_value( $key, $type = 'post', $id = 0, $before = '', $after = '', $echo = false, $single = true ) {
-	$key = slt_cf_field_key( $key, $type );
-	$id = slt_cf_default_id( $type, $id );
-	if ( $type == 'attachment' )
-		$metadata_type = 'post';
-	else
-		$metadata_type = $type;
-	$value = get_metadata( $metadata_type, $id, $key, $single );
+	// Allow hooks to take over
+	$value = apply_filters( 'slt_cf_field_value', null, $key, $type, $id, $before, $after, $echo, $single );
+	if ( $value === null ) {
+		// Do normal check
+		$key = slt_cf_field_key( $key, $type );
+		$id = slt_cf_default_id( $type, $id );
+		if ( $type == 'attachment' )
+			$metadata_type = 'post';
+		else
+			$metadata_type = $type;
+		$value = get_metadata( $metadata_type, $id, $key, $single );
+	}
 	if ( $value && is_string( $value ) ) {
 		$value = $before . $value . $after;
 		if ( $echo ) {
@@ -123,6 +138,11 @@ function slt_cf_all_field_values( $type = 'post', $id = 0, $multiple_fields = ar
 /* Test to see if custom field has been set for an object
 ***************************************************************************************/
 function slt_cf_field_exists( $key, $type = 'post', $id = 0 ) {
+	// Allow hooks to take over
+	$check = apply_filters( 'slt_cf_field_exists', null, $key, $type, $id );
+	if ( $check !== null )
+		return $check;
+	// Do normal check
 	global $wpdb;
 	$field_exists = false;
 	$key = slt_cf_field_key( $key, $type );

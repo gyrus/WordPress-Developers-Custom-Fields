@@ -100,6 +100,10 @@ Note that the internal Google Maps and file selection functionality is designed 
 Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
 == Changelog ==
+= 0.8.1 =
+* Added slt_cf_strip_prefix()
+* Added more hooks to allow some standard functions to be overtaken
+
 = 0.8 =
 * NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
 * NOTE: The defaults for the `ui_css_url` and `css_url` settings have been moved inside the `slt_cf_init` function. If these values are being changed by the `slt_cf_setting` function, this must be hooked to `init` with a priority of 11 or above to ensure they aren't re-set to the defaults. These defaults have been moved inside `slt_cf_init` because they use `plugins_url`. Now they are exposed to any filters that other plugins might attach to the `plugins_url` filter
