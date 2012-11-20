@@ -4,7 +4,7 @@ Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
 Tested up to: 3.5-beta-3
-Stable tag: 0.8
+Stable tag: 0.8.1
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
 
@@ -103,6 +103,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 0.8.1 =
 * Added slt_cf_strip_prefix()
 * Added more hooks to allow some standard functions to be overtaken
+* Updated slt-cf-gmaps.min.js (this was omitted from 0.8 and resulted in the geocoder fixes not being active on live sites)
 
 = 0.8 =
 * NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
