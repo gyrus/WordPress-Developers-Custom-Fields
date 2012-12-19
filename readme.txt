@@ -19,18 +19,7 @@ Issue tracking on [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-
 
 Please note that this plugin isn't suitable for non-developers. It has been intentionally designed without a user interface for defining fields, and some aspects may be "unfriendly" to anyone not comfortable with hands-on WordPress development.
 
-Here are some similar plugins with interfaces for defining fields.
-
-* [Just Custom Fields](http://wordpress.org/extend/plugins/just-custom-fields/)
-* [Advanced Custom Fields](http://wordpress.org/extend/plugins/advanced-custom-fields/)
-
-Also, if you're a developer and this plugin doesn't quite fit your requirements, one of these might:
-
-* [Easy Custom Fields](http://wordpress.org/extend/plugins/easy-custom-fields/)
-* [Custom Metadata Manager](http://wordpress.org/extend/plugins/custom-metadata/)
-* [WPAlchemy Metabox PHP Class](http://www.farinspace.com/wpalchemy-metabox/)
-
-Please note that I haven't tested these, and can't vouch for their quality.
+If you think this plugin doesn't quite suit your needs, there is a [comparison chart of similar plugins](https://docs.google.com/spreadsheet/ccc?key=0AoY8IFUX301qdFhBaERLUEUwa3U0YjFYTnBmaU1mbmc#gid=3) to find something that will!
 
 == Installation ==
 1. Upload the `developers-custom-fields` directory into the `/wp-content/plugins/` directory
