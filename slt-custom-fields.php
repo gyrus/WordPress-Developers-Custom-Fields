@@ -137,6 +137,10 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 			slt_cf_init_fields( $request_type, $scope, $object->ID );
 			if ( count( $slt_custom_fields['boxes'] ) )
 				slt_cf_add_meta_boxes( $context );
+
+			// Post meta output for admins
+			if ( current_user_can( 'update_core' ) )
+				add_meta_box( 'slt_cf_postmeta_output', __( 'All post meta' ), 'slt_cf_postmeta_output', null, 'advanced', 'low' );
 		}
 	}
 

@@ -533,6 +533,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 
 }
 
+
 /* Field output functions
 ***************************************************************************/
 
@@ -613,3 +614,45 @@ function slt_cf_input_select( $field_name, $field_value, $prefix = '', $suffix =
 }
 
 
+/* Post meta output
+***************************************************************************/
+
+/**
+ * Display all post meta
+ *
+ * @since		0.8.2
+ * @return		void
+ */
+function slt_cf_postmeta_output() {
+
+	// Get meta
+	$pm = get_post_custom();
+	ksort( $pm );
+	//echo '<pre>'; print_r( $pm ); echo '</pre>'; return;
+
+	// Output
+	echo '<table border="0" cellspacing="0" cellpadding="5">';
+	echo '<tr><th scope="col" align="left">Key</th><th scope="col" align="left">Value</th></tr>';
+	foreach ( $pm as $key => $values ) {
+		echo '<tr>';
+		echo '<th scope="row" align="left" valign="top">' . $key . '</th>';
+		echo '<td align="left" valign="top">';
+		foreach ( $values as $value ) {
+			echo '<div>';
+			if ( ! empty( $value ) ) {
+				if ( is_serialized( $value ) ) {
+					echo '<pre>'; print_r( unserialize( $value ) ); echo '</pre>';
+				} else {
+					echo esc_html( maybe_unserialize( $value ) );
+				}
+			} else {
+				echo '<i style="color:#999">[null]</i>';
+			}
+			echo '</div>';
+		}
+		echo '</td>';
+		echo '</tr>';
+	}
+	echo '</table>';
+
+}

@@ -7,7 +7,7 @@
 
 /**
  * Outputs any general admin notices.
- * 
+ *
  * @since	0.7
  * @return	void
  */
@@ -34,7 +34,7 @@ function slt_cf_admin_notices() {
 
 /**
  * Processes a submission from the database cleanup tool form
- * 
+ *
  * @since	0.7
  * @return	void
  */
@@ -78,7 +78,7 @@ function slt_cf_cleanup_form_process() {
 	} else {
 		// Need confirmation
 		$msg = 'confirm';
-	}	
+	}
 	// Redirect with message
 	$redirect_url = admin_url( 'tools.php?page=slt_cf_data_tools' );
 	if ( $msg )
@@ -115,7 +115,7 @@ function slt_cf_delete_old_fields_query( $table, $field_names, $prefix ) {
 
 /**
  * Output the plugin's database tools screen
- * 
+ *
  * @since	0.7
  * @return	void
  */
@@ -124,18 +124,18 @@ function slt_cf_database_tools_screen() {
 	// Capability check
 	if ( ! current_user_can( 'update_core' ) )
 		wp_die( __( 'You do not have sufficient permissions to access this page.', 'slt-custom-fields' ) );
-  
+
 	// Initialize
 	global $slt_custom_fields;
 	$msg = array_key_exists( 'msg', $_GET ) ? $_GET['msg'] : "default";
 
 	?>
-	
+
 	<div class="wrap">
-	
+
 		<div id="icon-tools" class="icon32"><br /></div>
 		<h2><?php echo SLT_CF_TITLE . ' ' . __( 'database tools', 'slt-custom-fields' ); ?></h2>
-		
+
 		<?php
 		switch ( $msg ) {
 			case "cleanedup":
@@ -148,9 +148,9 @@ function slt_cf_database_tools_screen() {
 				echo '<div id="message" class="error"><p><strong>' . __( 'WARNING!', 'slt-custom-fields' ) . '</strong> ' . __( 'Please <em>back up your database</em> before using any of these tools!', 'slt-custom-fields' ) . '</p></div>' . "\n";
 				echo '<p><em>' . __( 'Note that these tools will only affect fields in the <code>postmeta</code> and <code>usermeta</code> tables that have been defined through the Developer\'s Custom Fields plugin, i.e. using the <code>slt_cf_register_box</code> function.', 'slt-custom-fields' ) . '</em></p>' . "\n";
 				break;
-		}			
+		}
 		?>
-		
+
 		<!-- Clean up meta tables data -->
 		<div class="tool-box">
 			<h3 class="title"><?php _e( 'Clean up meta tables data', 'slt-custom-fields' ) ?></h3>
@@ -170,9 +170,9 @@ function slt_cf_database_tools_screen() {
 				<p><input type="submit" name="cleanup-submit" id="cleanup-submit" class="button-primary" value="<?php _e( 'Clean up meta tables', 'slt-custom-fields' ); ?>" /></p>
 			</form>
 		</div>
-		
+
 	</div>
-	
+
 	<?php
 
 }
