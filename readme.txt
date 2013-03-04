@@ -88,6 +88,8 @@ Note that the internal Google Maps and file selection functionality is designed 
 
 Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues). If you're not sure if you've found a genuine issue or not, please start a thread on the [WP forum](http://wordpress.org/tags/developers-custom-fields).
 
+**NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
+
 == Changelog ==
 = 0.8.2 =
 * Added post meta output (inspired by Post Meta Inspector plugin)
