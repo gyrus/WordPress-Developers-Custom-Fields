@@ -47,7 +47,7 @@ global $slt_custom_fields, $wp_version;
 define( 'SLT_CF_TITLE', "Developer's Custom Fields" );
 define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', 'slt-custom-fields' ) );
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
-define( 'SLT_CF_VERSION', '0.8.2' );
+define( 'SLT_CF_VERSION', '0.8.3' );
 define( 'SLT_CF_WP_IS_GTE_3_3', version_compare( round( $wp_version, 1 ), '3.3' ) >= 0 );
 define( 'SLT_CF_WP_IS_GTE_3_5', version_compare( round( $wp_version, 1 ), '3.5' ) >= 0 );
 $slt_custom_fields = array();

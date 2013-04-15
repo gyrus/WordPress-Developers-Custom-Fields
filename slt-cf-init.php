@@ -433,31 +433,41 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			// Gather dynamic options data?
 			if ( $field['options_type'] != 'static' ) {
 
-				// Check for any placeholder values in the query
-				if ( array_search( '[OBJECT_ID]', $field['options_query'] ) !== false ) {
+				// IDs for placeholders
+				$placeholder_ids = array(
+					'object'	=> 0,
+					'parent'	=> 0
+				);
 
+				// Placeholders appropriate when editing posts and attachments
+				if ( in_array( $request_type, array( 'post', 'attachment' ) ) && isset( $post ) && is_object( $post ) ) {
 					// Object ID
-					$object_id = 0;
-					switch ( $field['options_type'] ) {
-						case 'posts': {
-							if ( isset( $post ) && is_object( $post ) && property_exists( $post, 'ID' ) )
-								$object_id = $post->ID;
-							break;
-						}
-						case 'users': {
-							$object_id = $user_id;
-							break;
-						}
+					if ( property_exists( $post, 'ID' ) )
+						$placeholder_ids['object'] = $post->ID;
+					// Parent ID - for hierarchical post types only
+					if ( is_post_type_hierarchical( get_post_type( $post ) ) && property_exists( $post, 'post_parent' ) )
+						$placeholder_ids['parent'] = $post->post_parent;
+				}
+
+				// Placeholders appropriate when editing users
+				if ( $request_type == 'user' )
+					$placeholder_ids['object'] = $user_id;
+
+				// Check for any placeholder values in the options query
+				// Need to check query manually in case value is inside an array
+				foreach ( $field['options_query'] as $oq_key => &$oq_value ) {
+					foreach ( $placeholder_ids as $ph_key => $ph_value ) {
+						$placeholder = '[' . strtoupper( $ph_key ) . '_ID]';
+						if ( $oq_value == $placeholder )
+							$oq_value = $ph_value;
+						else if ( is_array( $oq_value ) && in_array( $placeholder, $oq_value ) )
+							$oq_value = str_replace( $placeholder, $ph_value, $oq_value );
 					}
-					$field['options_query'] = str_replace(
-						array( '[OBJECT_ID]' ),
-						array( $object_id ),
-						$field['options_query']
-					);
+				}
 
-				} else if ( array_key_exists( 'tax_query', $field['options_query'] ) && $request_type == 'post' ) {
+				// Taxonomy term IDs
+				if ( in_array( $request_type, array( 'post', 'attachment' ) ) && array_key_exists( 'tax_query', $field['options_query'] ) ) {
 
-					// Taxonomy term IDs
 					foreach ( $field['options_query']['tax_query'] as &$tax_query ) {
 						if ( is_array( $tax_query ) && array_key_exists( 'terms', $tax_query ) && $tax_query['terms'] == '[TERM_IDS]' && array_key_exists( 'taxonomy', $tax_query ) && taxonomy_exists( $tax_query['taxonomy'] ) ) {
 							$related_terms = get_the_terms( $post->ID, $tax_query['taxonomy'] );
