@@ -138,7 +138,7 @@ function slt_cf_color_preview_update( n ) { jQuery( function($) {
 		// Default
 		val = f.val();
 	}
-	if ( typeof val != 'undefined' && /^[0-9a-e]{3,6}$/i.test( val ) ) {
+	if ( typeof val != 'undefined' && /^[0-9a-f]{3,6}$/i.test( val ) ) {
 		cp.css( 'background-color', '#' + val ).html( '&nbsp' );
 	} else {
 		cp.css( 'background-color', 'none' ).html( '?' );
