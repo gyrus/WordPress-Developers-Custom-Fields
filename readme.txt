@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: 0.8.2
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -94,6 +94,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 0.8.3 =
 * Added [PARENT_ID] option query placeholder
 * Revamped option query placeholder checking to allow for values inside array parameters
+* Added `color_preview` flag for previewing color values in certain field types
 
 = 0.8.2 =
 * Added post meta output (inspired by Post Meta Inspector plugin)
