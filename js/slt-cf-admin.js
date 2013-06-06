@@ -2,7 +2,9 @@
 *********************************************************************/
 
 jQuery( document ).ready( function($) {
-	var i, box;
+	var	clean07 = $( 'a#slt-cf-dismiss_alert-07-cleanup' ),
+		cp = $( '.slt-cf-color-preview' ),
+		i, box;
 
 	/* Move meta boxes above content editor
 	*****************************************************************/
@@ -13,12 +15,25 @@ jQuery( document ).ready( function($) {
 		}
 	}
 
+	/* Color preview
+	 *****************************************************************/
+	if ( cp.length ) {
+		cp.each( function() {
+			var $this = $( this );
+			var name = $this.attr( 'id' ).replace( 'slt-cf-color-preview_', '' );
+			slt_cf_color_preview_update( name );
+			$( '[name=' + name + ']' ).on( 'change', function() {
+				slt_cf_color_preview_update( $( this ).attr( 'name' ) );
+			});
+		});
+	}
+
 	/* Handling notices
 	*****************************************************************/
-	
+
 	// 0.7 cleanup
-	if ( $( 'a#slt-cf-dismiss_alert-07-cleanup' ).length ) {
-		$( 'a#slt-cf-dismiss_alert-07-cleanup' ).click( function() {
+	if ( clean07.length ) {
+		clean07.click( function() {
 			$.post(
 				slt_custom_fields.ajaxurl,
 				{
@@ -38,18 +53,18 @@ jQuery( document ).ready( function($) {
 			return false;
 		});
 	}
-	
+
 	/* Cloning
 	****************************************************************
 	if ( $( "p.slt-cf-clone-field a" ).length ) {
 		$( 'p.slt-cf-clone-field a' ).click( function() {
-		
+
 			// Initialize
 			var masterFieldDiv, fieldName, fieldNameParts, fieldClassPrefix, lastCloneFieldName, newField, newFieldNumber, newFieldName;
 			fieldClassPrefix = 'slt-cf-field_';
 			masterFieldDiv = $( this ).parents( '.slt-cf' );
 			fieldName = getValueFromClass( masterFieldDiv, fieldClassPrefix );
-			
+
 			// Store the field name for what is currently the last clone
 			lastCloneFieldName = getValueFromClass( $( '.' + fieldClassPrefix + fieldName ).last(), fieldClassPrefix );
 
@@ -64,10 +79,10 @@ jQuery( document ).ready( function($) {
 			fieldNameParts = lastCloneFieldName.split( '_' );
 			newFieldNumber = ( fieldNameParts.length > 1 ) ? ( fieldNameParts[1] + 1 ) : 2;
 			newFieldName = fieldNameParts[0] + '_' + newFieldNumber;
-			
+
 			// Remove / add classes
 			newField.removeClass( fieldClassPrefix + fieldName ).addClass( 'clone ' + fieldClassPrefix + newFieldName );
-			
+
 			// Adjust label and input ????
 			newField.children( 'label' ).attr( 'for', newFieldName ).append( ' #' + newFieldNumber );
 
@@ -92,8 +107,40 @@ jQuery( document ).ready( function($) {
 				value = classes[i].substr( prefix.length );
 				break;
 			}
-		}	
+		}
 		return value;
 	}*/
 
 });
+
+
+/**
+ * Update a color preview
+ *
+ * @since	0.8.3
+ * @param	object	n	The name of the field with the preview
+ * @return	void
+ */
+function slt_cf_color_preview_update( n ) { jQuery( function($) {
+	var val;
+	var f = $( '[name=' + n + ']' );
+	var cp = $( '#slt-cf-color-preview_' + n );
+	if ( f.is( 'select' ) ) {
+		// Select drop-down
+		val = $( 'option:selected', f ).val();
+		if ( ! val ) {
+			val = $( 'option:first', f ).val();
+		}
+	} else if ( f.length > 1 && $( f[0] ).is( 'input' ) && $( f[0] ).attr( 'type' ) == 'radio' ) {
+		// Radio
+		val = $( '[name=' + n + ']:checked' ).val();
+	} else {
+		// Default
+		val = f.val();
+	}
+	if ( typeof val != 'undefined' && /^[0-9a-f]{3,6}$/i.test( val ) ) {
+		cp.css( 'background-color', '#' + val ).html( '&nbsp' );
+	} else {
+		cp.css( 'background-color', 'none' ).html( '?' );
+	}
+}); }

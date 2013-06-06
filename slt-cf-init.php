@@ -273,6 +273,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'width'						=> 0,
 				'height'					=> 0,
 				'charcounter'				=> false,
+				'color_preview'				=> false,
 				'allowtags'					=> array(), /* Deprecated */
 				'allowed_html'				=> array(),
 				'autop'						=> false,
@@ -352,7 +353,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			// Check if parameters are the right types
 			if (
 				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format', 'timepicker_format' ), 'string', 'field', $field ) ||
-				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile', 'timepicker_ampm' ), 'boolean', 'field', $field ) ||
+				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile', 'timepicker_ampm', 'color_preview' ), 'boolean', 'field', $field ) ||
 				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities' ), 'array', 'field', $field ) ||
 				! slt_cf_params_type( array( 'width', 'height' ), 'integer', 'field', $field )
 			) {

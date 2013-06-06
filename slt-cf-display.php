@@ -189,6 +189,11 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 			}
 		}
 
+		// Color preview allowed in certain field types
+		if ( $field['color_preview'] && in_array( $field['type'], array( 'text', 'select', 'radio' ) ) && ! ( $field['type'] == 'select' && $field['multiple'] ) ) {
+			$after_input = '<div class="slt-cf-color-preview" id="slt-cf-color-preview_' . $field_name . '"></div>' . $after_input;
+		}
+
 		// Cloning
 		// [under development]
 		/*if ( $field['cloning'] ) {
