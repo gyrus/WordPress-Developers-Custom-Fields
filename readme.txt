@@ -11,7 +11,7 @@ Provides developers with powerful and flexible tools for managing post and user 
 == Description ==
 This plugin is aimed at plugin and theme developers who want a set of tools that allows them to easily and flexibly define custom fields for all post types, and for user profiles.
 
-Full documentation at [http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/).
+Full documentation at [http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/).
 
 Code on [GitHub](https://github.com/gyrus/WordPress-Developers-Custom-Fields).
 
@@ -24,7 +24,7 @@ If you think this plugin doesn't quite suit your needs, there is a [comparison c
 == Installation ==
 1. Upload the `developers-custom-fields` directory into the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Register your boxes and fields with `slt_cf_register_box` (full documentation at [sltaylor.co.uk](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/#functions-boxes-fields))
+1. Register your boxes and fields with `slt_cf_register_box` (full documentation at [sltaylor.co.uk](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#functions-boxes-fields))
 
 == Getting started ==
 
@@ -76,11 +76,11 @@ Then, when you want to output these values in a loop:
 
 	?>
 
-This is just the beginning! Check the [documentation](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/) for registering boxes and fields, especially the parameters for fields. The most immediately interesting parameters for fields to check out are: `type`, `scope`, `options_type`.
+This is just the beginning! Check the [documentation](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/) for registering boxes and fields, especially the parameters for fields. The most immediately interesting parameters for fields to check out are: `type`, `scope`, `options_type`.
 
-There are some [option query placeholders](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/#placeholders), for creating dynamic queries to populate select, radio and checkbox fields.
+There are some [option query placeholders](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#placeholders), for creating dynamic queries to populate select, radio and checkbox fields.
 
-There are also a few [hooks](http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/#hooks). If the plugin currently lacks something you need, odds are you'll be able to hack it using a hook!
+There are also a few [hooks](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#hooks). If the plugin currently lacks something you need, odds are you'll be able to hack it using a hook!
 
 If you create a plugin that is dependent on this plugin, use the `slt_cf_init` hook to intialize your plugin (see [this Trac comment](http://core.trac.wordpress.org/ticket/11308#comment:7)).
 
@@ -159,7 +159,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Included the admin gmap geoencoder field via JS, on the condition that jQuery autocomplete is present (until we switch to suggest)
 * Added `SLT_CF_USE_GMAPS` and `SLT_CF_USE_FILE_SELECT`
 * Minified JS and CSS (full versions loaded when SCRIPT_DEBUG is true)
-* Moved documentation to http://sltaylor.co.uk/wordpress/plugins/slt-custom-fields/docs/
+* Moved documentation to http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/
 * Issue tracking at https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues
 
 = 0.6.1 =
