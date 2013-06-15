@@ -24,7 +24,7 @@ If you think this plugin doesn't quite suit your needs, there is a [comparison c
 == Installation ==
 1. Upload the `developers-custom-fields` directory into the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
-1. Register your boxes and fields with `slt_cf_register_box` (full documentation at [sltaylor.co.uk](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#functions-boxes-fields))
+1. Register your boxes and fields with `slt_cf_register_box` (full documentation at [sltaylor.co.uk](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#functions-boxes-fields)
 
 == Getting started ==
 
