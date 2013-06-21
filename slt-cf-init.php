@@ -459,10 +459,11 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				foreach ( $field['options_query'] as $oq_key => &$oq_value ) {
 					foreach ( $placeholder_ids as $ph_key => $ph_value ) {
 						$placeholder = '[' . strtoupper( $ph_key ) . '_ID]';
-						if ( $oq_value == $placeholder )
+						if ( $oq_value === $placeholder ) {
 							$oq_value = $ph_value;
-						else if ( is_array( $oq_value ) && in_array( $placeholder, $oq_value ) )
+						} else if ( is_array( $oq_value ) && in_array( $placeholder, $oq_value ) ) {
 							$oq_value = str_replace( $placeholder, $ph_value, $oq_value );
+						}
 					}
 				}
 
