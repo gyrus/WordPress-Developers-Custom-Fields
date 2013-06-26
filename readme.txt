@@ -91,20 +91,23 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
+= 0.8.4 =
+*
+
 = 0.8.3.1 =
 * Fixed minor bug in new placeholder code that was causing issues with option queries
 
 = 0.8.3 =
-* Added [PARENT_ID] option query placeholder
+* Added `[PARENT_ID]` option query placeholder
 * Revamped option query placeholder checking to allow for values inside array parameters
 
 = 0.8.2 =
 * Added post meta output (inspired by Post Meta Inspector plugin)
 
 = 0.8.1 =
-* Added slt_cf_strip_prefix()
+* Added `slt_cf_strip_prefix()`
 * Added more hooks to allow some standard functions to be overtaken
-* Updated slt-cf-gmaps.min.js (this was omitted from 0.8 and resulted in the geocoder fixes not being active on live sites)
+* Updated `slt-cf-gmaps.min.js` (this was omitted from 0.8 and resulted in the geocoder fixes not being active on live sites)
 
 = 0.8 =
 * NOTE: The `datepicker_css_url` setting, to account for additional UI elements, is now `ui_css_url`
