@@ -92,7 +92,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 
 == Changelog ==
 = 0.8.4 =
-*
+* Added `abbreviate_option_labels` field parameter
 
 = 0.8.3.1 =
 * Fixed minor bug in new placeholder code that was causing issues with option queries
