@@ -290,7 +290,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 						}
 					}
 					if ( $field['sortable'] ) {
-						echo '<p><em>Drag-and-drop to sort the order of these items.</em></p>';
+						echo '<p><em>' . __( 'Drag-and-drop to sort the order of these items.', 'slt-custom-fields' ) . '</em></p>';
 						echo '<ul class="slt-cf-sortable">';
 						$cb_tag = 'li';
 					}
