@@ -94,6 +94,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 0.8.4 =
 * Added `abbreviate_option_labels` field parameter
 * Added `sortable` parameter for multiple checkboxes
+* Fixed error in handling default ID, depending on context (admin / front-end) in `slt_cf_default_id()`
 * Using LESS for CSS
 
 = 0.8.3.1 =
