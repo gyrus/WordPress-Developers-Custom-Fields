@@ -388,7 +388,7 @@ function slt_cf_order_posts( $a, $b ) {
 /* Manage default object IDs
 ***************************************************************************************/
 function slt_cf_default_id( $type = 'post', $id = 0 ) {
-	global $post;
+	global $post, $profileuser;
 	if ( ! $id ) {
 		switch ( $type ) {
 			case 'post':
@@ -399,19 +399,24 @@ function slt_cf_default_id( $type = 'post', $id = 0 ) {
 				break;
 			}
 			case 'user': {
-				// User ID
-				if ( is_author() ) {
-					// Author archive page
-					$user = null;
-					if ( get_query_var( 'author_name' ) )
-						$user = get_user_by( 'slug', get_query_var( 'author_name' ) );
-					else if ( get_query_var( 'author' ) )
-						$user = get_userdata( get_query_var( 'author' ) );
-					if ( is_object( $user ) && property_exists( $user, 'ID' ) )
-						$id = $user->ID;
+				if ( is_admin() ) {
+					// ID of user being edited in admin
+					$id = $profileuser->ID;
 				} else {
-					// Try to get author of current post
-					$id = $post->post_author;
+					// Front-end
+					if ( is_author() ) {
+						// Author archive page
+						$user = null;
+						if ( get_query_var( 'author_name' ) )
+							$user = get_user_by( 'slug', get_query_var( 'author_name' ) );
+						else if ( get_query_var( 'author' ) )
+							$user = get_userdata( get_query_var( 'author' ) );
+						if ( is_object( $user ) && property_exists( $user, 'ID' ) )
+							$id = $user->ID;
+					} else {
+						// Try to get author of current post
+						$id = $post->post_author;
+					}
 				}
 				break;
 			}
