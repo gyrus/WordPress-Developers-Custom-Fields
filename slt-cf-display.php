@@ -277,21 +277,22 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					// The $field['options'] keys are text, so need to apply ordering "manually"
 					$cb_tag = 'div';
 					$sortable_options = array();
-					if ( $field['sortable'] ) {
-						if ( $current_order = slt_cf_field_values_order( $field['name'], $request_type ) ) {
-							foreach ( explode( ',', $current_order ) as $key => $value ) {
-								if ( ( $target_key = array_search( $value, $field['options'] ) ) !== false ) {
-									$sortable_options[] = array( $target_key, $value );
-								}
+					if ( $field['sortable'] && $current_order = slt_cf_field_values_order( $field['name'], $request_type ) ) {
+						foreach ( explode( ',', $current_order ) as $key => $value ) {
+							if ( ( $target_key = array_search( $value, $field['options'] ) ) !== false ) {
+								$sortable_options[] = array( $target_key, $value );
 							}
 						}
-						echo '<ul class="slt-cf-sortable">';
-						$cb_tag = 'li';
 					} else {
 						// Just copy default order through into sortable-friendly format
 						foreach ( $field['options'] as $key => $value ) {
 							$sortable_options[] = array( $key, $value );
 						}
+					}
+					if ( $field['sortable'] ) {
+						echo '<p><em>Drag-and-drop to sort the order of these items.</em></p>';
+						echo '<ul class="slt-cf-sortable">';
+						$cb_tag = 'li';
 					}
 					foreach ( $sortable_options as $option ) {
 						$key = $option[0];
