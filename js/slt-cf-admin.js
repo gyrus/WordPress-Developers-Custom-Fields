@@ -4,6 +4,7 @@
 jQuery( document ).ready( function($) {
 	var	clean07 = $( 'a#slt-cf-dismiss_alert-07-cleanup' ),
 		cp = $( '.slt-cf-color-preview' ),
+		s = $( '.slt-cf-sortable' ),
 		i, box;
 
 	/* Move meta boxes above content editor
@@ -25,6 +26,22 @@ jQuery( document ).ready( function($) {
 			$( '[name=' + name + ']' ).on( 'change', function() {
 				slt_cf_color_preview_update( $( this ).attr( 'name' ) );
 			});
+		});
+	}
+
+	/* Sortable
+	 *****************************************************************/
+	if ( s.length ) {
+		// Store initial order
+		s.each( function() {
+			slt_cf_store_sortable_order( $( this ) );
+		});
+		// Initialize sortability
+		s.sortable({
+			stop: function( e, ui ) {
+				// When sorting stops, store order
+				slt_cf_store_sortable_order( ui.item.parents( '.slt-cf-sortable' ) );
+			}
 		});
 	}
 
@@ -112,6 +129,23 @@ jQuery( document ).ready( function($) {
 	}*/
 
 });
+
+
+/**
+ * Store the order of sortable checkboxes
+ *
+ * @since	0.8.4
+ * @param	object	el	The parent sortable element
+ * @return	void
+ */
+function slt_cf_store_sortable_order( el ) {
+	var o = [];
+	el.children( '.slt-cf-multifield' ).each( function() {
+		var n = jQuery( this ).find( 'input' ).attr( 'name' ).split( '_' );
+		o.push( n.pop() );
+	});
+	el.siblings( 'input.slt-cf-sortable-order' ).val( o.join( ',' ) );
+}
 
 
 /**

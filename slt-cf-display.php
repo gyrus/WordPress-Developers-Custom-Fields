@@ -154,6 +154,9 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				$multi_field_classes[] = 'slt-cf-fixed-width';
 				$multi_field_styles[] = 'width:' . $field['width'] . 'em';
 			}
+			if ( $field['sortable'] ) {
+				$multi_field_classes[] = 'ui-state-default';
+			}
 		} else {
 			if ( $field['width'] && $field['type'] != 'wysiwyg' )
 				$input_styles[] = 'width:' . $field['width'] . 'em';
@@ -270,8 +273,33 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					echo '<p><em>' . $field['no_options'] . '</em></p>';
 					echo '<input type="hidden" name="' . $field_name . '" value="" />';
 				} else {
-					foreach ( $field['options'] as $key => $value ) {
-						echo '<div class="' . implode( ' ', $multi_field_classes ) . '" style="' . implode( ';', $multi_field_styles ) . '">';
+					// Special management of options here for sortable
+					// The $field['options'] keys are text, so need to apply ordering "manually"
+					$cb_tag = 'div';
+					$sortable_options = array();
+					if ( $field['sortable'] ) {
+						if ( $current_order = slt_cf_field_values_order( $field['name'], $request_type ) ) {
+							foreach ( explode( ',', $current_order ) as $key => $value ) {
+								if ( ( $target_key = array_search( $value, $field['options'] ) ) !== false ) {
+									$sortable_options[] = array( $target_key, $value );
+								}
+							}
+						}
+						echo '<ul class="slt-cf-sortable">';
+						$cb_tag = 'li';
+					} else {
+						// Just copy default order through into sortable-friendly format
+						foreach ( $field['options'] as $key => $value ) {
+							$sortable_options[] = array( $key, $value );
+						}
+					}
+					foreach ( $sortable_options as $option ) {
+						$key = $option[0];
+						$value = $option[1];
+						echo '<' . $cb_tag . ' class="' . implode( ' ', $multi_field_classes ) . '" style="' . implode( ';', $multi_field_styles ) . '">';
+						if ( $field['sortable'] ) {
+							echo '<span class="ui-icon ui-icon-arrowthick-2-n-s"></span>';
+						}
 						// Input
 						echo '<input type="checkbox" name="' . $field_name . '_' . $value . '" id="' . $field_name . '_' . $value . '" value="yes"';
 						if ( is_array( $field_value ) && in_array( $value, $field_value )  )
@@ -280,7 +308,12 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 						// Label
 						echo ' <label for="' . $field_name .'_' . $value . '">' . $key . '</label>';
 
-						echo '</div>';
+						echo '</' . $cb_tag . '>';
+					}
+					if ( $field['sortable'] ) {
+						echo '</ul>';
+						// This hidden field stores the order automatically
+						echo '<input class="slt-cf-sortable-order" type="hidden" name="' . $field_name . '_order" id="' . $field_name . '_order" value="" />';
 					}
 				}
 				if ( $request_type == 'post' )

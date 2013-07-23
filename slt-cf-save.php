@@ -55,6 +55,11 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 							$value[] = $opt_value;
 					}
 
+					// Store order for sortable
+					if ( $field['sortable'] && isset( $_POST[ $field_name . '_order' ] ) ) {
+						update_metadata( $metadata_type, $object_id, $field_name . '_order', $_POST[ $field_name . '_order' ] );
+					}
+
 				} else if ( $field['type'] == 'checkbox' ) {
 
 					/* Single checkbox - set value to 1 or 0

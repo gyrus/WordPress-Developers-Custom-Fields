@@ -73,6 +73,7 @@ function slt_cf_strip_prefix( $key ) {
 /* Get / display custom field value
 ***************************************************************************************/
 function slt_cf_field_value( $key, $type = 'post', $id = 0, $before = '', $after = '', $echo = false, $single = true ) {
+	$key_no_prefix = $key;
 	// Allow hooks to take over
 	$value = apply_filters( 'slt_cf_field_value', null, $key, $type, $id, $before, $after, $echo, $single );
 	if ( $value === null ) {
@@ -84,6 +85,10 @@ function slt_cf_field_value( $key, $type = 'post', $id = 0, $before = '', $after
 		else
 			$metadata_type = $type;
 		$value = get_metadata( $metadata_type, $id, $key, $single );
+		// Sortable?
+		if ( ! $single ) {
+			$value = slt_cf_maybe_sort( $value, $key_no_prefix, $metadata_type, $id );
+		}
 	}
 	if ( $value && is_string( $value ) ) {
 		$value = $before . $value . $after;
@@ -105,6 +110,7 @@ function slt_cf_all_field_values( $type = 'post', $id = 0, $multiple_fields = ar
 	$values = array();
 	$all_values = array();
 	$id = slt_cf_default_id( $type, $id );
+
 	switch ( $type ) {
 		case 'post':
 		case 'attachment': {
@@ -121,6 +127,7 @@ function slt_cf_all_field_values( $type = 'post', $id = 0, $multiple_fields = ar
 			break;
 		}
 	}
+
 	if ( is_array( $values ) ) {
 		foreach ( $values as $key => $value ) {
 			if ( strlen( $key ) > strlen( $prefix ) && substr( $key, 0, strlen( $prefix ) ) == $prefix ) {
@@ -132,7 +139,47 @@ function slt_cf_all_field_values( $type = 'post', $id = 0, $multiple_fields = ar
 			}
 		}
 	}
-	return array_map( 'maybe_unserialize', $all_values );
+
+	// Unserialize
+	$all_values = array_map( 'maybe_unserialize', $all_values );
+
+	// Sortable fields?
+	if ( ! empty( $multiple_fields ) ) {
+		foreach ( $multiple_fields as $multiple_field ) {
+			$all_values[ $multiple_field ] = slt_cf_maybe_sort( $all_values[ $multiple_field ], $multiple_field, $type, $id );
+		}
+	}
+
+	return $all_values;
+}
+
+/* Get the data on the ordering of a sortable field
+***************************************************************************************/
+function slt_cf_field_values_order( $key, $type = 'post', $id = 0 ) {
+	$key = slt_cf_field_key( $key, $type ) . '_order';
+	$id = slt_cf_default_id( $type, $id );
+	if ( $type == 'attachment' )
+		$metadata_type = 'post';
+	else
+		$metadata_type = $type;
+	return get_metadata( $metadata_type, $id, $key, true );
+}
+
+/* Try to sort passed values by stored ordering
+***************************************************************************************/
+function slt_cf_maybe_sort( $values, $key, $type, $id ) {
+	if ( $order = slt_cf_field_values_order( $key, $type, $id ) ) {
+		$new_values = array();
+		foreach ( explode( ',', $order ) as $key => $val ) {
+			if ( in_array( $val, $values ) ) {
+				$new_values[ $key ] = $val;
+			}
+		}
+		if ( $new_values ) {
+			$values = $new_values;
+		}
+	}
+	return $values;
 }
 
 /* Test to see if custom field has been set for an object

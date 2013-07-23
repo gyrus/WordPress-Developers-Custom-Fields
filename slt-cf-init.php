@@ -107,6 +107,8 @@ function slt_cf_admin_init() {
 			add_filter( 'flash_uploader', '__return_false', 5 );
 		}
 	}
+	// Sortable
+	wp_enqueue_script( 'jquery-ui-sortable' );
 
 	// Deal with any form submissions for admin screen
 	if ( array_key_exists( 'slt-cf-form', $_POST ) && check_admin_referer( 'slt-cf-' . $_POST['slt-cf-form'], '_slt_cf_nonce' ) )
@@ -269,6 +271,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'exclude_current'			=> true,
 				'single'					=> true,
 				'required'					=> false,
+				'sortable'					=> false,
 				'empty_option_text'			=> '[' . __( "None", "slt-custom-fields" ) . ']',
 				'abbreviate_option_labels'	=> true,
 				'width'						=> 0,
