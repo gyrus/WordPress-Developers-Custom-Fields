@@ -357,7 +357,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 					$attached_images_options_defaults = array(
 						'post_mime_type'			=> 'image',
 						'image_display_size'		=> 'thumbnail',
-						'unattach_checkboxes'		=> false,
+						'unattach_checkboxes'		=> true,
 					);
 					$field['attachments_list_options'] = array_merge( $attached_images_options_defaults, $field['attachments_list_options'] );
 					break;
