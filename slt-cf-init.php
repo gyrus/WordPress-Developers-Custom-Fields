@@ -53,7 +53,7 @@ function slt_cf_init() {
 
 // Admin initialization
 function slt_cf_admin_init() {
-	global $slt_cf_admin_notices, $slt_custom_fields, $pagenow, $wp_version;
+	global $slt_cf_admin_notices, $slt_custom_fields, $pagenow;
 	$requested_file = basename( $_SERVER['SCRIPT_FILENAME'] );
 
 	// Decide now which notices to output
@@ -241,9 +241,9 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> File upload fields no longer needs the SLT File Select plugin - you can remove it if you want! If you use that plugin\'s functionality elsewhere, you can now just call the functions provided by this Custom Fields plugin.', E_USER_NOTICE );
 			}
 
-			// File field types not allowed for file attachments or user profiles
-			if ( $field['type'] == 'file' && in_array( $request_type, array( 'attachment', 'user' ) ) ) {
-				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> The field <b>' . $field['name'] . '</b> is a <code>file</code> type field, which is not allowed for attachments or user profiles.', E_USER_WARNING );
+			// File + Attachments List field types not allowed for file attachments or user profiles
+			if ( in_array( $field['type'], array( 'file', 'attachments_list' ) ) && in_array( $request_type, array( 'attachment', 'user' ) ) ) {
+				trigger_error( '<b>' . SLT_CF_TITLE . ':</b> The field <b>' . $field['name'] . '</b> is a <code>' . $field['type'] . '</code> type field, which is not allowed for attachments or user profiles.', E_USER_WARNING );
 				$unset_fields[] = $field_key;
 				continue;
 			}
@@ -288,7 +288,8 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'timepicker_ampm'			=> $slt_custom_fields['timepicker_default_ampm'],
 				'location_marker'			=> true,
 				'gmap_type'					=> 'roadmap',
-				'edit_on_profile'			=> false
+				'edit_on_profile'			=> false,
+				'attachments_list_options'	=> array(),
 			);
 			// Defaults dependent on request type
 			switch ( $request_type ) {
@@ -352,13 +353,22 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						$field['wysiwyg_settings']['media_buttons'] = false;
 					break;
 				}
+				case 'attachments_list': {
+					$attached_images_options_defaults = array(
+						'post_mime_type'			=> 'image',
+						'image_display_size'		=> 'thumbnail',
+						'unattach_checkboxes'		=> false,
+					);
+					$field['attachments_list_options'] = array_merge( $attached_images_options_defaults, $field['attachments_list_options'] );
+					break;
+				}
 			}
 
 			// Check if parameters are the right types
 			if (
 				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format', 'timepicker_format' ), 'string', 'field', $field ) ||
 				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile', 'timepicker_ampm', 'color_preview' ), 'boolean', 'field', $field ) ||
-				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities' ), 'array', 'field', $field ) ||
+				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities', 'attachments_list_options' ), 'array', 'field', $field ) ||
 				! slt_cf_params_type( array( 'width', 'height' ), 'integer', 'field', $field )
 			) {
 				$unset_fields[] = $field_key;
@@ -587,6 +597,20 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 					}
 
 				}
+			}
+
+			// Gather attachments to list?
+			if ( $field['type'] == 'attachments_list' && is_admin() && $request_type == 'post' && isset( $post ) && is_object( $post ) ) {
+
+				// get_children() arguments
+				$get_children_args = array(
+					'post_parent'		=> $post->ID,
+					'post_mime_type'	=> $field['attachments_list_options']['post_mime_type']
+				);
+
+				// Get attachments
+				$field['attachments_list'] = get_children( $get_children_args );
+
 			}
 
 		} // Fields foreach

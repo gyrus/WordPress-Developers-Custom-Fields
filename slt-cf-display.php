@@ -260,6 +260,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 			case "checkboxes": {
 				/* Multiple checkboxes
 				*****************************************************************/
+				echo $before_input;
 				if ( $request_type == 'post' ) {
 					echo '<fieldset>';
 					echo '<legend class="' . implode( ' ', $legend_classes ) . '">' . $field['label'] . '</legend>';
@@ -267,7 +268,6 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					echo $before_label . $field['label'] . $after_label;
 				}
 				// Loop through options
-				echo $before_input;
 				// No options?
 				if ( empty( $field['options'] ) ) {
 					echo '<p><em>' . $field['no_options'] . '</em></p>';
@@ -545,6 +545,84 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				$input_classes[] = 'regular-text';
 				echo $before_input;
 				slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes );
+				echo $field_description;
+				echo $after_input;
+				break;
+			}
+
+			case 'attachments_list': {
+				/* Attachments list field
+				*****************************************************************/
+				global $_wp_additional_image_sizes;
+				echo $before_input;
+				echo '<fieldset>';
+				echo '<legend class="' . implode( ' ', $legend_classes ) . '">' . $field['label'] . '</legend>';
+				// List
+				echo '<ul class="slt-cf-attachments-list slt-cf-cf">';
+				foreach ( $field['attachments_list'] as $attachment ) {
+					$mime_type = explode( '/', $attachment->post_mime_type );
+					$mime_class = ( $mime_type[0] == 'image' ) ? 'image' : 'file';
+					echo '<li class="slt-cf-' . $mime_class . '">';
+					if ( $field['attachments_list_options']['unattach_checkboxes'] ) {
+						echo '<label for="' . $field_name . '_' . $attachment->ID . '">';
+					}
+					if ( $mime_class == 'image' ) {
+						// An image
+						$image_infos = wp_get_attachment_image_src( $attachment->ID, $field['attachments_list_options']['image_display_size'] );
+						echo '<img class="slt-cf-attachment" src="' . $image_infos[0] . '" alt="">';
+					} else {
+						// A file
+						if ( in_array( $field['attachments_list_options']['image_display_size'], $_wp_additional_image_sizes ) ) {
+							// An intermediate size
+							$attachment_width = $_wp_additional_image_sizes[ $field['attachments_list_options']['image_display_size'] ]['width'];
+							$attachment_height = $_wp_additional_image_sizes[ $field['attachments_list_options']['image_display_size'] ]['height'];
+						} else {
+							// A standard size
+							$attachment_width = get_option( $field['attachments_list_options']['image_display_size'] . '_size_w' );
+							$attachment_height = get_option( $field['attachments_list_options']['image_display_size'] . '_size_h' );
+						}
+						// Decide on icon
+						$icon_class = "unknown";
+						switch ( $mime_type[0] ) {
+							case 'text': {
+								$icon_class = "txt";
+								break;
+							}
+							case 'application': {
+								switch ( $mime_type[1] ) {
+									case 'pdf': {
+										$icon_class = "pdf";
+										break;
+									}
+									case 'msword':
+									case 'vnd.openxmlformats-officedocument.wordprocessingml.document':
+									case 'vnd.oasis.opendocument.text': {
+										$icon_class = "doc";
+										break;
+									}
+								}
+								break;
+							}
+						}
+						// Output
+						echo '<div class="slt-cf-attachment file" style="background: #fff url(' . plugins_url( "img/icon-" . $icon_class . ".png", __FILE__ ) . ') no-repeat center 15px;';
+						if ( $attachment_width ) {
+							echo 'width:' . $attachment_width . 'px;';
+						}
+						if ( $attachment_height ) {
+							echo 'height:' . $attachment_height . 'px;';
+						}
+						echo '">';
+						echo '<p>' . apply_filters( 'the_title', $attachment->post_title ) . '</p>';
+						echo '</div>';
+					}
+					if ( $field['attachments_list_options']['unattach_checkboxes'] ) {
+						echo '<input type="checkbox" name="' . $field_name . '_' . $attachment->ID . '" id="' . $field_name . '_' . $attachment->ID . '" value="yes" /> Check to unattach</label>';
+					}
+					echo '</li>';
+				}
+				echo '</ul>';
+				echo '</fieldset>';
 				echo $field_description;
 				echo $after_input;
 				break;

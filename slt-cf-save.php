@@ -14,7 +14,7 @@
  * @return	mixed
  */
 function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
-	global $slt_custom_fields;
+	global $slt_custom_fields, $wpdb;
 
 	// Metadata type
 	if ( $request_type == 'attachment' )
@@ -45,7 +45,36 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 				$value = null;
 				$update = true;
 
-				if ( $field['type'] == 'checkboxes' ) {
+				if ( $field['type'] == 'attachments_list' ) {
+
+					/* Attachments list - no actual custom field, just unattach if necessary
+					*************************************************************/
+					if ( $field['attachments_list_options']['unattach_checkboxes'] ) {
+
+						// Gather items to unattach
+						$unattach_items = array();
+						foreach ( $_POST as $post_field => $post_value ) {
+							$post_field_name = explode( '_', $post_field );
+							$item_id = array_pop( $post_field_name );
+							if ( implode( '_', $post_field_name ) == $field_name ) {
+								$unattach_items[] = $item_id;
+							}
+						}
+
+						// Unattach any passed
+						if ( $unattach_items ) {
+							$wpdb->query( $wpdb->prepare("
+								UPDATE	$wpdb->posts
+								SET		post_parent		= 0
+								WHERE	ID				IN ( " . implode( ',', $unattach_items ) . " )
+							"));
+						}
+
+					}
+
+					continue;
+
+				} else if ( $field['type'] == 'checkboxes' ) {
 
 					/* Multiple checkboxes - gather values into array
 					*************************************************************/
