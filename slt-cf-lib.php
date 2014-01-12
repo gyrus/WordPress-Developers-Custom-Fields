@@ -1114,3 +1114,15 @@ function slt_cf_options_preset( $preset ) {
 
 	return $options;
 }
+
+
+/* Sort queries by post type
+Used when multiple post types are being queried and they need to be grouped in the output
+To be hooked to pre_get_posts
+ ***************************************************************************************/
+
+function slt_cf_sort_queries_by_post_type( $query ) {
+	if ( strpos( $query->query_vars['orderby'], 'post_type' ) === false ) {
+		$query->set( 'orderby', 'post_type ' . $query->query_vars['orderby'] );
+	}
+}

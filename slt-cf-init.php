@@ -267,6 +267,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'options'					=> array(),
 				'options_query'				=> array(),
 				'group_options'				=> false,
+				'group_by_post_type'		=> false,
 				'no_options'				=> SLT_CF_NO_OPTIONS,
 				'exclude_current'			=> true,
 				'single'					=> true,
@@ -367,7 +368,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 			// Check if parameters are the right types
 			if (
 				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format', 'timepicker_format' ), 'string', 'field', $field ) ||
-				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'autop', 'edit_on_profile', 'timepicker_ampm', 'color_preview' ), 'boolean', 'field', $field ) ||
+				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'group_by_post_type', 'autop', 'edit_on_profile', 'timepicker_ampm', 'color_preview' ), 'boolean', 'field', $field ) ||
 				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities', 'attachments_list_options' ), 'array', 'field', $field ) ||
 				! slt_cf_params_type( array( 'width', 'height' ), 'integer', 'field', $field )
 			) {
@@ -515,7 +516,17 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 							if ( is_object( $post ) && property_exists( $post, 'ID' ) )
 								$field['options_query']['post__not_in'][] = $post->ID;
 						}
+						// Add sorting by post type if multiple post types, in order to group in output
+						$multiple_post_types = ( isset( $field['options_query'] ) && is_array( $field['options_query'] ) && isset( $field['options_query']['post_type'] ) && is_array( $field['options_query']['post_type'] ) && count( $field['options_query']['post_type'] ) > 1 );
+						if ( $multiple_post_types ) {
+							add_action( 'pre_get_posts', 'slt_cf_sort_queries_by_post_type' );
+						}
+						// Do query
 						$posts_query = new WP_Query( $field['options_query'] );
+						// Remove sorting by post type
+						if ( $multiple_post_types ) {
+							remove_action( 'pre_get_posts', 'slt_cf_sort_queries_by_post_type' );
+						}
 						$posts = $posts_query->posts;
 						$field['options'] = array();
 						/** @todo Heirarchical post selection
@@ -523,19 +534,29 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 
 						}
 						*/
-						$current_category = array();
+						$current_grouping = null;
 						foreach ( $posts as $post_data ) {
-							if ( $field[ 'group_options' ] ) {
+							if ( $multiple_post_types && $field[ 'group_by_post_type' ] ) {
+								// This takes precedence over group_options
+								if ( is_null( $current_grouping ) || $post_data->post_type != $current_grouping ) {
+									// New post type, initiate an option group
+									$post_type_object = get_post_type_object( $post_data->post_type );
+									// Adding prefix is necessary to avoid clashes with pages named after post types
+									$field['options'][ __( 'Post type:' ) . ' ' . $post_type_object->label ] = '[optgroup]';
+									$current_grouping = $post_data->post_type;
+								}
+							} else if ( $field[ 'group_options' ] ) {
 								$this_category = get_the_category( $post_data->ID );
-								if ( empty( $current_category ) || $this_category[0]->cat_ID != $current_category[0]->cat_ID ) {
+								if ( is_null( $current_grouping ) || $this_category[0]->cat_ID != $current_grouping[0]->cat_ID ) {
 									// New category, initiate an option group
 									$field['options'][ $this_category[0]->cat_name ] = '[optgroup]';
-									$current_category = $this_category;
+									$current_grouping = $this_category;
 								}
 							}
 							$option_text = $field['abbreviate_option_labels'] ? slt_cf_abbreviate( $post_data->post_title ) : $post_data->post_title;
 							$field['options'][ $option_text ] = $post_data->ID;
 						}
+						//echo '<pre>'; print_r( $field['options'] ); echo '</pre>'; exit;
 						break;
 					}
 
