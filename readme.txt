@@ -94,6 +94,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 0.8.5 =
 * Added `group_post_types` parameter, to group multiple post type queries by post type
 * Added `attachments_list` field type
+* Added `slt_cf_attachments_list_query` filter
 
 = 0.8.4 =
 * Added `abbreviate_option_labels` field parameter

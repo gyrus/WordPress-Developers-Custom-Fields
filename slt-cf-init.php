@@ -625,9 +625,11 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 
 				// get_children() arguments
 				$get_children_args = array(
+					'post_type'			=> 'attachment',
 					'post_parent'		=> $post->ID,
 					'post_mime_type'	=> $field['attachments_list_options']['post_mime_type']
 				);
+				$get_children_args = apply_filters( 'slt_cf_attachments_list_query', $get_children_args, $object_id, $post, $field );
 
 				// Get attachments
 				$field['attachments_list'] = get_children( $get_children_args );
