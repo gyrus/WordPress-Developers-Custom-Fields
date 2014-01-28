@@ -122,7 +122,6 @@ function slt_fs_media_overlay() {
 
 
 // Parse URL variables
-// See: http://papermashup.com/read-url-get-variables-withjavascript/
 function slt_fs_get_url_vars( s ) {
 	var vars, parts;
 	vars = {};
