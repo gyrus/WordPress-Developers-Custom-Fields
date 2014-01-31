@@ -829,7 +829,15 @@ function slt_cf_file_select_link( $id ) {
 	$attachment_url = wp_get_attachment_url( $id );
 	$filetype_check = wp_check_filetype( $attachment_url );
 	$filetype_parts = explode( '/', $filetype_check['type'] );
-	return '<a href="' . wp_get_attachment_url( $id ) . '" style="display: block; min-height:32px; padding: 10px 0 0 38px; background: url(' . plugins_url( "img/icon-" . $filetype_parts[1] . ".png", __FILE__ ) . ') no-repeat; font-size: 13px; font-weight: bold;">' . basename( $attachment_url ) . '</a>';
+	$icon_files = glob( plugin_dir_path( __FILE__ ) . 'img/icon-*.png' );
+	$filetype = 'unknown';
+	foreach ( $icon_files as $icon_file ) {
+		if ( basename( $icon_file ) == 'icon-' . $filetype_parts[1] . '.png' ) {
+			$filetype = $filetype_parts[1];
+			break;
+		}
+	}
+	return '<a href="' . wp_get_attachment_url( $id ) . '" style="display: block; min-height:32px; padding: 10px 0 0 38px; background: url(' . plugins_url( "img/icon-" . $filetype . ".png", __FILE__ ) . ') no-repeat; font-size: 13px; font-weight: bold;">' . basename( $attachment_url ) . '</a>';
 }
 
 // AJAX wrapper to get image HTML
