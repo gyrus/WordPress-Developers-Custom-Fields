@@ -260,12 +260,13 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 			case "checkboxes": {
 				/* Multiple checkboxes
 				*****************************************************************/
-				echo $before_input;
 				if ( $request_type == 'post' ) {
+					echo $before_input;
 					echo '<fieldset>';
 					echo '<legend class="' . implode( ' ', $legend_classes ) . '">' . $field['label'] . '</legend>';
 				} else {
 					echo $before_label . $field['label'] . $after_label;
+					echo $before_input;
 				}
 				// Loop through options
 				// No options?
