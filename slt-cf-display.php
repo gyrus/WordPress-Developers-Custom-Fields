@@ -375,6 +375,10 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				echo $before_input;
 				// Make sure textarea isn't output for WYSIWYG for 3.3 and above, wp_editor handles that
 				if ( $field['type'] != 'wysiwyg' || ! SLT_CF_WP_IS_GTE_3_3 ) {
+					if ( $request_type == 'user' && ! is_object( $object ) ) {
+						// Proper styling for registration form
+						$input_classes[] = 'input';
+					}
 					echo '<textarea name="' . $field_name . '" id="' . $field_name . '" columns="50" rows="5" style="' . implode( ';', $input_styles ) . '" class="' . implode( ' ', $input_classes ) . '"';
 					// Character counter JS
 					if ( $field['type'] != "wysiwyg" && isset( $field['charcounter'] ) && $field['charcounter'] ) echo ' onkeyup="document.getElementById(\'' . $field_name . '-charcounter\').value=this.value.length;"';
