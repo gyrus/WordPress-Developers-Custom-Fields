@@ -129,21 +129,31 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 	foreach ( $slt_custom_fields['boxes'][ $box_key ]['fields'] as $field ) {
 		$field_name = slt_cf_prefix( $slt_custom_fields['boxes'][ $box_key ]['type'] ) . $field['name'];
 
-		if (	( $request_type == 'post' && $object->post_status == 'auto-draft' ) ||
+		if ( isset( $_POST[ $field_name ] ) ) {
+
+			// Pass through from submitted form (with errors)
+			$field_value = $_POST[ $field_name ];
+
+		} else if (	( $request_type == 'post' && $object->post_status == 'auto-draft' ) ||
 				( $request_type == 'user' && ! is_object( $object ) ) ||
 				( is_object( $object ) && ! slt_cf_field_exists( $field['name'], $request_type, $object->ID ) )
 		) {
+
 			// Field doesn't exist yet, use a default if set
 			$object_id = is_object( $object ) ? $object->ID : null;
 			$field_value = apply_filters( 'slt_cf_default_value', $field['default'], $request_type, $object_id, $object, $field );
+
 		} else {
+
 			// Get field value
 			$field_value = slt_cf_field_value( $field['name'], $request_type, $object->ID, '', '', false, $field['single'] );
+
 		}
 
 		// Reverse autop?
-		if ( $field['autop'] )
+		if ( $field['autop'] ) {
 			$field_value = slt_cf_reverse_wpautop( $field_value );
+		}
 
 		// Set defaults for styles and classes
 		$field_classes = array( 'slt-cf', 'slt-cf-' . $field['type'], 'slt-cf-field_' . $field['name'] );
