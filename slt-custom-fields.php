@@ -9,7 +9,7 @@ Plugin Name: Developer's Custom Fields
 Plugin URI: http://wordpress.org/extend/plugins/developers-custom-fields/
 Description: Provides theme developers with tools for managing custom fields.
 Author: Steve Taylor
-Version: 0.8.5
+Version: 0.9
 Author URI: http://sltaylor.co.uk
 License: GPLv2
 */
@@ -47,7 +47,7 @@ global $slt_custom_fields, $wp_version;
 define( 'SLT_CF_TITLE', "Developer's Custom Fields" );
 define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', 'slt-custom-fields' ) );
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
-define( 'SLT_CF_VERSION', '0.8.5' );
+define( 'SLT_CF_VERSION', '0.9' );
 define( 'SLT_CF_WP_IS_GTE_3_3', version_compare( round( $wp_version, 1 ), '3.3' ) >= 0 );
 define( 'SLT_CF_WP_IS_GTE_3_5', version_compare( round( $wp_version, 1 ), '3.5' ) >= 0 );
 $slt_custom_fields = array();
@@ -117,6 +117,7 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	add_action( 'do_meta_boxes', 'slt_cf_remove_default_meta_box', 1, 3 );
 	add_action( 'show_user_profile', 'slt_cf_display_user', 12, 1 );
 	add_action( 'edit_user_profile', 'slt_cf_display_user', 12, 1 );
+	add_action( 'register_form', 'slt_cf_display_user', 12 );
 
 	// Media attachment handling for pre-3.5
 	if ( ! SLT_CF_WP_IS_GTE_3_5 ) {
@@ -148,19 +149,27 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	function slt_cf_display_attachment_pre35( $form_fields, $post ) {
 		global $slt_custom_fields;
 		slt_cf_init_fields( 'attachment', $post->post_mime_type, $post->ID );
-		if ( count( $slt_custom_fields['boxes'] ) )
+		if ( count( $slt_custom_fields['boxes'] ) ) {
 			$form_fields = slt_cf_add_attachment_fields( $form_fields, $post );
+		}
 		return $form_fields;
 	}
 
-	// Display for a user screen
-	function slt_cf_display_user( $user ) {
+	// Display for a user screen / registration form
+	function slt_cf_display_user( $user = null ) {
 		global $slt_custom_fields;
-		$user_roles = $user->roles;
-		$user_role = array_shift( $user_roles );
-		slt_cf_init_fields( 'user', $user_role, $user->ID );
-		if ( count( $slt_custom_fields['boxes'] ) )
+		$user_role = 'registration';
+		$user_id = null;
+		if ( ! empty( $user ) ) {
+			// Editing a profile, not registering a new user
+			$user_roles = $user->roles;
+			$user_role = array_shift( $user_roles );
+			$user_id = $user->ID;
+		}
+		slt_cf_init_fields( 'user', $user_role, $user_id );
+		if ( count( $slt_custom_fields['boxes'] ) ) {
 			slt_cf_add_user_profile_sections( $user );
+		}
 	}
 
 	/* Save hooks
@@ -168,6 +177,7 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	add_action( 'save_post', 'slt_cf_save_post', 1, 2 );
 	add_action( 'personal_options_update', 'slt_cf_save_user', 1, 1 );
 	add_action( 'edit_user_profile_update', 'slt_cf_save_user', 1, 1 );
+	add_action( 'user_register', 'slt_cf_save_user', 1, 1 );
 
 	// Media attachment handling for pre- and post-3.5
 	if ( ! SLT_CF_WP_IS_GTE_3_5 ) {
@@ -181,11 +191,13 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	function slt_cf_save_post( $post_id, $post ) {
 		global $slt_custom_fields;
 		// Don't bother with post revisions
-		if ( $post->post_type == 'revision' )
+		if ( $post->post_type == 'revision' ) {
 			return;
+		}
 		slt_cf_init_fields( 'post', $post->post_type, $post_id );
-		if ( count( $slt_custom_fields['boxes'] ) )
+		if ( count( $slt_custom_fields['boxes'] ) ) {
 			slt_cf_save( 'post', $post_id, $post );
+		}
 	}
 
 	// Save for an attachment screen post-3.5
@@ -193,19 +205,22 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 		global $slt_custom_fields;
 		$post = get_post( $post_id );
 		// Don't bother with post revisions
-		if ( $post->post_type == 'revision' )
+		if ( $post->post_type == 'revision' ) {
 			return;
+		}
 		slt_cf_init_fields( 'attachment', $post->post_mime_type, $post_id );
-		if ( count( $slt_custom_fields['boxes'] ) )
+		if ( count( $slt_custom_fields['boxes'] ) ) {
 			slt_cf_save( 'attachment', $post_id, $post );
+		}
 	}
 
 	// Save for an attachment screen pre-3.5
 	function slt_cf_save_attachment_pre35( $post, $attachment ) {
 		global $slt_custom_fields;
 		slt_cf_init_fields( 'attachment', $post['post_mime_type'], $post['ID'] );
-		if ( count( $slt_custom_fields['boxes'] ) )
+		if ( count( $slt_custom_fields['boxes'] ) ) {
 			$post = slt_cf_save( 'attachment', $post['ID'], $post, $attachment );
+		}
 		return $post;
 	}
 
@@ -214,11 +229,13 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 		global $slt_custom_fields;
 		$user = new WP_User( $user_id );
 		$user_role = null;
-		if ( ! empty( $user->roles ) && is_array( $user->roles ) )
+		if ( ! empty( $user->roles ) && is_array( $user->roles ) ) {
 			$user_role = array_shift( $user->roles );
+		}
 		slt_cf_init_fields( 'user', $user_role, $user_id );
-		if ( count( $slt_custom_fields['boxes'] ) )
+		if ( count( $slt_custom_fields['boxes'] ) ) {
 			slt_cf_save( 'user', $user_id, $user );
+		}
 	}
 
 	/* Includes

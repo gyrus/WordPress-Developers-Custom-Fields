@@ -9,13 +9,20 @@ function slt_cf_init() {
 
 	// Globals still to initialize (ones that use core functions with filters that aren't exposed if run earlier)
 	$slt_custom_fields['ui_css_url'] = plugins_url( 'js/jquery-ui/smoothness/jquery-ui-1.8.16.custom.css', __FILE__ );
-	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG )
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.css', __FILE__ );
-	else
+		$slt_custom_fields['registration_css_url'] = plugins_url( 'css/slt-cf-registration.css', __FILE__ );
+	} else {
 		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.min.css', __FILE__ );
+		$slt_custom_fields['registration_css_url'] = plugins_url( 'css/slt-cf-registration.min.css', __FILE__ );
+	}
 
 	// Register scripts and styles
 	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
+	wp_register_style( 'slt-cf-registration-styles', $slt_custom_fields['registration_css_url'] );
+	if ( $GLOBALS['pagenow'] == 'wp-login.php' && isset( $_GET['action'] ) && $_GET['action'] == 'register' ) {
+		wp_enqueue_style( 'slt-cf-registration-styles' );
+	}
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 		$slt_js_admin = plugins_url( 'js/slt-cf-admin.js', __FILE__ );
 		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.js', __FILE__ );
@@ -135,8 +142,8 @@ function slt_cf_admin_menus() {
  *
  * @since	0.1
  * @param	string	$request_type	'post' | 'attachment' | 'user' (corresponds to $type in slt_cf_register_box)
- * @param	string	$scope			For 'post', post_type; for 'attachment', post_mime_type; for 'user', role
- * @param	integer	$object_id		ID of object being edited
+ * @param	string	$scope			For 'post', post_type; for 'attachment', post_mime_type; for 'user', role ('registration' if registering)
+ * @param	mixed	$object_id		ID of object being edited (null for user registration)
  * @return	void
  */
 function slt_cf_init_fields( $request_type, $scope, $object_id ) {

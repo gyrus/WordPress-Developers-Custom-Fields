@@ -285,7 +285,9 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 
 		// Test for an explicit match
 		foreach ( $field['scope'] as $scope_key => $scope_value ) {
+
 			if ( is_string( $scope_key ) && $request_type == 'post' && $scope_key == 'template' ) {
+
 				// Page template matching
 				$custom_fields = get_post_custom_values( '_wp_page_template', $object_id );
 				$page_template = $custom_fields[0];
@@ -297,7 +299,9 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 				}
 				if ( $scope_match )
 					break;
+
 			} else if ( is_string( $scope_key ) && $request_type == 'post' && in_array( $scope_key, get_object_taxonomies( $request_scope ) ) ) {
+
 				// Taxonomic matching
 				$object_terms = wp_get_object_terms( $object_id, $scope_key, array( 'fields' => 'names' ) );
 				foreach ( (array) $scope_value as $scope_term_name ) {
@@ -308,39 +312,54 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 				}
 				if ( $scope_match )
 					break;
+
+			} else if ( $scope_value == 'registration' && $request_type == 'user' && $request_scope == 'registration' && in_array( get_option( 'default_role' ), $field['scope'] ) ) {
+
+				// Registration
+				$scope_match = true;
+				break;
+
 			} else if ( is_string( $scope_value ) && (
 				( $request_type == 'post' && in_array( $scope_value, get_post_types() ) ) ||
 				( $request_type == 'user' && array_key_exists( $scope_value, $wp_roles->role_names ) ) ||
 				( $request_type == 'attachment' && array_search( $scope_value, get_allowed_mime_types() ) )
 			)) {
+
 				// Basic scope match, against post type, user role, or MIME type
 				if ( $request_scope == $scope_value ) {
 					$scope_match = true;
 					break;
 				}
+
 			} else if ( in_array( $scope_key, array( 'users', 'posts', 'attachments' ) ) && is_array( $scope_value ) ) {
+
 				// Match particular object IDs
 				if ( $scope_key == $request_type . 's' && in_array( $object_id, $scope_value ) ) {
 					$scope_match = true;
 					break;
 				}
+
 			} else {
+
 				// See if there are any matching custom scope checks
 				$scope_match = apply_filters( 'slt_cf_check_scope', $scope_match, $request_type, $request_scope, $object_id, $scope_key, $scope_value, $field );
 				if ( $scope_match )
 					break;
+
 			}
 		}
 
 	}
 
 	// Any post exceptions
-	if ( in_array( $request_type, array( 'post', 'attachment' ) ) && array_key_exists( 'except_posts', $field['scope'] ) && $scope_match && in_array( $object_id, $field['scope']['except_posts'] ) )
+	if ( in_array( $request_type, array( 'post', 'attachment' ) ) && array_key_exists( 'except_posts', $field['scope'] ) && $scope_match && in_array( $object_id, $field['scope']['except_posts'] ) ) {
 		$scope_match = false;
+	}
 
 	// Any user exceptions
-	if ( $request_type == 'user' && array_key_exists( 'except_users', $field['scope'] ) && $scope_match && in_array( $object_id, $field['scope']['except_users'] ) )
+	if ( $request_type == 'user' && array_key_exists( 'except_users', $field['scope'] ) && $scope_match && in_array( $object_id, $field['scope']['except_users'] ) ) {
 		$scope_match = false;
+	}
 
 	return $scope_match;
 }

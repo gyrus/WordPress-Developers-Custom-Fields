@@ -91,11 +91,12 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
-= 0.8.5 =
+= 0.9 =
 * Added `group_post_types` parameter, to group multiple post type queries by post type
 * Added `attachments_list` field type
 * Added `slt_cf_attachments_list_query` filter
 * Improved file preview icon handling for file types without an icon
+* User fields can now be added to the registration form - see the docs for [the `scope` parameter](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#functions-boxes-fields)
 
 = 0.8.4 =
 * Added `abbreviate_option_labels` field parameter
