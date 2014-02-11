@@ -97,6 +97,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Added `slt_cf_attachments_list_query` filter
 * Improved file preview icon handling for file types without an icon
 * User fields can now be added to the registration form - see the docs for [the `scope` parameter](http://sltaylor.co.uk/wordpress/developers-custom-fields-docs/#functions-boxes-fields)
+* Sortable checkboxes can now set default to `force-all` to just use a field for sorting, not selecting
 
 = 0.8.4 =
 * Added `abbreviate_option_labels` field parameter

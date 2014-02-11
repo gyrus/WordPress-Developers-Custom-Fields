@@ -31,10 +31,10 @@ function slt_cf_move_metaboxes() {
 	}
 	if ( ! empty( $output ) ) { ?>
 		<script type="text/javascript">//<![CDATA[
-		var slt_cf_metaboxes_above_content = [];
-		<?php foreach ( $output as $output_line ) { echo $output_line; ?>
-		<?php } ?>
-		//]]></script>
+			var slt_cf_metaboxes_above_content = [];
+			<?php foreach ( $output as $output_line ) { echo $output_line; ?>
+			<?php } ?>
+			//]]></script>
 	<?php }
 }
 
@@ -135,8 +135,8 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 			$field_value = $_POST[ $field_name ];
 
 		} else if (	( $request_type == 'post' && $object->post_status == 'auto-draft' ) ||
-				( $request_type == 'user' && ! is_object( $object ) ) ||
-				( is_object( $object ) && ! slt_cf_field_exists( $field['name'], $request_type, $object->ID ) )
+			( $request_type == 'user' && ! is_object( $object ) ) ||
+			( is_object( $object ) && ! slt_cf_field_exists( $field['name'], $request_type, $object->ID ) )
 		) {
 
 			// Field doesn't exist yet, use a default if set
@@ -318,8 +318,12 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 						}
 						// Input
 						echo '<input type="checkbox" name="' . $field_name . '_' . $value . '" id="' . $field_name . '_' . $value . '" value="yes"';
-						if ( is_array( $field_value ) && in_array( $value, $field_value )  )
+						if ( ( is_array( $field_value ) && in_array( $value, $field_value ) ) || ( $field['sortable'] && $field['default'] === 'force-all' ) ) {
 							echo ' checked="checked"';
+							if ( $field['sortable'] && $field['default'] === 'force-all' ) {
+								echo ' style="visibility:hidden;"';
+							}
+						}
 						echo ' />';
 						// Label
 						echo ' <label for="' . $field_name .'_' . $value . '">' . $key . '</label>';
@@ -416,7 +420,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 								}
 							});
 						</script>
-						<?php
+					<?php
 					}
 				}
 				echo $field_description;
@@ -556,17 +560,17 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 			}
 
 			default: {
-				/* Plain text field
-				*****************************************************************/
-				// Label
-				echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
-				// Input
-				$input_classes[] = 'regular-text';
-				echo $before_input;
-				slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes );
-				echo $field_description;
-				echo $after_input;
-				break;
+			/* Plain text field
+			*****************************************************************/
+			// Label
+			echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
+			// Input
+			$input_classes[] = 'regular-text';
+			echo $before_input;
+			slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes );
+			echo $field_description;
+			echo $after_input;
+			break;
 			}
 
 			case 'attachments_list': {
