@@ -293,9 +293,19 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					$cb_tag = 'div';
 					$sortable_options = array();
 					if ( $field['sortable'] && $current_order = slt_cf_field_values_order( $field['name'], $request_type ) ) {
-						foreach ( explode( ',', $current_order ) as $key => $value ) {
+						// Add already ordered items in order
+						$current_order_values = explode( ',', $current_order );
+						foreach ( $current_order_values as $value ) {
 							if ( ( $target_key = array_search( $value, $field['options'] ) ) !== false ) {
 								$sortable_options[] = array( $target_key, $value );
+							}
+						}
+						//echo '<pre>'; print_r( $sortable_options ); echo '</pre>';
+						//echo '<pre>'; print_r( $field['options'] ); echo '</pre>'; exit;
+						// Append any new unordered items
+						foreach ( $field['options'] as $key => $value ) {
+							if ( ! in_array( $value, $current_order_values ) ) {
+								$sortable_options[] = array( $key, $value );
 							}
 						}
 					} else {

@@ -92,6 +92,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 
 == Changelog ==
 = 0.9 =
+* Fixed issue with sortable checkboxes where new options don't appear in list
 * Added `group_post_types` parameter, to group multiple post type queries by post type
 * Added `attachments_list` field type
 * Added `slt_cf_attachments_list_query` filter
