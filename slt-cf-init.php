@@ -65,17 +65,11 @@ function slt_cf_admin_init() {
 
 	// Decide now which notices to output
 	$slt_cf_admin_notices = array();
-	if ( $slt_custom_fields['options']['alert-07-cleanup'] && ! ( $pagenow == 'tools.php' && array_key_exists( 'page', $_GET ) && $_GET['page'] == 'slt_cf_data_tools' ) )
-		$slt_cf_admin_notices[] = 'alert-07-cleanup';
 
 	// Scripts and styles
 	wp_enqueue_style( 'slt-cf-styles' );
 	wp_enqueue_script( 'slt-cf-scripts' );
 	$script_vars = array( 'ajaxurl' => admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) );
-	if ( in_array( 'alert-07-cleanup', $slt_cf_admin_notices ) ) {
-		$script_vars['update_option_nonce'] = wp_create_nonce( 'slt-cf-update-option' );
-		$script_vars['update_option_fail'] = __( 'There was a problem updating the option.', 'slt-custom-fields' );
-	}
 	wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', $script_vars );
 	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
 		// WP versions below 3.3 need TinyMCE initializing; 3.3+ uses wp_editor()

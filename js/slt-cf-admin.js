@@ -2,8 +2,7 @@
 *********************************************************************/
 
 jQuery( document ).ready( function($) {
-	var	clean07 = $( 'a#slt-cf-dismiss_alert-07-cleanup' ),
-		cp = $( '.slt-cf-color-preview' ),
+	var	cp = $( '.slt-cf-color-preview' ),
 		s = $( '.slt-cf-sortable' ),
 		i, box;
 
@@ -48,28 +47,6 @@ jQuery( document ).ready( function($) {
 	/* Handling notices
 	*****************************************************************/
 
-	// 0.7 cleanup
-	if ( clean07.length ) {
-		clean07.click( function() {
-			$.post(
-				slt_custom_fields.ajaxurl,
-				{
-					'action': 'slt_cf_update_option',
-					'key': 'alert-07-cleanup',
-					'value': 0,
-					'update-option-nonce': slt_custom_fields.update_option_nonce
-				},
-				function( data ) {
-					if ( data == 'updated' ) {
-						$( 'a#slt-cf-dismiss_alert-07-cleanup' ).parents( 'div#message' ).fadeOut( 600, function() { $( this ).remove(); } );
-					} else {
-						alert( slt_custom_fields.update_option_fail );
-					}
-				}
-			);
-			return false;
-		});
-	}
 
 	/* Cloning
 	****************************************************************

@@ -75,27 +75,36 @@ $slt_custom_fields['options'] = slt_cf_init_options();
  * @return	array	The current option values
  */
 function slt_cf_init_options() {
+
 	// Defaults
 	$defaults = array(
-		'version'			=> SLT_CF_VERSION,
-		'alert-07-cleanup'	=> 1
+		'version'			=> SLT_CF_VERSION
 	);
+
 	// Try to get options from database
 	$options = get_option( 'slt_cf_options' );
 	$update_options = false;
+
 	if ( ! $options ) {
+
 		// No options - new installation, or upgrade from < 0.7
 		$options = $defaults;
 		$update_options = true;
+
 	} else if ( ! array_key_exists( 'version', $options ) || version_compare( $options['version'], SLT_CF_VERSION ) == -1 ) {
+
 		// No stored version, or stored version is lower than current version - upgrade
 		$options = array_merge( $defaults, $options );
 		// Force stored version to new version
 		$options['version'] = SLT_CF_VERSION;
 		$update_options = true;
+
 	}
-	if ( $update_options )
+
+	if ( $update_options ) {
 		update_option( 'slt_cf_options', $options );
+	}
+
 	return $options;
 }
 

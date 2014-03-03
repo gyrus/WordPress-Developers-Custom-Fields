@@ -101,6 +101,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Sortable checkboxes can now set default to `force-all` to just use a field for sorting, not selecting
 * Retired "0.7 cleanup" and other redundant database tools
 * Fixed "remove old fields" database tool
+* Better enqueueing of scripts and styles
 
 = 0.8.4 =
 * Added `abbreviate_option_labels` field parameter
