@@ -5,43 +5,24 @@
 
 // Global initialization
 function slt_cf_init() {
-	global $slt_custom_fields;
+	global $slt_custom_fields, $pagenow;
 
 	// Globals still to initialize (ones that use core functions with filters that aren't exposed if run earlier)
 	$slt_custom_fields['ui_css_url'] = plugins_url( 'js/jquery-ui/smoothness/jquery-ui-1.8.16.custom.css', __FILE__ );
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		// Unminified debug stuff
 		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.css', __FILE__ );
 		$slt_custom_fields['registration_css_url'] = plugins_url( 'css/slt-cf-registration.css', __FILE__ );
-	} else {
-		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.min.css', __FILE__ );
-		$slt_custom_fields['registration_css_url'] = plugins_url( 'css/slt-cf-registration.min.css', __FILE__ );
-	}
-
-	// Register scripts and styles
-	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
-	wp_register_style( 'slt-cf-registration-styles', $slt_custom_fields['registration_css_url'] );
-	if ( $GLOBALS['pagenow'] == 'wp-login.php' && isset( $_GET['action'] ) && $_GET['action'] == 'register' ) {
-		wp_enqueue_style( 'slt-cf-registration-styles' );
-	}
-	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
-		$slt_js_admin = plugins_url( 'js/slt-cf-admin.js', __FILE__ );
-		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.js', __FILE__ );
 		$slt_js_gmaps = plugins_url( 'js/slt-cf-gmaps.js', __FILE__ );
 	} else {
-		$slt_js_admin = plugins_url( 'js/slt-cf-admin.min.js', __FILE__ );
-		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.min.js', __FILE__ );
+		// Minified production stuff
+		$slt_custom_fields['css_url'] = plugins_url( 'css/slt-cf-admin.min.css', __FILE__ );
+		$slt_custom_fields['registration_css_url'] = plugins_url( 'css/slt-cf-registration.min.css', __FILE__ );
 		$slt_js_gmaps = plugins_url( 'js/slt-cf-gmaps.min.js', __FILE__ );
 	}
-	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ), SLT_CF_VERSION );
-	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
-		// Register jQuery UI Datepicker for below WP 3.3
-		wp_register_script( 'jquery-ui-datepicker', plugins_url( 'js/jquery-ui/jquery-ui-1.8.16.custom.min.js', __FILE__ ), array( 'jquery-ui-core' ), '1.8.16', true );
-	}
 
-	// Register jQuery UI Addon Timepicker for date and time fields
-	wp_register_script( 'jquery-ui-timepicker', plugins_url( 'js/jquery-ui/jquery-ui-timepicker-addon.min.js', __FILE__ ), array( 'jquery-ui-datepicker' ), '1.8.16', true );
-	wp_register_style( 'jquery-ui-smoothness', $slt_custom_fields['ui_css_url'] );
-	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ), SLT_CF_VERSION );
+	// Register any styles needed at the front
+	wp_register_style( 'slt-cf-registration-styles', $slt_custom_fields['registration_css_url'], array(), SLT_CF_VERSION );
 
 	/*
 	 * Google Maps stuff is registered to go in the footer, so it can be enqueued dynamically
@@ -49,71 +30,139 @@ function slt_cf_init() {
 	 */
 	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js?sensor=false', array(), false, true );
 	$gmaps_deps = array( 'jquery', 'jquery-ui-core' );
-	if ( ! class_exists( 'JCP_UseGoogleLibraries' ) )
+	if ( ! class_exists( 'JCP_UseGoogleLibraries' ) ) {
 		$gmaps_deps[] = 'jquery-ui-autocomplete'; // Autocomplete included in Google's jQuery UI core
+	}
 	wp_register_script( 'slt-cf-gmaps', $slt_js_gmaps, $gmaps_deps, SLT_CF_VERSION, true );
 
 	// Generic hook, mostly for dependent plugins to hook to
 	// See: http://core.trac.wordpress.org/ticket/11308#comment:7
 	do_action( 'slt_cf_init' );
+
 }
 
 // Admin initialization
 function slt_cf_admin_init() {
 	global $slt_cf_admin_notices, $slt_custom_fields, $pagenow;
-	$requested_file = basename( $_SERVER['SCRIPT_FILENAME'] );
 
-	// Decide now which notices to output
+	// Notices to output?
 	$slt_cf_admin_notices = array();
 
-	// Scripts and styles
-	wp_enqueue_style( 'slt-cf-styles' );
-	wp_enqueue_script( 'slt-cf-scripts' );
-	$script_vars = array( 'ajaxurl' => admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) );
-	wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', $script_vars );
+	// WP versions below 3.3 need TinyMCE initializing; 3.3+ uses wp_editor()
 	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
-		// WP versions below 3.3 need TinyMCE initializing; 3.3+ uses wp_editor()
 		add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
 	}
-	// Datepicker
-	wp_enqueue_script( 'jquery-ui-datepicker' );
-	wp_enqueue_style( 'jquery-ui-smoothness' );
-	// Timepicker which needs the slider
-	wp_enqueue_script( 'jquery-ui-slider' );
-	wp_enqueue_script( 'jquery-ui-timepicker' );
-	// Make sure forms allow file uploads
-	if ( in_array( $requested_file, array( 'post-new.php', 'post.php' ) ) )
-		add_action( 'post_edit_form_tag' , 'slt_cf_file_upload_form' );
-	if ( in_array( $requested_file, array( 'user-edit.php', 'profile.php' ) ) )
-		add_action( 'user_edit_form_tag' , 'slt_cf_file_upload_form' );
-	// Google Maps
-	if ( SLT_CF_USE_GMAPS ) {
-		if ( SLT_CF_WP_IS_GTE_3_3 )
-			wp_enqueue_script( 'jquery-ui-autocomplete' );
-		wp_localize_script( 'slt-cf-gmaps', 'slt_cf_gmaps', array(
-			'geocoder_label'	=> esc_html__( 'Find an address', 'slt-custom-fields' )
-		));
+
+	// Determine some paths
+	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
+		$slt_js_admin = plugins_url( 'js/slt-cf-admin.js', __FILE__ );
+		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.js', __FILE__ );
+	} else {
+		$slt_js_admin = plugins_url( 'js/slt-cf-admin.min.js', __FILE__ );
+		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.min.js', __FILE__ );
 	}
-	// File select
-	if ( SLT_CF_USE_FILE_SELECT ) {
+
+	// Register scripts and styles
+	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ), SLT_CF_VERSION );
+	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ), SLT_CF_VERSION );
+	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
+
+	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
+		// Register jQuery UI Datepicker for below WP 3.3
+		wp_register_script( 'jquery-ui-datepicker', plugins_url( 'js/jquery-ui/jquery-ui-1.8.16.custom.min.js', __FILE__ ), array( 'jquery-ui-core' ), '1.8.16', true );
+	}
+
+	// Register jQuery UI Addon Timepicker for date and time fields
+	wp_register_script( 'jquery-ui-timepicker', plugins_url( 'js/jquery-ui/jquery-ui-timepicker-addon.min.js', __FILE__ ), array( 'jquery-ui-datepicker', 'jquery-ui-slider' ), '1.8.16', true );
+	wp_register_style( 'jquery-ui-smoothness', $slt_custom_fields['ui_css_url'] );
+
+	// Make sure forms allow file uploads
+	if ( in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) {
+		add_action( 'post_edit_form_tag' , 'slt_cf_file_upload_form' );
+	}
+	if ( in_array( $pagenow, array( 'user-edit.php', 'profile.php' ) ) ) {
+		add_action( 'user_edit_form_tag' , 'slt_cf_file_upload_form' );
+	}
+
+	// Deal with any form submissions for admin screen
+	if ( array_key_exists( 'slt-cf-form', $_POST ) && check_admin_referer( 'slt-cf-' . $_POST['slt-cf-form'], '_slt_cf_nonce' ) ) {
+		call_user_func( 'slt_cf_' . $_POST['slt-cf-form'] . '_form_process' );
+	}
+
+}
+
+/**
+ * Login / registration scripts and styles
+ *
+ * @since	0.9
+ * @return	void
+ */
+function slt_cf_login_enqueue_scripts() {
+	wp_enqueue_style( 'slt-cf-registration-styles' );
+}
+
+/**
+ * Admin scripts and styles
+ *
+ * @since	0.9
+ * @return	void
+ */
+function slt_cf_admin_enqueue_scripts( $hook ) {
+	$screen = get_current_screen();
+	//echo '<pre>'; print_r( $screen ); echo '</pre>'; exit;
+
+	// Check for an edit screen
+	if ( in_array( $screen->base, array( 'post', 'user-edit', 'profile' ) ) ) {
+
+		// Global scripts and styles
+		wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
+			'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) )
+		);
+		wp_enqueue_script( 'slt-cf-scripts' );
+		wp_enqueue_style( 'slt-cf-styles' );
+
+		// Datepicker / Timepicker
+		wp_enqueue_script( 'jquery-ui-datepicker' );
+		wp_enqueue_script( 'jquery-ui-timepicker' );
+		wp_enqueue_style( 'jquery-ui-smoothness' );
+
+		// Google Maps
+		if ( SLT_CF_USE_GMAPS ) {
+			wp_localize_script( 'slt-cf-gmaps', 'slt_cf_gmaps', array(
+				'geocoder_label'	=> esc_html__( 'Find an address', 'slt-custom-fields' )
+			));
+			// Script is enqueued by slt_cf_gmap() function
+		}
+
+		// File select
+		if ( SLT_CF_USE_FILE_SELECT ) {
+			wp_enqueue_script( 'slt-cf-file-select' );
+			wp_enqueue_style( 'thickbox' );
+			wp_localize_script( 'slt-cf-file-select', 'slt_cf_file_select', array(
+				'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
+				'text_select_file'	=> esc_html__( 'Select', 'slt-custom-fields' )
+			));
+		}
+
+		// Sortable
+		wp_enqueue_script( 'jquery-ui-sortable' );
+
+	} else if ( $screen->base == 'media-upload' && array_key_exists( 'slt_cf_fs_field', $_GET ) ) {
+
+		// File select overlay
 		wp_enqueue_script( 'slt-cf-file-select' );
-		wp_enqueue_style( 'thickbox' );
 		wp_localize_script( 'slt-cf-file-select', 'slt_cf_file_select', array(
 			'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
 			'text_select_file'	=> esc_html__( 'Select', 'slt-custom-fields' )
 		));
-		if ( ! SLT_CF_WP_IS_GTE_3_3 && $pagenow == 'media-upload.php' && array_key_exists( 'slt_cf_fs_field', $_GET ) ) {
-			// For WP versions below 3.3, disable the Flash uploader when the File select overlay is invoked
-			// The JS for this doesn't work with the Flash uploader
-			add_filter( 'flash_uploader', '__return_false', 5 );
-		}
-	}
-	// Sortable
-	wp_enqueue_script( 'jquery-ui-sortable' );
 
-	// Deal with any form submissions for admin screen
-	if ( array_key_exists( 'slt-cf-form', $_POST ) && check_admin_referer( 'slt-cf-' . $_POST['slt-cf-form'], '_slt_cf_nonce' ) )
-		call_user_func( 'slt_cf_' . $_POST['slt-cf-form'] . '_form_process' );
+	}
+
+	if ( ! SLT_CF_WP_IS_GTE_3_3 && $screen->base == 'media-upload' && array_key_exists( 'slt_cf_fs_field', $_GET ) ) {
+		// For WP versions below 3.3, disable the Flash uploader when the File select overlay is invoked
+		// The JS for this doesn't work with the Flash uploader
+		add_filter( 'flash_uploader', '__return_false', 5 );
+	}
 
 }
 
@@ -124,8 +173,10 @@ function slt_cf_admin_init() {
  * @return	void
  */
 function slt_cf_admin_menus() {
+
 	// Database tools
 	add_submenu_page( 'tools.php', SLT_CF_TITLE . ' ' . __( 'database tools', 'slt-custom-fields' ), __( 'Custom Fields data', 'slt-custom-fields' ), 'update_core', 'slt_cf_data_tools', 'slt_cf_database_tools_screen' );
+
 }
 
 /* Initialize fields
