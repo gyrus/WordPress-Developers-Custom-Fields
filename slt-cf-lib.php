@@ -146,7 +146,9 @@ function slt_cf_all_field_values( $type = 'post', $id = 0, $multiple_fields = ar
 	// Sortable fields?
 	if ( ! empty( $multiple_fields ) ) {
 		foreach ( $multiple_fields as $multiple_field ) {
-			$all_values[ $multiple_field ] = slt_cf_maybe_sort( $all_values[ $multiple_field ], $multiple_field, $type, $id );
+			if ( array_key_exists( $multiple_field, $all_values ) ) {
+				$all_values[ $multiple_field ] = slt_cf_maybe_sort( $all_values[ $multiple_field ], $multiple_field, $type, $id );
+			}
 		}
 	}
 
