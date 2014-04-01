@@ -108,30 +108,42 @@ function slt_cf_login_enqueue_scripts() {
  * @return	void
  */
 function slt_cf_admin_enqueue_scripts( $hook ) {
+	global $pagenow;
 	$screen = get_current_screen();
+	$edit_screen = in_array( $screen->base, array( 'post', 'user-edit', 'profile' ) );
 	//echo '<pre>'; print_r( $screen ); echo '</pre>'; exit;
 
 	// Check for an edit screen
-	if ( in_array( $screen->base, array( 'post', 'user-edit', 'profile' ) ) ) {
+	// Also, for now include file select scripts for all "Appearance" and "Settings" pages,
+	// in case file select button is being used directly there
+	// @todo	Need a way of only including file select scripts when button is being output
+	if ( $edit_screen || in_array( $pagenow, array( 'themes.php', 'options-general.php' ) ) ) {
 
-		// Global scripts and styles
-		wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
-			'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) )
-		);
-		wp_enqueue_script( 'slt-cf-scripts' );
-		wp_enqueue_style( 'slt-cf-styles' );
+		if ( $edit_screen ) {
 
-		// Datepicker / Timepicker
-		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_script( 'jquery-ui-timepicker' );
-		wp_enqueue_style( 'jquery-ui-smoothness' );
+			// Global scripts and styles
+			wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
+					'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) )
+			);
+			wp_enqueue_script( 'slt-cf-scripts' );
+			wp_enqueue_style( 'slt-cf-styles' );
 
-		// Google Maps
-		if ( SLT_CF_USE_GMAPS ) {
-			wp_localize_script( 'slt-cf-gmaps', 'slt_cf_gmaps', array(
-				'geocoder_label'	=> esc_html__( 'Find an address', 'slt-custom-fields' )
-			));
-			// Script is enqueued by slt_cf_gmap() function
+			// Datepicker / Timepicker
+			wp_enqueue_script( 'jquery-ui-datepicker' );
+			wp_enqueue_script( 'jquery-ui-timepicker' );
+			wp_enqueue_style( 'jquery-ui-smoothness' );
+
+			// Google Maps
+			if ( SLT_CF_USE_GMAPS ) {
+				wp_localize_script( 'slt-cf-gmaps', 'slt_cf_gmaps', array(
+					'geocoder_label'	=> esc_html__( 'Find an address', 'slt-custom-fields' )
+				));
+				// Script is enqueued by slt_cf_gmap() function
+			}
+
+			// Sortable
+			wp_enqueue_script( 'jquery-ui-sortable' );
+
 		}
 
 		// File select
@@ -143,9 +155,6 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 				'text_select_file'	=> esc_html__( 'Select', 'slt-custom-fields' )
 			));
 		}
-
-		// Sortable
-		wp_enqueue_script( 'jquery-ui-sortable' );
 
 	} else if ( $screen->base == 'media-upload' && array_key_exists( 'slt_cf_fs_field', $_GET ) ) {
 
@@ -496,7 +505,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 
 			/****************************************************************************
 			From this point on, this field is considered as valid for the current request
-			****************************************************************************/
+			 ****************************************************************************/
 
 			// Gather dynamic options data?
 			if ( $field['options_type'] != 'static' ) {
@@ -585,7 +594,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						if ( $field['hierarchical_options'] && is_string( $field['options_query']['post_type'] ) && is_post_type_hierarchical( $field['options_query']['post_type'] ) ) {
 
 						}
-						*/
+						 */
 						$current_grouping = null;
 						foreach ( $posts as $post_data ) {
 							if ( $multiple_post_types && $field[ 'group_by_post_type' ] ) {
@@ -642,20 +651,20 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						// Get terms
 						$args = $field['options_query'];
 						$taxonomies = $args['taxonomies'];
- 						$field['options'] = array();
+						$field['options'] = array();
 						/** @todo Heirarchical post selection
-					 	if ( $field['hierarchical_options'] ) {
-							$field['options_query']['hierarchical'] = true;
-							slt_cf_hierarchical_terms( $field, '&nbsp;&nbsp;&nbsp;', @intval( $args['child_of'] ) );
+						if ( $field['hierarchical_options'] ) {
+						$field['options_query']['hierarchical'] = true;
+						slt_cf_hierarchical_terms( $field, '&nbsp;&nbsp;&nbsp;', @intval( $args['child_of'] ) );
 						} else
-						*/
+						 */
 						if ( ! is_wp_error( $option_terms = get_terms( $taxonomies, $args ) ) ) {
 							foreach ( $option_terms as $option_term ) {
 								$option_text = $field['abbreviate_option_labels'] ? slt_cf_abbreviate( $option_term->name ) : $option_term->name;
 								$field['options'][ $option_text ] = $option_term->term_id;
 							}
 						}
- 						break;
+						break;
 					}
 
 					case 'countries': {
@@ -664,9 +673,9 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 					}
 
 					default: {
-						// Run filter for custom option types
-						$field['options'] = apply_filters( 'slt_cf_populate_options', $field['options'], $request_type, $scope, $object_id, $field );
-						break;
+					// Run filter for custom option types
+					$field['options'] = apply_filters( 'slt_cf_populate_options', $field['options'], $request_type, $scope, $object_id, $field );
+					break;
 					}
 
 				}
