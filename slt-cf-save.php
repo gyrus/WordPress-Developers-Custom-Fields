@@ -163,7 +163,7 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 							foreach ( $value as $value_item )
 								add_metadata( $metadata_type, $object_id, $field_name, $value_item, false );
 						}
-					} else if ( $value == '' ) {
+					} else if ( $value === '' ) {
 						// Delete field if it exists (and don't create it if it doesn't!)
 						delete_metadata( $metadata_type, $object_id, $field_name );
 					} else {

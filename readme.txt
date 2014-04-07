@@ -102,6 +102,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Retired "0.7 cleanup" and other redundant database tools
 * Fixed "remove old fields" database tool
 * Better enqueueing of scripts and styles
+* Test to delete empty values changed to exactly match empty strings (numeric 0 gets stored)
 
 = 0.8.4 =
 * Added `abbreviate_option_labels` field parameter
