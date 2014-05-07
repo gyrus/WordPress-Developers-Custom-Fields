@@ -838,7 +838,7 @@ function slt_cf_file_select_new_upload( $fields, $post ) {
 	static $count = 0;
 	if ( substr( $post->post_mime_type, 0, 5 ) == 'image' ) {
 		$fields['slt_cf_file_select'] = array(
-			'tr' => '<tr id="slt-cf-new-upload-button-' . $count .'"><th></th><td><script type="text/javascript"> slt_fs_new_upload_button( ' . $count .' ); </script></td></tr>'
+			'tr' => '<tr id="slt-cf-new-upload-button-' . $count .'"><th></th><td><script type="text/javascript"> if ( typeof slt_fs_new_upload_button == "function") {  slt_fs_new_upload_button( ' . $count .' ); } </script></td></tr>'
 		);
 		$count++;
 	}
