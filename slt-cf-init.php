@@ -334,6 +334,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'single'					=> true,
 				'required'					=> false,
 				'sortable'					=> false,
+				'checkboxes_thumbnail'		=> false,
 				'empty_option_text'			=> '[' . __( "None", "slt-custom-fields" ) . ']',
 				'abbreviate_option_labels'	=> true,
 				'width'						=> 0,

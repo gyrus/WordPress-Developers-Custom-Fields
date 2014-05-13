@@ -93,6 +93,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 == Changelog ==
 = 0.9.1 =
 * Fix for conflict with other plugins that add media upload buttons to taxonomies (thanks [juicboxint](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/30)!)
+* Added `checkboxes_thumbnail` parameter, to include a thumbnail when listing image attachments with multiple checkboxes
 
 = 0.9 =
 * Fixed issue with sortable checkboxes where new options don't appear in list

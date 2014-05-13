@@ -102,6 +102,14 @@ ul.slt-cf-sortable li span.ui-icon {
   top: 2px;
   cursor: move;
 }
+div.slt-cf-checkboxes.thumbnails ul.slt-cf-sortable li.ui-state-default {
+  background-image: none;
+}
+div.slt-cf-checkboxes.thumbnails ul.slt-cf-sortable li.ui-state-default img {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 5px;
+}
 /* User profile fields */
 #profile-page span.mceEditor {
   display: block;
