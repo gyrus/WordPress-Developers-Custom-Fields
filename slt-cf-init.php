@@ -65,7 +65,9 @@ function slt_cf_admin_init() {
 	// Register scripts and styles
 	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ), SLT_CF_VERSION );
+	wp_register_script( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/js/colorpicker.js', __FILE__ ), array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
+	wp_register_style( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/css/colorpicker.css', __FILE__ ) );
 
 	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
 		// Register jQuery UI Datepicker for below WP 3.3
@@ -123,10 +125,21 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 			// Global scripts and styles
 			wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
-					'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) )
-			);
+					'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL )
+			));
 			wp_enqueue_script( 'slt-cf-scripts' );
 			wp_enqueue_style( 'slt-cf-styles' );
+
+			// Colorpicker
+			/*
+			wp_localize_script( 'slt-cf-colorpicker', 'slt_cf_colorpicker', array(
+					'options'	=> array(
+						'color'		=> '#ffffff',
+					)
+			));
+			*/
+			wp_enqueue_script( 'slt-cf-colorpicker' );
+			wp_enqueue_style( 'slt-cf-colorpicker' );
 
 			// Datepicker / Timepicker
 			wp_enqueue_script( 'jquery-ui-datepicker' );

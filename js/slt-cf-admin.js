@@ -3,6 +3,7 @@
 
 jQuery( document ).ready( function($) {
 	var	cp = $( '.slt-cf-color-preview' ),
+		cpick = $( 'input.slt-cf-colorpicker' ),
 		s = $( '.slt-cf-sortable' ),
 		i, box;
 
@@ -25,6 +26,23 @@ jQuery( document ).ready( function($) {
 			$( '[name=' + name + ']' ).on( 'change', function() {
 				slt_cf_color_preview_update( $( this ).attr( 'name' ) );
 			});
+		});
+	}
+
+	/* Color picker
+	 *****************************************************************/
+	if ( cpick.length && $().ColorPicker ) {
+		//console.log( slt_cf_colorpicker.options );
+		cpick.ColorPicker({
+			onSubmit: function( hsb, hex, rgb, el ) {
+				$( el ).val( hex );
+				$( el ).ColorPickerHide();
+			},
+			onBeforeShow: function () {
+				$( this ).ColorPickerSetColor( this.value );
+			}
+		}).bind( 'keyup', function(){
+			$( this ).ColorPickerSetColor( this.value );
 		});
 	}
 

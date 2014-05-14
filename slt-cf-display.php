@@ -576,18 +576,18 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				break;
 			}
 
-			default: {
-			/* Plain text field
-			*****************************************************************/
-			// Label
-			echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
-			// Input
-			$input_classes[] = 'regular-text';
-			echo $before_input;
-			slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes );
-			echo $field_description;
-			echo $after_input;
-			break;
+			case 'colorpicker': {
+				/* Color picker field
+				*****************************************************************/
+				// Label
+				echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
+				// Input
+				$input_classes[] = 'slt-cf-colorpicker';
+				echo $before_input;
+				slt_cf_input_text( $field_name, $field_value, $field['input_prefix'] . ' #', $field['input_suffix'], $input_styles, $input_classes );
+				echo $field_description;
+				echo $after_input;
+				break;
 			}
 
 			case 'attachments_list': {
@@ -667,6 +667,20 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					echo '<p><em>No attachments to list.</em></p>';
 				}
 				echo '</fieldset>';
+				echo $field_description;
+				echo $after_input;
+				break;
+			}
+
+			default: {
+				/* Plain text field
+				*****************************************************************/
+				// Label
+				echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
+				// Input
+				$input_classes[] = 'regular-text';
+				echo $before_input;
+				slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes );
 				echo $field_description;
 				echo $after_input;
 				break;
