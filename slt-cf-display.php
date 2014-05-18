@@ -331,7 +331,8 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 						}
 						// Thumbnail
 						if ( $field['checkboxes_thumbnail'] && $field['options_query']['post_type'] == 'attachment' && $field['options_query']['post_mime_type'] == 'image' ) {
-							echo '<img src="' . wp_get_attachment_image_src( $value, apply_filters( 'slt_cf_checkboxes_thumbnail_size', 'thumbnail' ) )[0] . '" alt="' . get_the_title( $value ) . ' thumbnail"> ';
+							$checkbox_thumbnail =  wp_get_attachment_image_src( $value, apply_filters( 'slt_cf_checkboxes_thumbnail_size', 'thumbnail' ) );
+							echo '<img src="' . $checkbox_thumbnail[0] . '" alt="' . get_the_title( $value ) . ' thumbnail"> ';
 						}
 						// Input
 						echo '<input type="checkbox" name="' . $field_name . '_' . $value . '" id="' . $field_name . '_' . $value . '" value="yes"';
