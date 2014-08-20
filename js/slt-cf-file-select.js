@@ -90,21 +90,19 @@ jQuery( document ).ready( function( $ ) {
 
 // Function to switch interface elements for a media item
 function slt_fs_media_item_interface() {
-	jQuery( function( $ ) {
-		var td = $( 'table.describe tr.submit td.savesend' );
-		var ss = $( 'tr.submit td.savesend', td );
-		var ssi = ss.find( 'input' );
-		// Remove all table rows except the buttons
-		$( 'tbody tr:not(.submit), a.wp-post-thumbnail', td ).remove();
-		// Put the Select button in
-		if ( ssi.length ) {
-			ssi.replaceWith( select_button );
-		} else {
-			ss.prepend( select_button );
-		}
-		// Remove Edit Image button
-		$( 'input[value="Edit Image"]', td ).parent( 'p' ).remove();
-	});
+	var td = jQuery( 'table.describe tr.submit td.savesend' );
+	var ss = jQuery( 'tr.submit td.savesend', td );
+	var ssi = ss.find( 'input' );
+	// Remove all table rows except the buttons
+	jQuery( 'tbody tr:not(.submit), a.wp-post-thumbnail', td ).remove();
+	// Put the Select button in
+	if ( ssi.length ) {
+		ssi.replaceWith( select_button );
+	} else {
+		ss.prepend( select_button );
+	}
+	// Remove Edit Image button
+	jQuery( 'input[value="Edit Image"]', td ).parent( 'p' ).remove();
 }
 
 // Check we're in a media overlay called by this plugin's File Select
@@ -139,38 +137,34 @@ function slt_fs_get_url_vars( s ) {
 function slt_fs_new_upload_button( count ) {
 	var mit, ss, ssi;
 	if ( slt_fs_media_overlay() ) {
-		jQuery( function( $ ) {
-			mit = $( '#slt-cf-new-upload-button-' + count ).parents( 'table' );
-			ss = mit.find( 'tr.submit td.savesend' );
-			ssi = ss.find( 'input' );
-			mit.find( 'tbody tr:not(.submit), a.wp-post-thumbnail' ).remove();
-			mit.find( 'input[type=button][value="Edit Image"]' ).remove();
-			if ( ssi.length ) {
-				ssi.replaceWith( select_button );
-			} else {
-				ss.prepend( select_button );
-			}
-		});
+		mit = jQuery( '#slt-cf-new-upload-button-' + count ).parents( 'table' );
+		ss = mit.find( 'tr.submit td.savesend' );
+		ssi = ss.find( 'input' );
+		mit.find( 'tbody tr:not(.submit), a.wp-post-thumbnail' ).remove();
+		mit.find( 'input[type=button][value="Edit Image"]' ).remove();
+		if ( ssi.length ) {
+			ssi.replaceWith( select_button );
+		} else {
+			ss.prepend( select_button );
+		}
 	}
 }
 
 // Select button functionality
 function slt_cf_fs_select_item( item_id, field_id ) {
 	var field, preview_div, preview_size;
-	jQuery( function( $ ) {
-		field = $( '#' + field_id );
-		preview_div = $( '#' + field_id + '_preview' );
-		preview_size = $( '#' + field_id + '_preview-size' ).val();
-		// Load preview image
-		preview_div.html( '' ).load( slt_cf_file_select.ajaxurl, {
-			id: 	item_id,
-			size:	preview_size,
-			action:	'slt_cf_fs_get_file'
-		});
-		// Pass ID to form field
-		field.val( item_id );
-		// Close interface down
-		tb_remove();
-		$( 'html' ).removeClass( 'File' );
+	field = jQuery( '#' + field_id );
+	preview_div = jQuery( '#' + field_id + '_preview' );
+	preview_size = jQuery( '#' + field_id + '_preview-size' ).val();
+	// Load preview image
+	preview_div.html( '' ).load( slt_cf_file_select.ajaxurl, {
+		id: 	item_id,
+		size:	preview_size,
+		action:	'slt_cf_fs_get_file'
 	});
+	// Pass ID to form field
+	field.val( item_id );
+	// Close interface down
+	tb_remove();
+	jQuery( 'html' ).removeClass( 'File' );
 }
