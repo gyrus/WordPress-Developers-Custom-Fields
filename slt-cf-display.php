@@ -247,6 +247,14 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 		if ( $field['description'] )
 			$field_description .= '<p class="description"><i>' . $field['description'] . '</i></p>';
 
+		// Tab index
+		$tabindex = null;
+		if ( is_numeric( $field['tabindex'] ) || $field['tabindex'] == '-1' ) {
+			$tabindex = $field['tabindex'];
+		} else if ( is_string( $field['tabindex'] ) && function_exists( $field['tabindex'] ) ) {
+			$tabindex = call_user_func( $field['tabindex'] );
+		}
+
 		// Which type of field?
 		switch ( $field['type'] ) {
 
@@ -681,7 +689,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				// Input
 				$input_classes[] = 'regular-text';
 				echo $before_input;
-				slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes );
+				slt_cf_input_text( $field_name, $field_value, $field['input_prefix'], $field['input_suffix'], $input_styles, $input_classes, true, $tabindex );
 				echo $field_description;
 				echo $after_input;
 				break;
@@ -714,17 +722,24 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 ***************************************************************************/
 
 // Plain text
-function slt_cf_input_text( $field_name, $field_value = '', $prefix = '', $suffix = '', $input_styles = array(), $input_classes = array(), $echo = true ) {
+function slt_cf_input_text( $field_name, $field_value = '', $prefix = '', $suffix = '', $input_styles = array(), $input_classes = array(), $echo = true, $tabindex = null ) {
 	$output = '';
-	if ( $prefix )
+	if ( $prefix ) {
 		$output .= $prefix . ' ';
-	$output .= '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_name ) . '" value="' . esc_html( $field_value ) . '" style="' . esc_attr( implode( ';', $input_styles ) ) . '" class="' . esc_attr( implode( ' ', $input_classes ) ) . '" />';
-	if ( $suffix )
+	}
+	$output .= '<input type="text" name="' . esc_attr( $field_name ) . '" id="' . esc_attr( $field_name ) . '" value="' . esc_html( $field_value ) . '" style="' . esc_attr( implode( ';', $input_styles ) ) . '" class="' . esc_attr( implode( ' ', $input_classes ) ) . '"';
+	if ( is_numeric( $tabindex ) || $tabindex == '-1' ) {
+		$output .= ' tabindex="' . $tabindex . '"';
+	}
+	$output .= ' />';
+	if ( $suffix ) {
 		$output .= ' ' . $suffix;
-	if ( $echo )
+	}
+	if ( $echo ) {
 		echo $output;
-	else
+	} else {
 		return $output;
+	}
 }
 
 // Select

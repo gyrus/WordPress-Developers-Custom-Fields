@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.0
-Tested up to: 3.9.1
+Tested up to: 3.9.2
 Stable tag: 0.9.1
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -93,6 +93,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 == Changelog ==
 = 0.9.2 =
 * Added `$field` as parameter for `slt_cf_checkboxes_thumbnail_size` filter
+* Added `tabindex` parameter
 
 = 0.9.1 =
 * Fix for conflict with other plugins that add media upload buttons to taxonomies (thanks [juicboxint](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/30)!)

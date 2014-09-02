@@ -334,6 +334,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'file_attach_to_post'		=> true,
 				'input_prefix'				=> '',
 				'input_suffix'				=> '',
+				'tabindex'					=> null,
 				'description'				=> '',
 				'default'					=> null,
 				'multiple'					=> false,
