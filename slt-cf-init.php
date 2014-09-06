@@ -48,11 +48,6 @@ function slt_cf_admin_init() {
 	// Notices to output?
 	$slt_cf_admin_notices = array();
 
-	// WP versions below 3.3 need TinyMCE initializing; 3.3+ uses wp_editor()
-	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
-		add_action( 'admin_print_footer_scripts', 'wp_tiny_mce', 25 );
-	}
-
 	// Determine some paths
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 		$slt_js_admin = plugins_url( 'js/slt-cf-admin.js', __FILE__ );
@@ -68,11 +63,6 @@ function slt_cf_admin_init() {
 	wp_register_script( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/js/colorpicker.js', __FILE__ ), array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
 	wp_register_style( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/css/colorpicker.css', __FILE__ ) );
-
-	if ( ! SLT_CF_WP_IS_GTE_3_3 ) {
-		// Register jQuery UI Datepicker for below WP 3.3
-		wp_register_script( 'jquery-ui-datepicker', plugins_url( 'js/jquery-ui/jquery-ui-1.8.16.custom.min.js', __FILE__ ), array( 'jquery-ui-core' ), '1.8.16', true );
-	}
 
 	// Register jQuery UI Addon Timepicker for date and time fields
 	wp_register_script( 'jquery-ui-timepicker', plugins_url( 'js/jquery-ui/jquery-ui-timepicker-addon.min.js', __FILE__ ), array( 'jquery-ui-datepicker', 'jquery-ui-slider' ), '1.8.16', true );
@@ -178,12 +168,6 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 			'text_select_file'	=> esc_html__( 'Select', 'slt-custom-fields' )
 		));
 
-	}
-
-	if ( ! SLT_CF_WP_IS_GTE_3_3 && $screen->base == 'media-upload' && array_key_exists( 'slt_cf_fs_field', $_GET ) ) {
-		// For WP versions below 3.3, disable the Flash uploader when the File select overlay is invoked
-		// The JS for this doesn't work with the Flash uploader
-		add_filter( 'flash_uploader', '__return_false', 5 );
 	}
 
 }

@@ -27,8 +27,9 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 
 		// Check meta box nonce
 		$nonce_prefix = '';
-		if ( $request_type == 'post' || ( SLT_CF_WP_IS_GTE_3_5 && $request_type == 'attachment' ) )
+		if ( $request_type == 'post' || $request_type == 'attachment' ) {
 			$nonce_prefix = slt_cf_prefix( $request_type ) . $box['id'];
+		}
 
 		if ( ! $nonce_prefix || ( isset( $_POST[ $nonce_prefix . '_wpnonce' ] ) && wp_verify_nonce( $_POST[ $nonce_prefix . '_wpnonce' ], $nonce_prefix . '_save' ) ) ) {
 
@@ -178,10 +179,6 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 		} // Nonce check if
 
 	} // Boxes foreach
-
-	// Return $post for attachments pre-3.5 (it's a filter, not an action!)
-	if ( $request_type == 'attachment' && ! SLT_CF_WP_IS_GTE_3_5 )
-		return $object;
 
 }
 

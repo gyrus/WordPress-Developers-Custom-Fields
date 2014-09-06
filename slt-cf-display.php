@@ -413,8 +413,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				echo $before_label . '<label for="' . $field_name .'" class="' . implode( ' ', $label_classes ) . '">' . $field['label'] . '</label>' . $after_label;
 				// Input
 				echo $before_input;
-				// Make sure textarea isn't output for WYSIWYG for 3.3 and above, wp_editor handles that
-				if ( $field['type'] != 'wysiwyg' || ! SLT_CF_WP_IS_GTE_3_3 ) {
+				if ( $field['type'] != 'wysiwyg' ) {
 					if ( $request_type == 'user' && ! is_object( $object ) ) {
 						// Proper styling for registration form
 						$input_classes[] = 'input';
@@ -432,22 +431,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				}
 				// WYSIWYG
 				if ( $field['type'] == 'wysiwyg' ) {
-					if ( SLT_CF_WP_IS_GTE_3_3 ) {
-						// For 3.3 and above - simple :)
-						wp_editor( $field_value, $field_name, $field['wysiwyg_settings'] );
-					} else {
-						// For versions below 3.3
-						?>
-						<script type="text/javascript">
-							jQuery( document ).ready( function() {
-								jQuery( "<?php echo $field_name; ?>" ).addClass( 'mceEditor' );
-								if ( typeof( tinyMCE ) == 'object' && typeof( tinyMCE.execCommand ) == 'function' ) {
-									tinyMCE.execCommand( 'mceAddControl', false, '<?php echo $field_name; ?>' );
-								}
-							});
-						</script>
-					<?php
-					}
+					wp_editor( $field_value, $field_name, $field['wysiwyg_settings'] );
 				}
 				echo $field_description;
 				echo $after_input;
