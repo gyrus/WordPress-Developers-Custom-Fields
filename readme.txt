@@ -93,8 +93,12 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 == Changelog ==
 = 1.0 =
 * Dropped support for WP < 3.5 (please update WP, or stick with DCF 0.9.1 if you really have to!)
-* Added `$field` as parameter for `slt_cf_checkboxes_thumbnail_size` filter
+* Updated `file` field type and `slt_cf_file_select_button` function to use WP 3.5+ media upload API
+* Added `file_restrict_to_type` parameter for file upload fields
+* Added `file_dialog_title` parameter for file upload fields
+* Added `file_` parameter for file upload fields
 * Added `tabindex` parameter
+* Added `$field` as parameter for `slt_cf_checkboxes_thumbnail_size` filter
 
 = 0.9.1 =
 * Fix for conflict with other plugins that add media upload buttons to taxonomies (thanks [juicboxint](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/30)!)

@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /*
 Inspired by
 - http://snipplr.com/view/6108/mini-textile-class/ (simple textile formatting)
+- https://github.com/thomasgriffin/New-Media-Image-Uploader
 */
 
 // Make sure we don't expose any info if called directly

@@ -51,15 +51,15 @@ function slt_cf_admin_init() {
 	// Determine some paths
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 		$slt_js_admin = plugins_url( 'js/slt-cf-admin.js', __FILE__ );
-		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.js', __FILE__ );
+		$slt_js_media = plugins_url( 'js/slt-cf-media.js', __FILE__ );
 	} else {
 		$slt_js_admin = plugins_url( 'js/slt-cf-admin.min.js', __FILE__ );
-		$slt_js_file_select = plugins_url( 'js/slt-cf-file-select.min.js', __FILE__ );
+		$slt_js_media = plugins_url( 'js/slt-cf-media.min.js', __FILE__ );
 	}
 
 	// Register scripts and styles
 	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ), SLT_CF_VERSION );
-	wp_register_script( 'slt-cf-file-select', $slt_js_file_select, array( 'jquery', 'media-upload', 'thickbox' ), SLT_CF_VERSION );
+	wp_register_script( 'slt-cf-media', $slt_js_media, array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_script( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/js/colorpicker.js', __FILE__ ), array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
 	wp_register_style( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/css/colorpicker.css', __FILE__ ) );
@@ -101,17 +101,20 @@ function slt_cf_login_enqueue_scripts() {
  */
 function slt_cf_admin_enqueue_scripts( $hook ) {
 	global $pagenow;
+	$file_upload_fields = array();
 	$screen = get_current_screen();
 	$edit_screen = in_array( $screen->base, array( 'post', 'user-edit', 'profile' ) );
 	//echo '<pre>'; print_r( $screen ); echo '</pre>'; exit;
 
 	// Check for an edit screen
-	// Also, for now include file select scripts for all "Appearance" and "Settings" pages,
+	// Also, for now include media uploader scripts for all "Appearance" and "Settings" pages,
 	// in case file select button is being used directly there
-	// @todo	Need a way of only including file select scripts when button is being output
 	if ( $edit_screen || in_array( $pagenow, array( 'themes.php', 'options-general.php' ) ) ) {
 
 		if ( $edit_screen ) {
+
+			// Check for file upload fields
+			$file_upload_fields = slt_cf_current_fields_of_type( 'file' );
 
 			// Global scripts and styles
 			wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
@@ -149,24 +152,34 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 		}
 
-		// File select
-		if ( SLT_CF_USE_FILE_SELECT ) {
-			wp_enqueue_script( 'slt-cf-file-select' );
-			wp_enqueue_style( 'thickbox' );
-			wp_localize_script( 'slt-cf-file-select', 'slt_cf_file_select', array(
+		// Media upload / select
+		// If an edit screen, only bother if there are file upload fields
+		if ( SLT_CF_USE_FILE_SELECT && ( ! $edit_screen || $file_upload_fields ) ) {
+
+			// Enqueue core API
+			wp_enqueue_media();
+
+			// Localization / custom JS vars
+			$media_localization = array(
 				'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
-				'text_select_file'	=> esc_html__( 'Select', 'slt-custom-fields' )
-			));
+				'button_text'		=> __( 'Select', 'slt-custom-fields' ),
+			);
+			if ( $edit_screen ) {
+
+				// Pass through values for all registered buttons
+				foreach ( $file_upload_fields as $file_upload_field ) {
+					//$field_name = slt_cf_prefix( $slt_custom_fields['boxes'][ $box_key ]['type'] ) . $field['name']
+					$media_localization['dialog_title__' . $file_upload_field['name'] ] = $file_upload_field['file_dialog_title'];
+					$media_localization['restrict_to_type__' . $file_upload_field['name'] ] = $file_upload_field['file_restrict_to_type'];
+				}
+
+			}
+			wp_localize_script( 'slt-cf-media', 'slt_cf_media', $media_localization );
+
+			// Enqueue media script
+			wp_enqueue_script( 'slt-cf-media' );
+
 		}
-
-	} else if ( $screen->base == 'media-upload' && array_key_exists( 'slt_cf_fs_field', $_GET ) ) {
-
-		// File select overlay
-		wp_enqueue_script( 'slt-cf-file-select' );
-		wp_localize_script( 'slt-cf-file-select', 'slt_cf_file_select', array(
-			'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
-			'text_select_file'	=> esc_html__( 'Select', 'slt-custom-fields' )
-		));
 
 	}
 
@@ -316,6 +329,8 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'file_button_label'			=> __( "Select file", "slt-custom-fields" ),
 				'file_removeable'			=> true,
 				'file_attach_to_post'		=> true,
+				'file_dialog_title'			=> __( "Select file", "slt-custom-fields" ),
+				'file_restrict_to_type'		=> '',
 				'input_prefix'				=> '',
 				'input_suffix'				=> '',
 				'tabindex'					=> null,
@@ -427,7 +442,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 
 			// Check if parameters are the right types
 			if (
-				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format', 'timepicker_format' ), 'string', 'field', $field ) ||
+				! slt_cf_params_type( array( 'name', 'label', 'type', 'label_layout', 'file_button_label', 'file_dialog_title', 'file_restrict_to_type', 'input_prefix', 'input_suffix', 'description', 'options_type', 'no_options', 'empty_option_text', 'preview_size', 'datepicker_format', 'timepicker_format' ), 'string', 'field', $field ) ||
 				! slt_cf_params_type( array( 'hide_label', 'file_removeable', 'multiple', 'exclude_current', 'required', 'group_options', 'group_by_post_type', 'autop', 'edit_on_profile', 'timepicker_ampm', 'color_preview' ), 'boolean', 'field', $field ) ||
 				! slt_cf_params_type( array( 'scope', 'options', 'allowtags', 'options_query', 'capabilities', 'attachments_list_options' ), 'array', 'field', $field ) ||
 				! slt_cf_params_type( array( 'width', 'height' ), 'integer', 'field', $field )

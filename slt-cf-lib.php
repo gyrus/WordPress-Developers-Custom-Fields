@@ -218,6 +218,28 @@ function slt_cf_field_exists( $key, $type = 'post', $id = 0 ) {
 	return $field_exists;
 }
 
+/**
+ * Return an array of all fields for the current request of a certain type
+ *
+ * @since	0.1
+ * @param	string	$type
+ * @return	array
+ */
+function slt_cf_current_fields_of_type( $type = '' ) {
+	global $slt_custom_fields;
+	$fields = array();
+
+	foreach ( $slt_custom_fields['boxes'] as $box ) {
+		foreach ( $box['fields'] as $field ) {
+			if ( $field['type'] == $type ) {
+				$fields[] = $field;
+			}
+		}
+	}
+
+	return $fields;
+}
+
 /* Get all fields applied to an object
 ***************************************************************************************/
 function slt_cf_get_current_fields( $type = 'post', $id = 0 ) {
@@ -809,7 +831,7 @@ if ( SLT_CF_USE_FILE_SELECT ) :
  */
 function slt_cf_file_select_button( $name, $value = 0, $label = 'Select file', $preview_size = 'thumbnail', $removable = true, $attach_to_post = true ) { ?>
 	<div>
-		<input type="button" class="button-secondary slt-cf-fs-button" value="<?php echo esc_attr( $label ); ?>" />
+		<input type="button" id="<?php echo esc_attr( $name ); ?>_button" class="button-secondary slt-cf-fs-button" value="<?php echo esc_attr( $label ); ?>" />
 		<?php if ( $value && $removable ) { ?>
 			&nbsp;&nbsp;<input type="checkbox" name="<?php echo esc_attr( $name ); ?>_remove" value="1" class="slt-cf-fs-remove" /> <label for="<?php echo esc_attr( $name ); ?>_remove"><?php _e( 'Remove', 'slt-custom-fields' ); ?></label>
 		<?php } ?>
