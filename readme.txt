@@ -92,7 +92,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 
 == Changelog ==
 = 0.9.2 =
-* Dropped support for WP < 3.5 (please update WP, or stuck with DCF 0.9.1 if you really have to!)
+* Dropped support for WP < 3.5 (please update WP, or stick with DCF 0.9.1 if you really have to!)
 * Added `$field` as parameter for `slt_cf_checkboxes_thumbnail_size` filter
 * Added `tabindex` parameter
 
