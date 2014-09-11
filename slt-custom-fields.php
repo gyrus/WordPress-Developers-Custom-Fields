@@ -9,7 +9,7 @@ Plugin Name: Developer's Custom Fields
 Plugin URI: http://wordpress.org/extend/plugins/developers-custom-fields/
 Description: Provides theme developers with tools for managing custom fields.
 Author: Steve Taylor
-Version: 0.9.2
+Version: 1.0
 Author URI: http://sltaylor.co.uk
 License: GPLv2
 */
@@ -31,7 +31,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 /*
 Inspired by
-- http://wordpressapi.com/2010/11/22/file-upload-with-add_meta_box-or-custom_post_type-in-wordpress/ (file upload code)
 - http://snipplr.com/view/6108/mini-textile-class/ (simple textile formatting)
 */
 
@@ -47,7 +46,7 @@ global $slt_custom_fields, $wp_version;
 define( 'SLT_CF_TITLE', "Developer's Custom Fields" );
 define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', 'slt-custom-fields' ) );
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
-define( 'SLT_CF_VERSION', '0.9.2' );
+define( 'SLT_CF_VERSION', '1.0' );
 $slt_custom_fields = array();
 $slt_custom_fields['prefix'] = '_slt_';
 $slt_custom_fields['hide_default_custom_meta_box'] = true;
