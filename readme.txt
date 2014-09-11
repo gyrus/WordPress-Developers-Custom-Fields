@@ -2,8 +2,8 @@
 Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
-Requires at least: 3.0
-Tested up to: 3.9.2
+Requires at least: 3.5
+Tested up to: 4.0
 Stable tag: 0.9.1
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
