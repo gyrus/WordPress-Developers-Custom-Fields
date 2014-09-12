@@ -101,7 +101,6 @@ function slt_cf_login_enqueue_scripts() {
  */
 function slt_cf_admin_enqueue_scripts( $hook ) {
 	global $pagenow;
-	$file_upload_fields = array();
 	$screen = get_current_screen();
 	$edit_screen = in_array( $screen->base, array( 'post', 'user-edit', 'profile' ) );
 	//echo '<pre>'; print_r( $screen ); echo '</pre>'; exit;
@@ -149,41 +148,40 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 		}
 
-		// Check for file upload fields
-		$file_upload_fields = slt_cf_current_fields_of_type( 'file' );
-
 		// Media upload / select
-		// If an edit screen, only bother if there are file upload fields
-		if ( SLT_CF_USE_FILE_SELECT && ( ! $edit_screen || $file_upload_fields ) ) {
+		// Currently only valid for posts and options screens
+		if ( ! $edit_screen || $screen->id == 'post' ) {
 
-			// Determine edit screen type - to correspond to box type
-			$edit_screen_type = $screen->id;
-			if ( $edit_screen_type == 'user-edit' ) {
-				$edit_screen_type = 'user';
-			}
+			// Check for file upload fields
+			$file_upload_fields = slt_cf_current_fields_of_type( 'file' );
 
-			// Enqueue core API
-			wp_enqueue_media();
+			// If an edit screen, only bother if there are file upload fields
+			if ( SLT_CF_USE_FILE_SELECT && ( ! $edit_screen || $file_upload_fields ) ) {
 
-			// Localization / custom JS vars
-			$media_localization = array(
-				'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
-				'button_text'		=> __( 'Select', 'slt-custom-fields' ),
-			);
-			if ( $edit_screen ) {
+				// Enqueue core API
+				wp_enqueue_media();
 
-				// Pass through values for all registered buttons
-				foreach ( $file_upload_fields as $file_upload_field ) {
-					$field_name = slt_cf_prefix( $edit_screen_type ) . $file_upload_field['name'];
-					$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
-					$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
+				// Localization / custom JS vars
+				$media_localization = array(
+					'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
+					'button_text'		=> __( 'Select', 'slt-custom-fields' ),
+				);
+				if ( $edit_screen ) {
+
+					// Pass through values for all registered buttons
+					foreach ( $file_upload_fields as $file_upload_field ) {
+						$field_name = slt_cf_prefix( 'post' ) . $file_upload_field['name'];
+						$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
+						$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
+					}
+
 				}
+				wp_localize_script( 'slt-cf-media', 'slt_cf_media', $media_localization );
+
+				// Enqueue media script
+				wp_enqueue_script( 'slt-cf-media' );
 
 			}
-			wp_localize_script( 'slt-cf-media', 'slt_cf_media', $media_localization );
-
-			// Enqueue media script
-			wp_enqueue_script( 'slt-cf-media' );
 
 		}
 
