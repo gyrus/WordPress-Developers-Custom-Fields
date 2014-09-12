@@ -113,9 +113,6 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 		if ( $edit_screen ) {
 
-			// Check for file upload fields
-			$file_upload_fields = slt_cf_current_fields_of_type( 'file' );
-
 			// Global scripts and styles
 			wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
 					'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL )
@@ -152,9 +149,18 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 		}
 
+		// Check for file upload fields
+		$file_upload_fields = slt_cf_current_fields_of_type( 'file' );
+
 		// Media upload / select
 		// If an edit screen, only bother if there are file upload fields
 		if ( SLT_CF_USE_FILE_SELECT && ( ! $edit_screen || $file_upload_fields ) ) {
+
+			// Determine edit screen type - to correspond to box type
+			$edit_screen_type = $screen->id;
+			if ( $edit_screen_type == 'user-edit' ) {
+				$edit_screen_type = 'user';
+			}
 
 			// Enqueue core API
 			wp_enqueue_media();
@@ -168,9 +174,9 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 				// Pass through values for all registered buttons
 				foreach ( $file_upload_fields as $file_upload_field ) {
-					//$field_name = slt_cf_prefix( $slt_custom_fields['boxes'][ $box_key ]['type'] ) . $field['name']
-					$media_localization['dialog_title__' . $file_upload_field['name'] ] = $file_upload_field['file_dialog_title'];
-					$media_localization['restrict_to_type__' . $file_upload_field['name'] ] = $file_upload_field['file_restrict_to_type'];
+					$field_name = slt_cf_prefix( $edit_screen_type ) . $file_upload_field['name'];
+					$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
+					$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
 				}
 
 			}

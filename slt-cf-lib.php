@@ -852,19 +852,6 @@ function slt_cf_file_select_button( $name, $value = 0, $label = 'Select file', $
 	?></div>
 <?php }
 
-// Add a JS call to media item output so the file select button can be placed for new uploads
-add_filter( 'attachment_fields_to_edit', 'slt_cf_file_select_new_upload', 10, 2 );
-function slt_cf_file_select_new_upload( $fields, $post ) {
-	static $count = 0;
-	if ( substr( $post->post_mime_type, 0, 5 ) == 'image' ) {
-		$fields['slt_cf_file_select'] = array(
-			'tr' => '<tr id="slt-cf-new-upload-button-' . $count .'"><th></th><td><script type="text/javascript"> if ( typeof slt_fs_new_upload_button == "function") {  slt_fs_new_upload_button( ' . $count .' ); } </script></td></tr>'
-		);
-		$count++;
-	}
-	return $fields;
-}
-
 // Generate markup for file link
 function slt_cf_file_select_link( $id ) {
 	$attachment_url = wp_get_attachment_url( $id );
