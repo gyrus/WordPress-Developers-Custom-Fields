@@ -46,47 +46,6 @@ function slt_cf_add_user_profile_sections( $user ) {
 }
 
 /**
- * Add fields to an attachment screen for pre-3.5
- * No boxes / sections, just loop through all fields
- *
- * @since	0.6
- * @param	array	$form_fields
- * @param	object	$post
- * @return	array
- */
-function slt_cf_add_attachment_fields( $form_fields, $post ) {
-	global $slt_custom_fields;
-	foreach ( $slt_custom_fields['boxes'] as $box_key => $box ) {
-		foreach ( $box['fields'] as $field ) {
-			// Only certain fields types allowed for now
-			if ( ! in_array( $field['type'], array( 'text', 'select' ) ) )
-				continue;
-			// Add into form fields array
-			$field_name = slt_cf_prefix( 'attachment' ) . $field['name'];
-			$form_fields[ $field_name ] = array();
-			$form_fields[ $field_name ]['label'] = $field['label'];
-			$form_fields[ $field_name ]['value'] = slt_cf_field_value( $field['name'], 'attachment', $post->ID, '', '', false, $field['single'] );
-			$form_fields[ $field_name ]['input'] = 'html';
-			$input_field_name = "attachments[{$post->ID}][{$field_name}]";
-			switch ( $field['type'] ) {
-				case 'select': {
-					$form_fields[ $field_name ]['html'] = slt_cf_input_select( $input_field_name, $form_fields[ $field_name ]['value'], $field['input_prefix'], $field['input_suffix'], array(), array(), false, $field['options'], $field['multiple'], ( $field['options_type'] != 'static' && ! $field['required'] ), $field['empty_option_text'], $field['no_options'] );
-					break;
-				}
-				case 'text': {
-					$form_fields[ $field_name ]['html'] = slt_cf_input_text( $input_field_name, $form_fields[ $field_name ]['value'], $field['input_prefix'], $field['input_suffix'], array(), array(), false );
-					break;
-				}
-			}
-			if ( $field['description'] )
-				$form_fields[ $field_name ]['helps'] = $field['description'];
-		}
-	}
-	return $form_fields;
-}
-
-
-/**
  * Display a box's fields
  *
  * @since		0.1

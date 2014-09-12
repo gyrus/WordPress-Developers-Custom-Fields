@@ -190,7 +190,7 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 		}
 	}
 
-	// Save for an attachment screen post-3.5
+	// Save for an attachment screen
 	function slt_cf_save_attachment( $post_id ) {
 		global $slt_custom_fields;
 		$post = get_post( $post_id );
