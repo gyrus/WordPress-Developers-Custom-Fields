@@ -150,7 +150,7 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 		// Media upload / select
 		// Currently only valid for posts and options screens
-		if ( ! $edit_screen || $screen->id == 'post' ) {
+		if ( ! $edit_screen || $screen->base == 'post' ) {
 
 			// Check for file upload fields
 			$file_upload_fields = slt_cf_current_fields_of_type( 'file' );
