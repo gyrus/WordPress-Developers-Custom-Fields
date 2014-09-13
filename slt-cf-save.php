@@ -75,6 +75,11 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 
 					continue;
 
+				} else if ( $field['type'] == 'file' && $field['file_removeable'] && isset( $_POST[ $field_name . '_remove' ] ) ) {
+
+					// Remove a file
+					$value = null;
+
 				} else if ( $field['type'] == 'checkboxes' ) {
 
 					/* Multiple checkboxes - gather values into array
@@ -164,7 +169,7 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 							foreach ( $value as $value_item )
 								add_metadata( $metadata_type, $object_id, $field_name, $value_item, false );
 						}
-					} else if ( $value === '' ) {
+					} else if ( $value === '' || is_null( $value ) ) {
 						// Delete field if it exists (and don't create it if it doesn't!)
 						delete_metadata( $metadata_type, $object_id, $field_name );
 					} else {
