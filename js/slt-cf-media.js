@@ -9,6 +9,8 @@ jQuery( document ).ready( function( $ ) {
 
 	// Prepare the variable that holds our custom media managers.
 	var slt_cf_media_frames = [];
+	// Store current post id
+	var wp_media_post_id = wp.media.model.settings.post.id;
 
 	// Bind to our click event in order to open up the new media experience.
 	$( document.body ).on( 'click.sltcfOpenMediaManager', '.slt-cf-fs-button', function( e ) {
@@ -25,10 +27,7 @@ jQuery( document ).ready( function( $ ) {
 		var dialog_title = 'Select file';
 		var restrict_to_type = '';
 		if ( typeof slt_cf_media[ 'attach_to_post__' + field_name ] != 'undefined' ) {
-			attach_to_post = slt_cf_media[ 'attach_to_post__' + field_name ];
-			/**
-			 * @todo	Work out how to integrate this option into media uploader
-			 */
+			attach_to_post = ( slt_cf_media[ 'attach_to_post__' + field_name ] == 'yes' );
 		}
 		if ( typeof slt_cf_media[ 'dialog_title__' + field_name ] != 'undefined' ) {
 			dialog_title = slt_cf_media[ 'dialog_title__' + field_name ];
@@ -39,8 +38,22 @@ jQuery( document ).ready( function( $ ) {
 
 		// If the frame already exists, re-open it.
 		if ( slt_cf_media_frames[ field_name ] ) {
+			// Make sure the post attachment parameter is set correctly
+			if ( ! attach_to_post ) {
+				slt_cf_media_frames[ field_name ].uploader.uploader.param( 'post_id', 0 );
+			} else {
+				slt_cf_media_frames[ field_name ].uploader.uploader.param( 'post_id', wp_media_post_id );
+			}
+			// Open frame
 			slt_cf_media_frames[ field_name ].open();
 			return;
+		} else {
+			// Make sure the post attachment parameter is set correctly
+			if ( ! attach_to_post ) {
+				wp.media.model.settings.post.id = 0;
+			} else {
+				wp.media.model.settings.post.id = wp_media_post_id;
+			}
 		}
 
 		/**

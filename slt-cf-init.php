@@ -173,6 +173,7 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 						$field_name = slt_cf_prefix( 'post' ) . $file_upload_field['name'];
 						$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
 						$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
+						$media_localization['attach_to_post__' . $field_name ] = $file_upload_field['file_attach_to_post'] ? 'yes' : 'no';
 					}
 
 				}
