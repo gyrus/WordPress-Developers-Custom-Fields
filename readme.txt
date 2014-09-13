@@ -96,7 +96,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Updated `file` field type and `slt_cf_file_select_button` function to use WP 3.5+ media upload API
 * Added `file_restrict_to_type` parameter for file upload fields
 * Added `file_dialog_title` parameter for file upload fields
-* Added `file_` parameter for file upload fields
+* Changed `file_removeable` to work server-side instead of client side wiping of hidden input value
 * Added `tabindex` parameter
 * Added `$field` as parameter for `slt_cf_checkboxes_thumbnail_size` filter
 
