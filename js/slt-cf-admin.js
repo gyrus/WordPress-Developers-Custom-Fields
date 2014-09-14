@@ -12,7 +12,7 @@ jQuery( document ).ready( function($) {
 	if ( typeof slt_cf_metaboxes_above_content != "undefined" ) {
 		for ( i in slt_cf_metaboxes_above_content ) {
 			box = $( 'div#' + slt_cf_metaboxes_above_content[ i ] ).detach();
-			box.insertAfter( '#titlediv' );
+			box.css( 'margin', '20px 0 0' ).insertAfter( '#titlediv' );
 		}
 	}
 
