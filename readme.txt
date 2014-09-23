@@ -99,6 +99,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Changed `file_removeable` to work server-side instead of client side wiping of hidden input value
 * Added `tabindex` parameter
 * Added `$field` as parameter for `slt_cf_checkboxes_thumbnail_size` filter
+* Fixed small bug in all post meta output box, which showed `0` as `null`
 
 = 0.9.1 =
 * Fix for conflict with other plugins that add media upload buttons to taxonomies (thanks [juicboxint](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/30)!)

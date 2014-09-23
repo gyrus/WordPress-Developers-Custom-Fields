@@ -773,7 +773,7 @@ function slt_cf_postmeta_output() {
 		echo '<td align="left" valign="top">';
 		foreach ( $values as $value ) {
 			echo '<div>';
-			if ( ! empty( $value ) ) {
+			if ( strlen( $value ) ) {
 				if ( is_serialized( $value ) ) {
 					echo '<pre>'; print_r( unserialize( $value ) ); echo '</pre>';
 				} else {
