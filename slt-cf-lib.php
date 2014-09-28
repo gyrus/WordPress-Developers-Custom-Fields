@@ -322,6 +322,18 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 				if ( $scope_match )
 					break;
 
+			} else if ( is_string( $scope_key ) && $request_type == 'post' && $scope_key == 'post_format' && get_post_type( $object_id ) == 'post' ) {
+
+				// Post format matching matching
+				foreach ( (array) $scope_value as $scope_format_name ) {
+					if ( has_post_format( $scope_format_name, $object_id ) ) {
+						$scope_match = true;
+						break;
+					}
+				}
+				if ( $scope_match )
+					break;
+
 			} else if ( is_string( $scope_key ) && $request_type == 'post' && in_array( $scope_key, get_object_taxonomies( $request_scope ) ) ) {
 
 				// Taxonomic matching
