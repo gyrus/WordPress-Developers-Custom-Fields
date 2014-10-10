@@ -28,7 +28,8 @@ function slt_cf_init() {
 	 * Google Maps stuff is registered to go in the footer, so it can be enqueued dynamically
 	 * on the front-end, as the map is output
 	 */
-	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js', array(), false, true );
+	$gmaps_api_key = defined('SLT_CF_GMAPS_API_KEY') ? '?key=' . SLT_CF_GMAPS_API_KEY : '';
+	wp_register_script( 'google-maps-api', SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js' . $gmaps_api_key, array(), false, true );
 	$gmaps_deps = array( 'jquery', 'jquery-ui-core' );
 	if ( ! class_exists( 'JCP_UseGoogleLibraries' ) ) {
 		$gmaps_deps[] = 'jquery-ui-autocomplete'; // Autocomplete included in Google's jQuery UI core
