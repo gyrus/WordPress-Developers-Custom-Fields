@@ -4,7 +4,7 @@ Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.5
 Tested up to: 4.0
-Stable tag: 0.9.1
+Stable tag: 1.0
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
 
