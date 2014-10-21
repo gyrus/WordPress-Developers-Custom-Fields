@@ -46,11 +46,11 @@ if ( ! function_exists( 'add_action' ) ) {
 /* Globals and constants
 ***************************************************************************************/
 global $slt_custom_fields, $wp_version;
+define( 'SLT_CF_TEXT_DOMAIN', 'slt-custom-fields' );
 define( 'SLT_CF_TITLE', "Developer's Custom Fields" );
 define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', SLT_CF_TEXT_DOMAIN ) );
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
 define( 'SLT_CF_VERSION', '1.0.1' );
-define( 'SLT_CF_TEXT_DOMAIN', 'slt-custom-fields' );
 $slt_custom_fields = array();
 $slt_custom_fields['prefix'] = '_slt_';
 $slt_custom_fields['hide_default_custom_meta_box'] = true;
