@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @package Developer's Custom Fields
+ * @package Developers_Custom_Fields
  */
 
 /*
@@ -12,6 +12,8 @@ Author: Steve Taylor
 Version: 1.0.1
 Author URI: http://sltaylor.co.uk
 License: GPLv2
+Text Domain: slt-custom-fields
+Domain Path: /lang
 */
 
 /*
@@ -45,9 +47,10 @@ if ( ! function_exists( 'add_action' ) ) {
 ***************************************************************************************/
 global $slt_custom_fields, $wp_version;
 define( 'SLT_CF_TITLE', "Developer's Custom Fields" );
-define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', 'slt-custom-fields' ) );
+define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', SLT_CF_TEXT_DOMAIN ) );
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
 define( 'SLT_CF_VERSION', '1.0.1' );
+define( 'SLT_CF_TEXT_DOMAIN', 'slt-custom-fields' );
 $slt_custom_fields = array();
 $slt_custom_fields['prefix'] = '_slt_';
 $slt_custom_fields['hide_default_custom_meta_box'] = true;
@@ -109,6 +112,7 @@ function slt_cf_init_options() {
 /* Initialize
 ***************************************************************************************/
 add_action( 'init', 'slt_cf_init' );
+add_action( 'plugins_loaded', 'slt_cf_load_text_domain' );
 
 // Don't run the bulk of stuff for AJAX requests
 if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
@@ -147,7 +151,7 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 
 			// Post meta output for admins
 			if ( current_user_can( 'update_core' ) )
-				add_meta_box( 'slt_cf_postmeta_output', __( 'All post meta' ), 'slt_cf_postmeta_output', null, 'advanced', 'low' );
+				add_meta_box( 'slt_cf_postmeta_output', __( 'All post meta', SLT_CF_TEXT_DOMAIN ), 'slt_cf_postmeta_output', null, 'advanced', 'low' );
 		}
 	}
 

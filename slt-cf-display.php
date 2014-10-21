@@ -176,17 +176,17 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 		// Cloning
 		// [under development]
 		/*if ( $field['cloning'] ) {
-			$after_input = '<p class="slt-cf-clone-field"><a href="#" class="button">' . __( "Clone field", 'slt-custom-fields' ) . '</a></p>' . $after_input;
+			$after_input = '<p class="slt-cf-clone-field"><a href="#" class="button">' . __( "Clone field", SLT_CF_TEXT_DOMAIN ) . '</a></p>' . $after_input;
 		}*/
 
 		// Description
 		$field_description = '';
 		if ( $field['type'] == 'textile' ) {
-			$field_description .= '<p class="description textile">' . __( 'You can apply the following simple formatting codes: <b>**bold**</b></span>&nbsp;&nbsp;<i>__italic__</i>&nbsp;&nbsp;&quot;Link text&quot;:http://domain.com', 'slt-custom-fields' ) . '</p>';
+			$field_description .= '<p class="description textile">' . __( 'You can apply the following simple formatting codes: <b>**bold**</b></span>&nbsp;&nbsp;<i>__italic__</i>&nbsp;&nbsp;&quot;Link text&quot;:http://domain.com', SLT_CF_TEXT_DOMAIN ) . '</p>';
 		} else if ( ! current_user_can( 'unfiltered_html' ) ) {
 			// If user can't submit any HTML, display any that is allowed
 			if ( isset( $field['allowed_html'] ) && is_array( $field['allowed_html'] ) && count( $field['allowed_html'] ) ) {
-				$field_description .= '<p class="description html">' . __( "You can use the following HTML tags:", 'slt-custom-fields' );
+				$field_description .= '<p class="description html">' . __( "You can use the following HTML tags:", SLT_CF_TEXT_DOMAIN );
 				// Switcheroo to use the WP allowed_tags function
 				global $allowedtags;
 				$temp = $allowedtags;
@@ -195,14 +195,14 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 				$allowedtags = $temp;
 			} else if ( isset( $field['allowtags'] ) && is_array( $field['allowtags'] ) && count( $field['allowtags'] ) ) {
 				// Deprecated
-				$field_description .= '<p class="description html">' . __( "You can use the following HTML tags:", 'slt-custom-fields' );
+				$field_description .= '<p class="description html">' . __( "You can use the following HTML tags:", SLT_CF_TEXT_DOMAIN );
 				foreach ( $field['allowtags'] as $tag )
 					$field_description .= '<code>&lt;' . $tag . '&gt;</code> ';
 				$field_description .= '</p>';
 			}
 		}
 		if ( isset( $field['autop'] ) && $field['autop'] )
-			$field_description .= '<p class="description autop">' . __( "Line and paragraph breaks will be maintained.", 'slt-custom-fields' ) . '</p>';
+			$field_description .= '<p class="description autop">' . __( "Line and paragraph breaks will be maintained.", SLT_CF_TEXT_DOMAIN ) . '</p>';
 		if ( $field['description'] )
 			$field_description .= '<p class="description"><i>' . $field['description'] . '</i></p>';
 
@@ -285,7 +285,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 						}
 					}
 					if ( $field['sortable'] ) {
-						echo '<p><em>' . __( 'Drag-and-drop to sort the order of these items.', 'slt-custom-fields' ) . '</em></p>';
+						echo '<p><em>' . __( 'Drag-and-drop to sort the order of these items.', SLT_CF_TEXT_DOMAIN ) . '</em></p>';
 						echo '<ul class="slt-cf-sortable">';
 						$cb_tag = 'li';
 					}
@@ -386,7 +386,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					echo '>' . htmlspecialchars( $field_value ) . '</textarea>';
 					// Character counter
 					if ( $field['type'] != "wysiwyg" && isset( $field['charcounter'] ) && $field['charcounter'] )
-						echo '<p>' . __( "Characters so far:", 'slt-custom-fields' ) . ' <input type="text" id="' . $field_name . '-charcounter" disabled="disabled" style="width:4em;color:#000;" value="' . strlen( $field_value ) . '" /></p>';
+						echo '<p>' . __( "Characters so far:", SLT_CF_TEXT_DOMAIN ) . ' <input type="text" id="' . $field_name . '-charcounter" disabled="disabled" style="width:4em;color:#000;" value="' . strlen( $field_value ) . '" /></p>';
 				}
 				// WYSIWYG
 				if ( $field['type'] == 'wysiwyg' ) {
@@ -715,7 +715,7 @@ function slt_cf_input_select( $field_name, $field_value, $prefix = '', $suffix =
 		// Empty option?
 		if ( $empty_option && ! $multiple ) {
 			if ( ! $empty_option_text )
-				$empty_option_text = '[' . __( "None", "slt-custom-fields" ) . ']';
+				$empty_option_text = '[' . __( "None", SLT_CF_TEXT_DOMAIN ) . ']';
 			$output .= '<option value=""';
 			if ( $field_value === null || $field_value === '' )
 				$output .= ' selected="selected"';

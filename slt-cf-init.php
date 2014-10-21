@@ -88,6 +88,18 @@ function slt_cf_admin_init() {
 }
 
 /**
+ * Load text domain
+ *
+ * @since	1.0.1
+ * @return	void
+ */
+function slt_cf_load_text_domain() {
+	$locale = apply_filters( 'plugin_locale', get_locale(), SLT_CF_TEXT_DOMAIN );
+	load_textdomain( SLT_CF_TEXT_DOMAIN, WP_LANG_DIR . '/' . SLT_CF_TEXT_DOMAIN . '/' . SLT_CF_TEXT_DOMAIN . '-' . $locale . '.mo' );
+	load_plugin_textdomain( SLT_CF_TEXT_DOMAIN, false, basename( dirname( __FILE__ ) ) . '/lang/' );
+}
+
+/**
  * Login / registration scripts and styles
  *
  * @since	0.9
@@ -142,7 +154,7 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 			// Google Maps
 			if ( SLT_CF_USE_GMAPS ) {
 				wp_localize_script( 'slt-cf-gmaps', 'slt_cf_gmaps', array(
-					'geocoder_label'	=> esc_html__( 'Find an address', 'slt-custom-fields' )
+					'geocoder_label'	=> esc_html__( 'Find an address', SLT_CF_TEXT_DOMAIN )
 				));
 				// Script is enqueued by slt_cf_gmap() function
 			}
@@ -168,7 +180,7 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 				// Localization / custom JS vars
 				$media_localization = array(
 					'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
-					'button_text'		=> __( 'Select', 'slt-custom-fields' ),
+					'button_text'		=> __( 'Select', SLT_CF_TEXT_DOMAIN ),
 				);
 				if ( $edit_screen ) {
 
@@ -203,7 +215,7 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 function slt_cf_admin_menus() {
 
 	// Database tools
-	add_submenu_page( 'tools.php', SLT_CF_TITLE . ' ' . __( 'database tools', 'slt-custom-fields' ), __( 'Custom Fields data', 'slt-custom-fields' ), 'update_core', 'slt_cf_data_tools', 'slt_cf_database_tools_screen' );
+	add_submenu_page( 'tools.php', SLT_CF_TITLE . ' ' . __( 'database tools', SLT_CF_TEXT_DOMAIN ), __( 'Custom Fields data', SLT_CF_TEXT_DOMAIN ), 'update_core', 'slt_cf_data_tools', 'slt_cf_database_tools_screen' );
 
 }
 
@@ -335,10 +347,10 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'scope'						=> array(),
 				'label_layout'				=> 'block',
 				'hide_label'				=> false,
-				'file_button_label'			=> __( "Select file", "slt-custom-fields" ),
+				'file_button_label'			=> __( "Select file", SLT_CF_TEXT_DOMAIN ),
 				'file_removeable'			=> true,
 				'file_attach_to_post'		=> true,
-				'file_dialog_title'			=> __( "Select file", "slt-custom-fields" ),
+				'file_dialog_title'			=> __( "Select file", SLT_CF_TEXT_DOMAIN ),
 				'file_restrict_to_type'		=> '',
 				'input_prefix'				=> '',
 				'input_suffix'				=> '',
@@ -357,7 +369,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'required'					=> false,
 				'sortable'					=> false,
 				'checkboxes_thumbnail'		=> false,
-				'empty_option_text'			=> '[' . __( "None", "slt-custom-fields" ) . ']',
+				'empty_option_text'			=> '[' . __( "None", SLT_CF_TEXT_DOMAIN ) . ']',
 				'abbreviate_option_labels'	=> true,
 				'width'						=> 0,
 				'height'					=> 0,
@@ -626,7 +638,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 									// New post type, initiate an option group
 									$post_type_object = get_post_type_object( $post_data->post_type );
 									// Adding prefix is necessary to avoid clashes with pages named after post types
-									$field['options'][ __( 'Post type:' ) . ' ' . $post_type_object->label ] = '[optgroup]';
+									$field['options'][ __( 'Post type:', SLT_CF_TEXT_DOMAIN ) . ' ' . $post_type_object->label ] = '[optgroup]';
 									$current_grouping = $post_data->post_type;
 								}
 							} else if ( $field[ 'group_options' ] ) {

@@ -716,7 +716,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 		if ( ! $required ) {
 			$initial_display_value = isset( $values["display"] ) ? $values["display"] : '0';
 
-			$output .= '<p>' . __( 'Use location map?', 'slt-custom-fields' ) . ' <input class="gmap_toggle_display yes" type="radio" name="' . $name . '[display]" id="' . $id . '_display_yes" value="1"' . checked( $initial_display_value, '1', false ) . ' /> <label for="' . $id . '_toggle_display_yes">' . __( 'Yes' ) . '</label> <input class="gmap_toggle_display no" type="radio" name="' . $name . '[display]" id="' . $id . '_display_no" value="0"' . checked( $initial_display_value, '0', false ) . ' /> <label for="' . $id . '_display_no">' . __( 'No' ) . '</label></p>';
+			$output .= '<p>' . __( 'Use location map?', SLT_CF_TEXT_DOMAIN ) . ' <input class="gmap_toggle_display yes" type="radio" name="' . $name . '[display]" id="' . $id . '_display_yes" value="1"' . checked( $initial_display_value, '1', false ) . ' /> <label for="' . $id . '_toggle_display_yes">' . __( 'Yes', SLT_CF_TEXT_DOMAIN ) . '</label> <input class="gmap_toggle_display no" type="radio" name="' . $name . '[display]" id="' . $id . '_display_no" value="0"' . checked( $initial_display_value, '0', false ) . ' /> <label for="' . $id . '_display_no">' . __( 'No', SLT_CF_TEXT_DOMAIN ) . '</label></p>';
 
 			// Wrapper
 			$output .= '<div id="' . $id . '_wrapper"';
@@ -728,7 +728,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 
 		// Geocoder
 		// Currently included via JS
-		//$output .= '<p class="gmap-address"><label for="' . $id . '_address">' . __( 'Find an address', 'slt-custom-fields' ) . ':</label> <input type="text" id="' . $id . '_address" name="' . $id . '_address" value="" class="regular-text" /></p>';
+		//$output .= '<p class="gmap-address"><label for="' . $id . '_address">' . __( 'Find an address', SLT_CF_TEXT_DOMAIN ) . ':</label> <input type="text" id="' . $id . '_address" name="' . $id . '_address" value="" class="regular-text" /></p>';
 
 	}
 
@@ -845,7 +845,7 @@ function slt_cf_file_select_button( $name, $value = 0, $label = 'Select file', $
 	<div>
 		<input type="button" id="<?php echo esc_attr( $name ); ?>_button" class="button-secondary slt-cf-fs-button" value="<?php echo esc_attr( $label ); ?>" />
 		<?php if ( $value && $removable ) { ?>
-			&nbsp;&nbsp;<input type="checkbox" name="<?php echo esc_attr( $name ); ?>_remove" value="1" class="slt-cf-fs-remove" /> <label for="<?php echo esc_attr( $name ); ?>_remove"><?php _e( 'Remove', 'slt-custom-fields' ); ?></label>
+			&nbsp;&nbsp;<input type="checkbox" name="<?php echo esc_attr( $name ); ?>_remove" value="1" class="slt-cf-fs-remove" /> <label for="<?php echo esc_attr( $name ); ?>_remove"><?php _e( 'Remove', SLT_CF_TEXT_DOMAIN ); ?></label>
 		<?php } ?>
 		<input type="hidden" value="<?php echo $attach_to_post ? '1' : '0'; ?>" name="<?php echo esc_attr( $name ); ?>_attach_to_post" id="<?php echo esc_attr( $name ); ?>_attach_to_post" class="slt-cf-fs-attach-to-post" />
 		<input type="hidden" value="<?php echo esc_attr( $value ); ?>" name="<?php echo esc_attr( $name ); ?>" id="<?php echo esc_attr( $name ); ?>" class="slt-cf-fs-value" />
