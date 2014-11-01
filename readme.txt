@@ -93,6 +93,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 == Changelog ==
 = 1.0.1 =
 * Made plugin translatable
+* Added Serbian translation (thanks Ogi Djuraskovic!)
 
 = 1.0 =
 * Dropped support for WP < 3.5 (please update WP, or stick with DCF 0.9.1 if you really have to!)

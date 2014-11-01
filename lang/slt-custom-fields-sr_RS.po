@@ -1,0 +1,151 @@
+# Copyright (C) 2014
+# This file is distributed under the same license as the Developers_Custom_Fields package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Developers_Custom_Fields 1.0.1\n"
+"Report-Msgid-Bugs-To: https://github.com/gyrus/WordPress-Developers-Custom-"
+"Fields/issues\n"
+"POT-Creation-Date: 2014-10-21 21:56+0100\n"
+"PO-Revision-Date: 2014-10-27 08:31+0100\n"
+"Last-Translator: Borisa Djuraskovic <borisad@webhostinghub.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: slt-cf-admin.php:109
+msgid "You do not have sufficient permissions to access this page."
+msgstr "Nemate potrebne dozvole za pristup ovoj stranici."
+
+#: slt-cf-admin.php:120 slt-cf-init.php:218
+msgid "database tools"
+msgstr "Alati baze podataka"
+
+#: slt-cf-admin.php:125
+msgid "The meta tables have been successfully cleaned up."
+msgstr "Meta tabele uspešno su obrisane."
+
+#: slt-cf-admin.php:128
+msgid "Please confirm your action by checking the checkbox!"
+msgstr "Potvrdite svoju aktivnost tako što ćete štiklirati polje!"
+
+#: slt-cf-admin.php:131
+msgid "WARNING!"
+msgstr "UPOZORENJE!"
+
+#: slt-cf-admin.php:131
+msgid "Please <em>back up your database</em> before using any of these tools!"
+msgstr ""
+"Molimo vas da <em>uradite back up svoje baze podataka</em> pre nego što "
+"upotrebite bilo koji od datih alata!  "
+
+#: slt-cf-admin.php:132
+msgid ""
+"Note that these tools will only affect fields in the <code>postmeta</code> "
+"and <code>usermeta</code> tables that have been defined through the "
+"Developer's Custom Fields plugin, i.e. using the <code>slt_cf_register_box</"
+"code> function."
+msgstr ""
+"Imajte u vidu da će ovi alati uticati na polja <code>meta post</code> i "
+"<code>meta korisnik</code> u tabelama koje su određene plugin-om Developer's "
+"Custom Fields, tj. upotrebom <code>slt_cf_register_box</code> funkcije. "
+
+#: slt-cf-admin.php:140
+msgid "Clean up meta tables data"
+msgstr "Obriši podatke iz meta tabela"
+
+#: slt-cf-admin.php:142
+msgid "Use this tool to:"
+msgstr "Koristi ovaj alat za:"
+
+#: slt-cf-admin.php:145
+msgid ""
+"Remove meta table database rows for fields defined for the Developer's "
+"Custom Fields plugin in the past, but which are no longer in use"
+msgstr ""
+"Ukloni redove meta tabele baze podataka za polja koja je u prošlosti "
+"definisao Developer's Custom Fields plugin, a koja se više ne koriste.  "
+
+#: slt-cf-admin.php:151
+msgid "Yes, I've backed up my data!"
+msgstr "Da, uradio sam back up svojih podataka! "
+
+#: slt-cf-admin.php:152
+msgid "Clean up meta tables"
+msgstr "Obriši meta tabele"
+
+#: slt-cf-display.php:185
+msgid ""
+"You can apply the following simple formatting codes: <b>**bold**</b></"
+"span>&nbsp;&nbsp;<i>__italic__</i>&nbsp;&nbsp;&quot;Link text&quot;:http://"
+"domain.com"
+msgstr ""
+"Možete primeniti sledeće jednostavne kodove za formatiranje: <b>**bold**</"
+"b></span>&nbsp;&nbsp;<i>__italic__</i>&nbsp;&nbsp;&quot;Link text&quot;:"
+"http://domain.com"
+
+#: slt-cf-display.php:189 slt-cf-display.php:198
+msgid "You can use the following HTML tags:"
+msgstr "Možete koristiti sledeće HTML oznake:"
+
+#: slt-cf-display.php:205
+msgid "Line and paragraph breaks will be maintained."
+msgstr "Novi redovi i paragrafi biće zadržani."
+
+#: slt-cf-display.php:288
+msgid "Drag-and-drop to sort the order of these items."
+msgstr "Prevucite i pozicionirajte da biste odredili redosled ovih stavki."
+
+#: slt-cf-display.php:389
+msgid "Characters so far:"
+msgstr "Broj karaktera do sad:"
+
+#: slt-cf-display.php:718 slt-cf-init.php:372
+msgid "None"
+msgstr "Nijedan"
+
+#: slt-cf-init.php:157
+msgid "Find an address"
+msgstr "Nađi i odredi:"
+
+#: slt-cf-init.php:183
+msgid "Select"
+msgstr "Odaberi"
+
+#: slt-cf-init.php:218
+msgid "Custom Fields data"
+msgstr "Custom Fields podaci"
+
+#: slt-cf-init.php:350 slt-cf-init.php:353
+msgid "Select file"
+msgstr "Odaberi datoteku"
+
+#: slt-cf-init.php:641
+msgid "Post type:"
+msgstr "Tip posta:"
+
+#: slt-cf-lib.php:719
+msgid "Use location map?"
+msgstr "Koristi mapu za lociranje?"
+
+#: slt-cf-lib.php:719
+msgid "Yes"
+msgstr "Da"
+
+#: slt-cf-lib.php:719
+msgid "No"
+msgstr "Ne"
+
+#: slt-cf-lib.php:848
+msgid "Remove"
+msgstr "Ukloni"
+
+#: slt-custom-fields.php:50
+msgid "No options to choose from"
+msgstr "Nema opcija za odabir od:"
+
+#: slt-custom-fields.php:154
+msgid "All post meta"
+msgstr "Svi meta postovi"
