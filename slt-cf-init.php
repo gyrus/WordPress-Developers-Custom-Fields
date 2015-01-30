@@ -173,36 +173,50 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 
 			// If an edit screen, only bother if there are file upload fields
 			if ( SLT_CF_USE_FILE_SELECT && ( ! $edit_screen || $file_upload_fields ) ) {
-
-				// Enqueue core API
-				wp_enqueue_media();
-
-				// Localization / custom JS vars
-				$media_localization = array(
-					'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
-					'button_text'		=> __( 'Select', SLT_CF_TEXT_DOMAIN ),
-				);
-				if ( $edit_screen ) {
-
-					// Pass through values for all registered buttons
-					foreach ( $file_upload_fields as $file_upload_field ) {
-						$field_name = slt_cf_prefix( 'post' ) . $file_upload_field['name'];
-						$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
-						$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
-						$media_localization['attach_to_post__' . $field_name ] = $file_upload_field['file_attach_to_post'] ? 'yes' : 'no';
-					}
-
-				}
-				wp_localize_script( 'slt-cf-media', 'slt_cf_media', $media_localization );
-
-				// Enqueue media script
-				wp_enqueue_script( 'slt-cf-media' );
-
+				slt_cf_file_select_button_enqueue( $file_upload_fields );
 			}
 
 		}
 
 	}
+
+}
+
+/**
+ * Helper function to enqueue script for media select button
+ *
+ * If using the media select button outside this plugin, call this in your
+ * admin_enqueue_scripts hook function
+ *
+ * @since	1.1
+ * @param	array	$file_upload_fields
+ * @return	void
+ */
+function slt_cf_file_select_button_enqueue( $file_upload_fields = array() ) {
+
+	// Enqueue core API
+	wp_enqueue_media();
+
+	// Localization / custom JS vars
+	$media_localization = array(
+		'ajaxurl'			=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ),
+		'button_text'		=> __( 'Select', SLT_CF_TEXT_DOMAIN ),
+	);
+	if ( $file_upload_fields ) {
+
+		// Pass through values for all registered buttons
+		foreach ( $file_upload_fields as $file_upload_field ) {
+			$field_name = slt_cf_prefix( 'post' ) . $file_upload_field['name'];
+			$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
+			$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
+			$media_localization['attach_to_post__' . $field_name ] = $file_upload_field['file_attach_to_post'] ? 'yes' : 'no';
+		}
+
+	}
+	wp_localize_script( 'slt-cf-media', 'slt_cf_media', $media_localization );
+
+	// Enqueue media script
+	wp_enqueue_script( 'slt-cf-media' );
 
 }
 
