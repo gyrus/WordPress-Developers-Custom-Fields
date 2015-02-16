@@ -401,6 +401,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'gmap_type'					=> 'roadmap',
 				'edit_on_profile'			=> false,
 				'attachments_list_options'	=> array(),
+				'make_query_var'			=> false,
 			);
 			// Defaults dependent on request type
 			switch ( $request_type ) {

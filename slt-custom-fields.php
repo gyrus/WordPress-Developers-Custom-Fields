@@ -58,6 +58,7 @@ $slt_custom_fields['datepicker_default_format'] = 'dd/mm/yy';
 $slt_custom_fields['timepicker_default_format'] = 'hh:mm';
 $slt_custom_fields['timepicker_default_ampm'] = false;
 $slt_custom_fields['boxes'] = array();
+$slt_custom_fields['query_vars'] = array();
 
 // Constants that can be overridden in wp-config.php
 if ( ! defined( 'SLT_CF_USE_GMAPS' ) )
@@ -233,4 +234,4 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 // Leave these functions available for AJAX requests
 require_once( 'slt-cf-init.php' );
 require_once( 'slt-cf-lib.php' );
-
+require_once( 'slt-cf-query-vars.php' );
