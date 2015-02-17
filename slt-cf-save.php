@@ -107,7 +107,9 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 					/* Google map - convert multiple markers string into array
 					*************************************************************/
 					$value = $_POST[ $field_name ];
-					$value['map_markers'] = explode( '|', $value['map_markers'] );
+					if ( ! empty( $value['map_markers'] ) ) {
+						$value['map_markers'] = explode( '|', $value['map_markers'] );
+					}
 
 				} else if ( isset( $_POST[ $field_name ] ) || ( $request_type == 'attachment' && isset( $_POST['attachments'][$object_id][$field_name] ) ) ) {
 

@@ -726,11 +726,6 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 		}
 	}
 
-	// No more need for this...
-	if ( isset( $values['marker_latlng'] ) ) {
-		unset( $values['marker_latlng'] );
-	}
-
 	// Sanitize
 	foreach ( $values as $key => $value ) {
 		$values[ $key ] = str_replace( ' ', '', $value );
