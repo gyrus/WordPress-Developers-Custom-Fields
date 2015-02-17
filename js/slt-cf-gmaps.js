@@ -9,21 +9,21 @@
   var slt_cf_maps = [];
 
 
-  // Function to write a marker array to html with a pipe as delimiter
+  // Function to write a marker array to hidden input with a pipe as delimiter
   function write_markers(container_id) {
 
     // Start with an empty string
-    var markers_html = '';
+    var markers_string = '';
 
     // Loop through the markers, adding each one to the html string
-    for (var key in slt_cf_maps[container_id].markers) { markers_html += slt_cf_maps[container_id].markers[key]; }
+    for (var key in slt_cf_maps[container_id].markers) { markers_string += slt_cf_maps[container_id].markers[key]; }
 
     // Replace ")(" with "|", then remove all other brackets and spaces
-    markers_html = markers_html.replace(/\)\(/g,'|').replace(/\(/g,'').replace(/\)/g,'').replace(/ /g,'');
+    markers_string = markers_string.replace(/\)\(/g,'|').replace(/\(/g,'').replace(/\)/g,'').replace(/ /g,'');
 
-    // Write to the HTML
-    // document.getElementById(container_id + '_markers').innerHTML = markers_html;
-    console.log(markers_html);
+    // Write to the input
+    document.getElementById(container_id + '_map_markers').value = markers_string;
+    //console.log(markers_string);
 
   }
 
@@ -95,17 +95,6 @@
   }
 
 
-// **********************************************************************
-// ********** marker_latlng replaced with map_markers variable **********
-// **********************************************************************
-// (See "Catch old single marker fields" below)
-// It seems possible to  simply replace the passed marker_latlng variable with a map_markers array.
-// If map_markers is a string variable type, it's converted to an array and can be saved
-// in a new map_markers custom field. It works on output with the old single fields too.
-// Can't think of any gotchas with that yet - will keep mulling it over, but I can't see
-// it being a problem other than stray _slt_cf_marker_latlng postmeta fields in the database
-
-
   // Write out a map for input or output
   function slt_cf_gmap_init( container_id, map_mode, markers_available, map_markers, map_center_latlng, map_zoom, gmap_type, callback ) {
 
@@ -148,8 +137,8 @@
       // Set the current number of markers
       slt_cf_maps[container_id].marker_total = 0;
 
-      // Catch old single marker fields
-      if (typeof(map_markers) !== 'array') { map_markers = [map_markers]; }
+      // Catch old single marker fields - possibly not necessary but just in case
+      if ( ! map_markers instanceof Array) { map_markers = [ map_markers ]; }
 
       // If there are existing markers
       if (map_markers.length > 0) {

@@ -623,12 +623,14 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	} else if ( in_array( $object_type, array( 'post', 'user' ) ) && ( strlen( $name ) < slt_cf_prefix( $object_type ) || substr( $name, 0, strlen( slt_cf_prefix( $object_type ) ) ) != slt_cf_prefix( $object_type ) ) ) {
 		$name = slt_cf_field_key( $name, $object_type );
 	}
-	if ( $location_marker === null )
+	if ( $location_marker === null ) {
 		$location_marker = 'true';
-	else
+	} else {
 		$location_marker = $location_marker ? 'true' : 'false';
-	if ( empty( $map_type_id ) )
+	}
+	if ( empty( $map_type_id ) ) {
 		$map_type_id = 'roadmap';
+	}
 
 	// Values
 	if ( $type == 'output' && $object_type != 'custom' && ( empty( $values ) || $values == 'stored_data' ) ) {
@@ -659,42 +661,53 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 			}
 		}
 		// No map field?
-		if ( ! $map_field )
+		if ( ! $map_field ) {
 			return;
+		}
 		// Pass any width and height
-		if ( ! $width )
+		if ( ! $width ) {
 			$width = $map_field['width'];
-		if ( ! $height )
+		}
+		if ( ! $height ) {
 			$height = $map_field['height'];
+		}
 		// Use the found name, get values
 		$name = slt_cf_field_key( $map_field['name'] );
-		if ( ! $values = slt_cf_field_value( $map_field['name'] ) )
+		if ( ! $values = slt_cf_field_value( $map_field['name'] ) ) {
 			$values = array();
+		}
+
 	} else {
+
 		// If an input and there's no values, this must be a newly created item
 		// Make sure $values is an empty array
-		if ( $type == 'input' && ! is_array( $values ) )
+		if ( $type == 'input' && ! is_array( $values ) ) {
 			$values = array();
+		}
 		// Defaults if there's no field
-		if ( empty( $width ) )
+		if ( empty( $width ) ) {
 			$width = 500;
-		if ( empty( $height ) )
+		}
+		if ( empty( $height ) ) {
 			$height = 300;
+		}
+
 	}
 
 	// Check values is an array
-	if ( ! is_array( $values ) )
+	if ( ! is_array( $values ) ) {
 		return false;
+	}
 
 	// Check if optional map is flagged to not display for output
-	if ( $type == 'output' && array_key_exists( 'display', $values ) && ! $values["display"] )
+	if ( $type == 'output' && array_key_exists( 'display', $values ) && ! $values["display"] ) {
 		return false;
+	}
 
 	// Set values defaults
 	$values_defaults = array(
-		'centre_latlng'	=> '55.877704802038835,-4.523828125000029',
-		'zoom'			=> 5,
-		'marker_latlng'	=> '55.877704802038835,-4.523828125000029'
+		'centre_latlng'		=> '55.877704802038835,-4.523828125000029',
+		'zoom'				=> 5,
 	);
 	if ( $type == 'input' ) {
 		$values_defaults['bounds_sw'] = '49.78401952556854,-11.335351562500023';
@@ -702,9 +715,21 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	}
 	$values = wp_parse_args( $values, $values_defaults );
 
+	// Need to deal with markers separately to cater for 1.1 change to multiple markers
+	if ( empty( $values['map_markers'] ) ) {
+		if ( ! empty( $values['marker_latlng'] ) ) {
+			// Old single value passed through
+			$values[ 'map_markers' ] = array( $values[ 'marker_latlng' ] );
+		} else {
+			// New multiple values default
+			$values[ 'map_markers' ] = array( '55.877704802038835,-4.523828125000029' );
+		}
+	}
+
 	// Sanitize
-	foreach ( $values as $key => $value )
+	foreach ( $values as $key => $value ) {
 		$values[ $key ] = str_replace( ' ', '', $value );
+	}
 
 	// Name might contain square brackets for PHP $_POST arrays - set the ID right
 	$id = str_replace( array( '[', ']' ), array( '_', '' ), $name ) . '_map_container';
@@ -720,8 +745,9 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 
 			// Wrapper
 			$output .= '<div id="' . $id . '_wrapper"';
-			if ( ! $initial_display_value )
+			if ( ! $initial_display_value ) {
 				$output .= ' style="display:none;"';
+			}
 			$output .= '>' . "\n";
 
 		}
@@ -738,31 +764,43 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	// Hidden fields?
 	if ( $type == 'input' ) {
 		foreach ( $values as $key => $value ) {
-			if ( $key != 'display' )
-				$output .= '<input type="hidden" id="' . esc_attr( $id . "_" . $key ) .'" name="' . esc_attr( $name . "[" . $key . "]" ) .'" value="' . esc_attr( $value ) . '" />' . "\n";
+			if ( $key != 'display' ) {
+				$output .= '<input type="hidden" id="' . esc_attr( $id . "_" . $key ) .'" name="' . esc_attr( $name . "[" . $key . "]" ) .'" value="';
+				if ( $key == 'map_markers' ) {
+					// Multiple map markers output as pipe-delimited string here
+					$output .= esc_attr( implode( "|", $value ) );
+				} else {
+					$output .= esc_attr( $value );
+				}
+				$output .= '" />' . "\n";
+			}
 		}
 	}
 
 	// JavaScript
 	$inline_script = "jQuery( document ).ready( function($) {\n";
-	$inline_script .= "slt_cf_gmap_init( '{$id}', '{$type}', {$location_marker}, '{$values['marker_latlng']}', '{$values['centre_latlng']}', {$values['zoom']}, '{$map_type_id}'";
+	// Output multiple markers array as JS array
+	$inline_script .= "slt_cf_gmap_init( '{$id}', '{$type}', {$location_marker}, [ '" . implode( "','", $values['map_markers'] ) . "' ], '{$values['centre_latlng']}', {$values['zoom']}, '{$map_type_id}'";
 	// Callback?
-	if ( $js_callback )
+	if ( $js_callback ) {
 		$inline_script .= ", '{$js_callback}'";
+	}
 	$inline_script .= " );\n";
 	$inline_script .= "});\n";
 	slt_cf_collect_dynamic_inline_footer_scripts( $inline_script );
 
 	// Close wrapper?
-	if ( $type == 'input' && ! $required )
+	if ( $type == 'input' && ! $required ) {
 		$output .= '</div>' . "\n";
+	}
 
 	$map_count++;
 	// Output?
-	if ( $echo )
+	if ( $echo ) {
 		echo $output;
-	else
+	} else {
 		return $output;
+	}
 }
 
 /**

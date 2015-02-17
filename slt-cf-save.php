@@ -17,10 +17,11 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 	global $slt_custom_fields, $wpdb;
 
 	// Metadata type
-	if ( $request_type == 'attachment' )
+	if ( $request_type == 'attachment' ) {
 		$metadata_type = 'post';
-	else
+	} else {
 		$metadata_type = $request_type;
+	}
 
 	// Loop through boxes
 	foreach ( $slt_custom_fields['boxes'] as $box ) {
