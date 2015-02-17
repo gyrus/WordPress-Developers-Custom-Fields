@@ -16,7 +16,7 @@ function slt_cf_query_vars( $query_vars ) {
 	// Go through all fields and add query vars accordingly
 	foreach ( $slt_custom_fields['boxes'] as $box_key => $box ) {
 		foreach ( $box['fields'] as $field_key => $field ) {
-			if ( $field['make_query_var'] ) {
+			if ( ! empty( $field['make_query_var'] ) ) {
 				if ( ! in_array( $field['name'], $query_vars ) ) {
 					$query_vars[] = $field['name'];
 					$slt_custom_fields['query_vars'][] = $field['name'];
