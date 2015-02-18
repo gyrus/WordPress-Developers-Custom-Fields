@@ -40,29 +40,32 @@ add_action( 'parse_query', 'slt_cf_manage_query_string' );
 function slt_cf_manage_query_string( $query ) {
 	global $wp, $slt_custom_fields;
 
-	// Is the flag set?
-	if ( $query->get( 'dcf_use_query_string' ) ) {
+	// Front-end, main query or flag set?
+	if ( ! is_admin() && ( is_main_query() || $query->get( 'dcf_use_query_string' ) ) ) {
 
 		// Get custom taxonomies in case we need to deal with them
-		$custom_taxonomies = get_taxonomies( array( '_builtin' => false ) );
+		if ( $query->get( 'dcf_use_query_string' ) ) {
+			$custom_taxonomies = get_taxonomies( array( '_builtin' => false ) );
+		}
 
 		// Go through the query vars already parsed by the main request, and add in
 		foreach ( $wp->query_vars as $key => $value ) {
 
-			// Avoid 'queried object' vars only relevant to the main loop query
-			// Also ignore vars without a value
-			if ( ! in_array( $key, array( 'page', 'pagename' ) ) && ! empty( $value ) ) {
+			// Ignore vars without a value
+			if ( ! empty( $value ) ) {
 
 				// Check if it's a custom field query var
 				if ( in_array( $key, $slt_custom_fields['query_vars'] ) ) {
 
 					// Add to meta_query
-					$query->set( 'meta_query', array_merge( $query->get( 'meta_query' ), array( array(
+					$current_meta_query = is_array( $query->get( 'meta_query' ) ) ? $query->get( 'meta_query' ) : array();
+					$query->set( 'meta_query', array_merge( $current_meta_query, array( array(
 						'key'	=> slt_cf_field_key( $key ),
 						'value'	=> $value
 					))));
 
-				} else if ( ! $query->get( 'dcf_custom_field_query_vars_only' ) ) {
+				// The main query will handle taxonomies itself
+				} else if ( ! is_main_query() && ! $query->get( 'dcf_custom_field_query_vars_only' ) ) {
 
 					// Also deal with non-custom field query vars
 					if ( in_array( $key, $custom_taxonomies ) ) {
