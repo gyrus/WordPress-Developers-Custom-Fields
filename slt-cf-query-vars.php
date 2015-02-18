@@ -40,13 +40,11 @@ add_action( 'parse_query', 'slt_cf_manage_query_string' );
 function slt_cf_manage_query_string( $query ) {
 	global $wp, $slt_custom_fields;
 
-	// Front-end, main query or flag set?
-	if ( ! is_admin() && ( is_main_query() || $query->get( 'dcf_use_query_string' ) ) ) {
+	// Front-end and flag set?
+	if ( ! is_admin() && $query->get( 'dcf_use_query_string' ) ) {
 
 		// Get custom taxonomies in case we need to deal with them
-		if ( $query->get( 'dcf_use_query_string' ) ) {
-			$custom_taxonomies = get_taxonomies( array( '_builtin' => false ) );
-		}
+		$custom_taxonomies = get_taxonomies( array( '_builtin' => false ) );
 
 		// Go through the query vars already parsed by the main request, and add in
 		foreach ( $wp->query_vars as $key => $value ) {
@@ -64,8 +62,8 @@ function slt_cf_manage_query_string( $query ) {
 						'value'	=> $value
 					))));
 
-				// The main query will handle taxonomies itself
-				} else if ( ! is_main_query() && ! $query->get( 'dcf_custom_field_query_vars_only' ) ) {
+				// Handle taxonomies?
+				} else if ( ! $query->get( 'dcf_custom_field_query_vars_only' ) ) {
 
 					// Also deal with non-custom field query vars
 					if ( in_array( $key, $custom_taxonomies ) ) {
