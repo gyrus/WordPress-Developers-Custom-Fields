@@ -752,13 +752,9 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 
 		}
 
-		// Instructions
+		// Geocoder and clicking instructions
 		// Currently included via JS
-		// $output .= '<div class="gmap_instructions">Click on the map to add a marker. Click a marker to remove it.</div>';
-
-		// Geocoder
-		// Currently included via JS
-		//$output .= '<p class="gmap-address"><label for="' . $id . '_address">' . __( 'Find an address', SLT_CF_TEXT_DOMAIN ) . ':</label> <input type="text" id="' . $id . '_address" name="' . $id . '_address" value="" class="regular-text" /></p>';
+		//$output .= '<p class="gmap-address"><small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br><br></small><label for="' . $id . '_address">' . __( 'Find an address', SLT_CF_TEXT_DOMAIN ) . ':</label> <input type="text" id="' . $id . '_address" name="' . $id . '_address" value="" class="regular-text" /></p>';
 
 	}
 
