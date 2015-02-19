@@ -177,13 +177,6 @@
 
       }
 
-    }
-
-
-
-    // Extra settings for input maps
-    if (map_mode === 'input') {
-
       // Set a variable to store double click status
       slt_cf_maps[container_id].doubleClick = false;
 
@@ -210,6 +203,13 @@
         } }, 250);
 
       });
+
+    }
+
+
+
+    // Extra settings for input maps
+    if (map_mode === 'input') {
 
       // Listen for changes to the map bounds
       google.maps.event.addListener( slt_cf_maps[container_id].map, 'bounds_changed', function() {
@@ -238,16 +238,18 @@
         // Kick off the geocoder on page load
         jQuery( document ).ready( function( $ ) {
 
-
-
           // Check if we can use the placeholder instead of a label
           var gmap_geocoder_label_class = '';
           if (document.createElement('input').placeholder !== 'undefined') {
             gmap_geocoder_label_class = 'screen-reader-text';
           }
 
+          // Make the marker instructions conditional
+          var marker_instructions = '';
+          if (markers_available) { marker_instructions = '<small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br><br></small>'; }
+
           // Write the autocomplete form
-          $( '#' + container_id ).after( '<p class="gmap-address"><small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br><br></small><label for="' + container_id + '_address" class="' + gmap_geocoder_label_class + '">' + slt_cf_gmaps.geocoder_label + ':</label><input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" style="width:100%;" placeholder="Find an address" /></p>' );
+          $( '#' + container_id ).after( '<p class="gmap-address">' + marker_instructions + '<label for="' + container_id + '_address" class="' + gmap_geocoder_label_class + '">' + slt_cf_gmaps.geocoder_label + ':</label><input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" style="width:100%;" placeholder="Find an address" /></p>' );
 
           // Activate the autocomplete functionality
           $( '#' + container_id + '_address' ).autocomplete({
