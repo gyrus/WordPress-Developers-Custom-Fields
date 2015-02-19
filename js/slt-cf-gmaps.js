@@ -1,9 +1,8 @@
 // Google Maps script for Developer's Custom Fields
 // Contributed by adriantoll
 // Be careful of center (in this script) / centre (DCF form field IDs)
-/*global google */
-/*global slt_cf_gmaps */
-
+/* global google, slt_cf_gmaps */
+/* exported slt_cf_gmap_init */
 
   // Set up an array for multiple maps and markers
   var slt_cf_maps = [];
@@ -15,8 +14,18 @@
     // Start with an empty string
     var markers_string = '';
 
-    // Loop through the markers, adding each one to the html string
-    for (var key in slt_cf_maps[container_id].markers) { markers_string += slt_cf_maps[container_id].markers[key]; }
+    // Loop through the markers
+    for (var key in slt_cf_maps[container_id].markers) {
+
+      // Filter unwanted properties from the prototype
+      if (slt_cf_maps[container_id].markers.hasOwnProperty(key)) {
+
+        // Add this marker to the HTML string
+        markers_string += slt_cf_maps[container_id].markers[key];
+
+      }
+
+    }
 
     // Replace ")(" with "|", then remove all other brackets and spaces
     markers_string = markers_string.replace(/\)\(/g,'|').replace(/\(/g,'').replace(/\)/g,'').replace(/ /g,'');
@@ -31,11 +40,15 @@
   // Function to add a marker to a map
   function add_marker(container_id,new_marker_latlng) {
 
+    // Set the marker var here to avoid duplicate
+    // definition errors in jshint
+    var marker;
+
     // If it's not an input map
     if (slt_cf_maps[container_id].map._slt_cf_input_map === false) {
 
       // Add a simple marker to the map
-      var marker = new google.maps.Marker({
+      marker = new google.maps.Marker({
         map: slt_cf_maps[container_id].map,
         position: new_marker_latlng,
       });
@@ -46,7 +59,7 @@
     else {
 
       // Add an interactive marker to the map
-      var marker = new google.maps.Marker({
+      marker = new google.maps.Marker({
         draggable: true,
         map: slt_cf_maps[container_id].map,
         position: new_marker_latlng,
@@ -66,7 +79,7 @@
       write_markers(container_id);
 
       // Set an event listener for a click on the marker
-      google.maps.event.addListener(marker, 'click', function(e) {
+      google.maps.event.addListener(marker, 'click', function() {
 
         // Remove the marker from the array
         delete slt_cf_maps[container_id].markers[marker.id];
@@ -146,14 +159,19 @@
         // Loop through the markers
         for (var key in map_markers) {
 
-          // Split the latlng
-          var existing_marker_latlng = map_markers[key].split(',');
+          // Filter unwanted properties from the prototype
+          if (map_markers.hasOwnProperty(key)) {
 
-          // Create a new latlng object
-          existing_marker_latlng = new google.maps.LatLng( existing_marker_latlng[0], existing_marker_latlng[1] );
+            // Split the latlng
+            var existing_marker_latlng = map_markers[key].split(',');
 
-          // Add the marker
-          add_marker(container_id, existing_marker_latlng);
+            // Create a new latlng object
+            existing_marker_latlng = new google.maps.LatLng( existing_marker_latlng[0], existing_marker_latlng[1] );
+
+            // Add the marker
+            add_marker(container_id, existing_marker_latlng);
+
+          }
 
         }
 
@@ -170,7 +188,7 @@
       slt_cf_maps[container_id].doubleClick = false;
 
       // Function to deal with double clicks
-      google.maps.event.addListener( slt_cf_maps[container_id].map, 'dblclick', function(e) {
+      google.maps.event.addListener( slt_cf_maps[container_id].map, 'dblclick', function() {
 
         // Set the double click status to true so single click functions doesn't get triggered
         slt_cf_maps[container_id].doubleClick = true;
@@ -220,8 +238,16 @@
         // Kick off the geocoder on page load
         jQuery( document ).ready( function( $ ) {
 
+
+
+          // Check if we can use the placeholder instead of a label
+          var gmap_geocoder_label_class = '';
+          if (document.createElement('input').placeholder !== 'undefined') {
+            gmap_geocoder_label_class = 'screen-reader-text';
+          }
+
           // Write the autocomplete form
-          $( '#' + container_id ).after( '<p class="gmap-address"><label for="' + container_id + '_address">' + slt_cf_gmaps.geocoder_label + ':</label> <input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" /></p>' );
+          $( '#' + container_id ).after( '<p class="gmap-address"><small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br><br></small><label for="' + container_id + '_address" class="' + gmap_geocoder_label_class + '">' + slt_cf_gmaps.geocoder_label + ':</label><input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" style="width:100%;" placeholder="Find an address" /></p>' );
 
           // Activate the autocomplete functionality
           $( '#' + container_id + '_address' ).autocomplete({

@@ -744,13 +744,17 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 			$output .= '<p>' . __( 'Use location map?', SLT_CF_TEXT_DOMAIN ) . ' <input class="gmap_toggle_display yes" type="radio" name="' . $name . '[display]" id="' . $id . '_display_yes" value="1"' . checked( $initial_display_value, '1', false ) . ' /> <label for="' . $id . '_toggle_display_yes">' . __( 'Yes', SLT_CF_TEXT_DOMAIN ) . '</label> <input class="gmap_toggle_display no" type="radio" name="' . $name . '[display]" id="' . $id . '_display_no" value="0"' . checked( $initial_display_value, '0', false ) . ' /> <label for="' . $id . '_display_no">' . __( 'No', SLT_CF_TEXT_DOMAIN ) . '</label></p>';
 
 			// Wrapper
-			$output .= '<div id="' . $id . '_wrapper"';
+			$output .= '<div id="' . $id . '_wrapper" style="width:' . esc_attr( $width ) . 'px;';
 			if ( ! $initial_display_value ) {
-				$output .= ' style="display:none;"';
+				$output .= 'display:none;';
 			}
-			$output .= '>' . "\n";
+			$output .= '">' . "\n";
 
 		}
+
+		// Instructions
+		// Currently included via JS
+		// $output .= '<div class="gmap_instructions">Click on the map to add a marker. Click a marker to remove it.</div>';
 
 		// Geocoder
 		// Currently included via JS
