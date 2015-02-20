@@ -17,11 +17,10 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 	global $slt_custom_fields, $wpdb;
 
 	// Metadata type
-	if ( $request_type == 'attachment' ) {
+	if ( $request_type == 'attachment' )
 		$metadata_type = 'post';
-	} else {
+	else
 		$metadata_type = $request_type;
-	}
 
 	// Loop through boxes
 	foreach ( $slt_custom_fields['boxes'] as $box ) {
@@ -102,24 +101,14 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 					*************************************************************/
 					$value = ( isset( $_POST[ $field_name ] ) ? '1' : '0' );
 
-				} else if ( $field['type'] == 'gmap' ) {
-
-					/* Google map - convert multiple markers string into array
-					*************************************************************/
-					$value = $_POST[ $field_name ];
-					if ( ! empty( $value['map_markers'] ) ) {
-						$value['map_markers'] = explode( '|', $value['map_markers'] );
-					}
-
 				} else if ( isset( $_POST[ $field_name ] ) || ( $request_type == 'attachment' && isset( $_POST['attachments'][$object_id][$field_name] ) ) ) {
 
 					/* Other field types
 					*************************************************************/
-					if ( isset( $_POST['attachments'][$object_id][$field_name] ) ) {
+					if ( isset( $_POST['attachments'][$object_id][$field_name] ) )
 						$value =  $_POST['attachments'][$object_id][$field_name];
-					} else {
+					else
 						$value = $_POST[ $field_name ];
-					}
 
 					// Deal with string inputs
 					if ( in_array( $field['type'], array( 'text', 'textarea', 'textile', 'wysiwyg' ) ) ) {
@@ -155,9 +144,8 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 						}
 
 						// Auto-paragraphs for WYSIWYG and other fields with autop set
-						if ( $field['type'] == 'wysiwyg' || $field['autop'] ) {
+						if ( $field['type'] == 'wysiwyg' || $field['autop'] )
 							$value = wpautop( $value );
-						}
 
 					}
 
@@ -178,9 +166,8 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 						delete_metadata( $request_type, $object_id, $field_name );
 						// Add each new value separately, if there are values
 						if ( $value ) {
-							foreach ( $value as $value_item ) {
+							foreach ( $value as $value_item )
 								add_metadata( $metadata_type, $object_id, $field_name, $value_item, false );
-							}
 						}
 					} else if ( $value === '' || is_null( $value ) ) {
 						// Delete field if it exists (and don't create it if it doesn't!)
