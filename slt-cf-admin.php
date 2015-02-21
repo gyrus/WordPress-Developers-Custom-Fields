@@ -28,6 +28,48 @@ function slt_cf_admin_notices() {
 
 }
 
+add_action('in_plugin_update_message-'.plugin_basename(__FILE__), 'slt_cf_upgrade_warnings');
+/**
+ * Check for any plugin update warning notices
+ *
+ * @since	1.1
+ */
+function slt_cf_upgrade_warnings() {
+
+	// Get the warnings json file from GitHub
+	if ( $version_warnings_json = file_get_contents('https://raw.githubusercontent.com/gyrus/WordPress-Developers-Custom-Fields/master/slt-cf-version-warnings.json') ) {
+
+		// Decode the json
+		$version_warnings = json_decode($version_warnings_json);
+
+		// Get the installed plugin version
+		$plugin_data = get_plugin_data(__FILE__);
+		$plugin_version = $plugin_data['Version'];
+
+		// Loop through the warnings
+		$current_warnings = array();
+		foreach ($version_warnings as $version => $warning) {
+
+			// If the warning version is greater than the installed version
+			if ( (float)$version > (float)$plugin_version ) {
+
+				// Add the warning
+				$current_warnings[] = '<dt style="color:#d54e21;font-size:1.1em;font-weight:bold">Version '. $version .'</dt><dd style="margin-left: 0;">' . $warning . '</dd>';
+
+			}
+
+		}
+
+		// Warnings to output?
+		if ( $current_warnings ) {
+			echo '<dl>' . implode( "\n", $current_warnings ) . '</dl>';
+		}
+
+	}
+
+}
+
+
 /* Database tools
 ***************************************************************************************/
 

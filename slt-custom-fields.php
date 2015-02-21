@@ -61,10 +61,13 @@ $slt_custom_fields['boxes'] = array();
 $slt_custom_fields['query_vars'] = array();
 
 // Constants that can be overridden in wp-config.php
-if ( ! defined( 'SLT_CF_USE_GMAPS' ) )
+if ( ! defined( 'SLT_CF_USE_GMAPS' ) ) {
 	define( 'SLT_CF_USE_GMAPS', true );
-if ( ! defined( 'SLT_CF_USE_FILE_SELECT' ) )
+}
+if ( ! defined( 'SLT_CF_USE_FILE_SELECT' ) ) {
 	define( 'SLT_CF_USE_FILE_SELECT', true );
+}
+
 
 /* Options stored in database
 ***************************************************************************************/
@@ -110,50 +113,11 @@ function slt_cf_init_options() {
 	return $options;
 }
 
+
 /* Initialize
 ***************************************************************************************/
 add_action( 'init', 'slt_cf_init' );
 add_action( 'plugins_loaded', 'slt_cf_load_text_domain' );
-
-// Check for any necessary plugin upgrade warnings
-add_action('in_plugin_update_message-'.plugin_basename(__FILE__), 'slt_cf_upgrade_warnings');
-function slt_cf_upgrade_warnings() {
-
-	// Get the warnings json file from GitHub
-  if ( $version_warnings_json = file_get_contents('https://raw.githubusercontent.com/gyrus/WordPress-Developers-Custom-Fields/master/slt-cf-version-warnings.json') ) {
-
-  	// Decode the json
-  	$version_warnings = json_decode($version_warnings_json);
-
-  	// Get the installed plugin version
-		$plugin_data = get_plugin_data(__FILE__);
-		$plugin_version = $plugin_data['Version'];
-
-		// Iterator
-		$i = 0;
-
-		// Loop through the warnings
-		foreach ($version_warnings as $version => $warning) {
-
-			// If the warning version is greater than the installed version
-			if ( (float)$version > (float)$plugin_version ) {
-
-				// Echo an extra line break if it's the first warning
-				if ($i === 0) { echo '<br>'; }
-
-				// Echo the warning
-				echo '<br><strong style="color:#d54e21">Version '. $version .'</strong> ' . $warning;
-
-				// Iterate
-				$i++;
-
-			}
-
-		}
-
-  }
-
-}
 
 // Don't run the bulk of stuff for AJAX requests
 if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
