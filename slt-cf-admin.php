@@ -198,3 +198,18 @@ function slt_cf_database_tools_screen() {
 
 }
 
+
+/**
+ * Manage 4.2+ term splitting
+ *
+ * @since	1.1
+ */
+function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
+	global $slt_custom_fields;
+
+	// Find fields that use options_type 'terms'
+	foreach ( $slt_custom_fields['boxes'] as $box_key => $box ) {
+
+	}
+
+}

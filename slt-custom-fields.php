@@ -127,6 +127,7 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	add_action( 'admin_enqueue_scripts', 'slt_cf_admin_enqueue_scripts' ); // Scripts and styles
 	add_action( 'admin_menu', 'slt_cf_admin_menus' );
 	add_action( 'admin_notices', 'slt_cf_admin_notices' );
+	add_action( 'split_shared_term', 'slt_cf_split_shared_term', 10, 4 );
 
 	// Login / register styles
 	add_action( 'login_enqueue_scripts', 'slt_cf_login_enqueue_scripts', 10 );
