@@ -215,3 +215,8 @@ ul.slt-cf-attachments-list li label {
 ul.slt-cf-attachments-list li label .slt-cf-attachment {
   margin-bottom: .6em;
 }
+/* Image previews */
+.slt-fs-preview img {
+  max-width: 100%;
+  height: auto;
+}

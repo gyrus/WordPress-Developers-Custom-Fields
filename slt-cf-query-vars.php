@@ -55,11 +55,36 @@ function slt_cf_manage_query_string( $query ) {
 				// Check if it's a custom field query var
 				if ( in_array( $key, $slt_custom_fields['query_vars'] ) ) {
 
+					// Set up if this is the Simple Events date field
+					$compare = '=';
+					if ( defined( 'SLT_SE_EVENT_DATE_FIELD' ) && $key == SLT_SE_EVENT_DATE_FIELD && defined( 'SLT_SE_EVENT_DATE_QUERY_VAR_FORMAT' ) && SLT_SE_EVENT_DATE_QUERY_VAR_FORMAT ) {
+						$compare = 'BETWEEN';
+						switch ( SLT_SE_EVENT_DATE_QUERY_VAR_FORMAT ) {
+							case 'Y': {
+								$from_date = $value . '/01/01';
+								$to_date = $value . '/12/31';
+								break;
+							}
+							case 'mY': {
+								$month = ( strlen( $value ) > 1 ) ? substr( $value, 0, 2 ) : '01';
+								$year = ( strlen( $value ) > 5 ) ? substr( $value, 2, 4 ) : date( 'Y' );
+								$from_date = $year . '/' . $month . '/01';
+								$to_date = $year . '/' . $month . '/' . str_pad( cal_days_in_month( CAL_GREGORIAN, $month, $year ), 2, '0', STR_PAD_LEFT );
+								break;
+							}
+						}
+						$value = array(
+							$from_date . ' 00:00',
+							$to_date . ' 23:59'
+						);
+					}
+
 					// Add to meta_query
 					$current_meta_query = is_array( $query->get( 'meta_query' ) ) ? $query->get( 'meta_query' ) : array();
 					$query->set( 'meta_query', array_merge( $current_meta_query, array( array(
-						'key'	=> slt_cf_field_key( $key ),
-						'value'	=> $value
+						'key'		=> slt_cf_field_key( $key ),
+						'value'		=> $value,
+						'compare'	=> $compare,
 					))));
 
 				// Handle taxonomies?

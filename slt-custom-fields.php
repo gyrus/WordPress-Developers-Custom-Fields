@@ -61,10 +61,13 @@ $slt_custom_fields['boxes'] = array();
 $slt_custom_fields['query_vars'] = array();
 
 // Constants that can be overridden in wp-config.php
-if ( ! defined( 'SLT_CF_USE_GMAPS' ) )
+if ( ! defined( 'SLT_CF_USE_GMAPS' ) ) {
 	define( 'SLT_CF_USE_GMAPS', true );
-if ( ! defined( 'SLT_CF_USE_FILE_SELECT' ) )
+}
+if ( ! defined( 'SLT_CF_USE_FILE_SELECT' ) ) {
 	define( 'SLT_CF_USE_FILE_SELECT', true );
+}
+
 
 /* Options stored in database
 ***************************************************************************************/
@@ -109,6 +112,7 @@ function slt_cf_init_options() {
 
 	return $options;
 }
+
 
 /* Initialize
 ***************************************************************************************/
