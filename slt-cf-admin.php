@@ -205,11 +205,81 @@ function slt_cf_database_tools_screen() {
  * @since	1.1
  */
 function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
-	global $slt_custom_fields;
+	global $slt_custom_fields, $slt_custom_fields_all_boxes, $wpdb;
+
+	// Has this request initialised the fields already?
+	// If so, we need to grab the copy made of all the box data
+	if ( isset( $slt_custom_fields_all_boxes ) && is_array( $slt_custom_fields_all_boxes ) && count( $slt_custom_fields_all_boxes ) ) {
+		$boxes = $slt_custom_fields_all_boxes;
+	} else {
+		$boxes = $slt_custom_fields['boxes'];
+	}
 
 	// Find fields that use options_type 'terms'
-	foreach ( $slt_custom_fields['boxes'] as $box_key => $box ) {
+	foreach ( $boxes as $box_key => $box ) {
+		foreach ( $box['fields'] as $field_key => $field ) {
+			// For multiple checkboxes and select fields which have options_type 'terms'...
+			if ( ( $field['type'] == 'checkboxes' || ( $field['type'] == 'select' && $field['multiple'] ) ) && $field['options_type'] == 'terms' ) {
 
+				// Which meta table to look in?
+				$meta_table = $box['type'] == 'user' ? 'usermeta' : 'postmeta';
+				$meta_type = $box['type'] == 'user' ? 'user' : 'post';
+				$meta_key = slt_cf_field_key( $field['name'], $box['type'] );
+				$object_id_column = $meta_type . '_id';
+
+				// Get all records for this field
+				$field_records = $wpdb->get_results("
+					SELECT		*
+					FROM		$wpdb->$meta_table
+					WHERE		meta_key	= '" . $meta_key . "'
+				");
+
+				// Check if any contain the old term ID
+				foreach ( $field_records as $field_record ) {
+					$new_field_value = null;
+
+					// Check for a serialise single entry
+					if ( $field['single'] ) {
+
+						// Cater for serialized arrays
+						$field_values = maybe_unserialize( $field_record->meta_value );
+						if ( ! is_array( $field_values ) ) {
+							// Just in case
+							$field_values = (array) $field_values;
+						}
+
+						// If there are instance of the old term ID...
+						if ( in_array( $old_term_id, $field_values ) ) {
+
+							// Update them
+							foreach ( $field_values as &$field_value ) {
+								if ( $field_value == $old_term_id ) {
+									$field_value = $new_term_id;
+								}
+							}
+
+							// Pass them through to update the DB
+							$new_field_value = $field_values;
+
+						}
+
+					} else {
+
+						// Just a single value record, pass through to update the DB
+						if ( $field_record->meta_value == $old_term_id ) {
+							$new_field_value = $new_term_id;
+						}
+
+					}
+
+					if ( ! is_null( $new_field_value ) ) {
+						update_metadata( $meta_type, $field_record->{$object_id_column}, $meta_key, $new_field_value );
+					}
+
+				}
+
+			}
+		}
 	}
 
 }

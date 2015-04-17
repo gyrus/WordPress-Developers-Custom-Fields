@@ -67,6 +67,9 @@ if ( ! defined( 'SLT_CF_USE_GMAPS' ) ) {
 if ( ! defined( 'SLT_CF_USE_FILE_SELECT' ) ) {
 	define( 'SLT_CF_USE_FILE_SELECT', true );
 }
+if ( ! defined( 'SLT_CF_HANDLE_TERM_SPLITTING' ) ) {
+	define( 'SLT_CF_HANDLE_TERM_SPLITTING', false );
+}
 
 
 /* Options stored in database
@@ -127,7 +130,9 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	add_action( 'admin_enqueue_scripts', 'slt_cf_admin_enqueue_scripts' ); // Scripts and styles
 	add_action( 'admin_menu', 'slt_cf_admin_menus' );
 	add_action( 'admin_notices', 'slt_cf_admin_notices' );
-	add_action( 'split_shared_term', 'slt_cf_split_shared_term', 10, 4 );
+	if ( defined( 'SLT_CF_HANDLE_TERM_SPLITTING' ) && SLT_CF_HANDLE_TERM_SPLITTING ) {
+		add_action( 'split_shared_term', 'slt_cf_split_shared_term', 10, 4 );
+	}
 
 	// Login / register styles
 	add_action( 'login_enqueue_scripts', 'slt_cf_login_enqueue_scripts', 10 );

@@ -246,7 +246,15 @@ function slt_cf_admin_menus() {
  * @return	void
  */
 function slt_cf_init_fields( $request_type, $scope, $object_id ) {
-	global $slt_custom_fields, $wp_roles, $post, $user_id;
+	global $slt_custom_fields, $slt_custom_fields_all_boxes, $wp_roles, $post, $user_id;
+
+	// Store a copy of all boxes before paring down the main boxes var for this request
+	// This is mainly so 4.2+ shared term splitting can be managed
+	// Only done if requested
+	$slt_custom_fields_all_boxes = null;
+	if ( defined( 'SLT_CF_HANDLE_TERM_SPLITTING' ) && SLT_CF_HANDLE_TERM_SPLITTING ) {
+		$slt_custom_fields_all_boxes = $slt_custom_fields['boxes'];
+	}
 
 	// Only run once per request
 	static $init_run = false;
