@@ -218,8 +218,8 @@ function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id
 	// Find fields that use options_type 'terms'
 	foreach ( $boxes as $box_key => $box ) {
 		foreach ( $box['fields'] as $field_key => $field ) {
-			// For multiple checkboxes and select fields which have options_type 'terms'...
-			if ( ( $field['type'] == 'checkboxes' || ( $field['type'] == 'select' && $field['multiple'] ) ) && $field['options_type'] == 'terms' ) {
+			// For multiple checkboxes and select fields which have options_type 'terms', using the same taxonomy
+			if ( ( $field['type'] == 'checkboxes' || ( $field['type'] == 'select' && $field['multiple'] ) ) && $field['options_type'] == 'terms' && ( $taxonomy == $field['options_query']['taxonomies'] || ( is_array( $field['options_query']['taxonomies'] ) && in_array( $taxonomy, $field['options_query']['taxonomies'] ) ) ) ) {
 
 				// Which meta table to look in?
 				$meta_table = $box['type'] == 'user' ? 'usermeta' : 'postmeta';
@@ -230,7 +230,7 @@ function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id
 				// Get all records for this field
 				$field_records = $wpdb->get_results("
 					SELECT		*
-					FROM		$wpdb->$meta_table
+					FROM		" . $wpdb->prefix . $meta_table . "
 					WHERE		meta_key	= '" . $meta_key . "'
 				");
 
@@ -263,6 +263,10 @@ function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id
 
 						}
 
+						if ( ! is_null( $new_field_value ) ) {
+							update_metadata( $meta_type, $field_record->{$object_id_column}, $meta_key, $new_field_value );
+						}
+
 					} else {
 
 						// Just a single value record, pass through to update the DB
@@ -270,10 +274,11 @@ function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id
 							$new_field_value = $new_term_id;
 						}
 
-					}
+						if ( ! is_null( $new_field_value ) ) {
+							// Multiple fields, need to pass old value to make sure the right entry is replaced
+							update_metadata( $meta_type, $field_record->{$object_id_column}, $meta_key, $new_field_value, $old_term_id );
+						}
 
-					if ( ! is_null( $new_field_value ) ) {
-						update_metadata( $meta_type, $field_record->{$object_id_column}, $meta_key, $new_field_value );
 					}
 
 				}
