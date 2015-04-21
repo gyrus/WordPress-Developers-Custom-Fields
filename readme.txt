@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.5
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: 1.0.1
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -94,6 +94,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 1.1 =
 * Added `slt_cf_file_select_button_enqueue()`, for using file select button outside this plugin
 * Added ability to automatically manage query string vars for custom queries, with the `make_query_var` field parameter, and the `dcf_use_query_string` and `dcf_custom_field_query_vars_only` flags for `WP_Query`. Includes integration with Simple Events date field.
+* Added `esc_url()` around uses of `add_query_arg()`
 * Added management of 'term splitting' for WordPress 4.2
 
 = 1.0.1 =
