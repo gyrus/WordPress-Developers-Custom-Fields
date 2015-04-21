@@ -95,7 +95,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * Added `slt_cf_file_select_button_enqueue()`, for using file select button outside this plugin
 * Added ability to automatically manage query string vars for custom queries, with the `make_query_var` field parameter, and the `dcf_use_query_string` and `dcf_custom_field_query_vars_only` flags for `WP_Query`. Includes integration with Simple Events date field.
 * Added `esc_url()` around uses of `add_query_arg()`
-* Added management of 'term splitting' for WordPress 4.2
+* Added management of 'term splitting' for WordPress 4.2 - not activated by default, please read [the release notes](http://sltaylor.co.uk/blog/developers-custom-fields-1-1/)
 
 = 1.0.1 =
 * Made plugin translatable
