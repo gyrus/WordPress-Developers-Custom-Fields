@@ -51,6 +51,7 @@ define( 'SLT_CF_TITLE', "Developer's Custom Fields" );
 define( 'SLT_CF_NO_OPTIONS', __( 'No options to choose from', SLT_CF_TEXT_DOMAIN ) );
 define( 'SLT_CF_REQUEST_PROTOCOL', isset( $_SERVER[ 'HTTPS' ] ) ? 'https://' : 'http://' );
 define( 'SLT_CF_VERSION', '1.1' );
+define( 'SLT_CF_PRIMARY_FILE_PATH', plugin_basename( __FILE__ ) );
 $slt_custom_fields = array();
 $slt_custom_fields['prefix'] = '_slt_';
 $slt_custom_fields['hide_default_custom_meta_box'] = true;
@@ -66,6 +67,9 @@ if ( ! defined( 'SLT_CF_USE_GMAPS' ) ) {
 }
 if ( ! defined( 'SLT_CF_USE_FILE_SELECT' ) ) {
 	define( 'SLT_CF_USE_FILE_SELECT', true );
+}
+if ( ! defined( 'SLT_CF_HANDLE_TERM_SPLITTING' ) ) {
+	define( 'SLT_CF_HANDLE_TERM_SPLITTING', false );
 }
 
 
@@ -127,6 +131,9 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	add_action( 'admin_enqueue_scripts', 'slt_cf_admin_enqueue_scripts' ); // Scripts and styles
 	add_action( 'admin_menu', 'slt_cf_admin_menus' );
 	add_action( 'admin_notices', 'slt_cf_admin_notices' );
+	if ( defined( 'SLT_CF_HANDLE_TERM_SPLITTING' ) && SLT_CF_HANDLE_TERM_SPLITTING ) {
+		add_action( 'split_shared_term', 'slt_cf_split_shared_term', 10, 4 );
+	}
 
 	// Login / register styles
 	add_action( 'login_enqueue_scripts', 'slt_cf_login_enqueue_scripts', 10 );

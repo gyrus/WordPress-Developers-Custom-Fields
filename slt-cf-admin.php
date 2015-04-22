@@ -28,7 +28,7 @@ function slt_cf_admin_notices() {
 
 }
 
-add_action( 'in_plugin_update_message-' . plugin_basename(__FILE__), 'slt_cf_upgrade_warnings' );
+add_action( 'in_plugin_update_message-' . SLT_CF_PRIMARY_FILE_PATH, 'slt_cf_upgrade_warnings' );
 /**
  * Check for any plugin update warning notices
  *
@@ -36,29 +36,35 @@ add_action( 'in_plugin_update_message-' . plugin_basename(__FILE__), 'slt_cf_upg
  */
 function slt_cf_upgrade_warnings() {
 
-	// Get the warnings json file from GitHub
-	if ( $version_warnings_json = file_get_contents('https://raw.githubusercontent.com/gyrus/WordPress-Developers-Custom-Fields/master/slt-cf-version-warnings.json') ) {
+	// Get the warnings JSON file and the readme from SVN trunk
+	$svn_root_url = 'http://plugins.svn.wordpress.org/developers-custom-fields/trunk/';
+	$version_warnings_json = file_get_contents( $svn_root_url . 'slt-cf-version-warnings.json' );
+	$readme = file_get_contents( $svn_root_url . 'readme.txt' );
+	if ( $version_warnings_json && $readme ) {
 
-		// Decode the json
-		$version_warnings = json_decode($version_warnings_json);
+		// Parse the current stable tag from readme
+		if ( preg_match( '/^Stable tag: ([0-9\.]+)$/m', $readme, $readme_matches ) === 1 ) {
+			$stable_version = $readme_matches[1];
 
-		// Loop through the warnings
-		$current_warnings = array();
-		foreach ( $version_warnings as $version => $warning ) {
+			// Loop through the warnings
+			$current_warnings = array();
+			foreach ( json_decode( $version_warnings_json ) as $warning_version => $warning ) {
 
-			// If the warning version is greater than the installed version
-			if ( (float) $version > (float) SLT_CF_VERSION ) {
+				// Add warning if it's for higher than current version, but lower than or equal to stable release version
+				if ( version_compare( $warning_version, SLT_CF_VERSION, '>' ) && version_compare( $warning_version, $stable_version, '<=' ) ) {
 
-				// Add the warning
-				$current_warnings[] = '<dt style="color:#d54e21;font-size:1.1em;font-weight:bold">Version '. $version .'</dt><dd style="margin-left: 0;">' . $warning . '</dd>';
+					// Add the warning
+					$current_warnings[] = '<dt style="color:#d54e21;font-size:1.1em;font-weight:bold">Version '. $warning_version .'</dt><dd style="margin-left: 0;">' . $warning . '</dd>';
+
+				}
 
 			}
 
-		}
+			// Warnings to output?
+			if ( $current_warnings ) {
+				echo '<dl>' . implode( "\n", $current_warnings ) . '</dl>';
+			}
 
-		// Warnings to output?
-		if ( $current_warnings ) {
-			echo '<dl>' . implode( "\n", $current_warnings ) . '</dl>';
 		}
 
 	}
@@ -198,3 +204,93 @@ function slt_cf_database_tools_screen() {
 
 }
 
+
+/**
+ * Manage 4.2+ term splitting
+ *
+ * @since	1.1
+ */
+function slt_cf_split_shared_term( $old_term_id, $new_term_id, $term_taxonomy_id, $taxonomy ) {
+	global $slt_custom_fields, $slt_custom_fields_all_boxes, $wpdb;
+
+	// Has this request initialised the fields already?
+	// If so, we need to grab the copy made of all the box data
+	if ( isset( $slt_custom_fields_all_boxes ) && is_array( $slt_custom_fields_all_boxes ) && count( $slt_custom_fields_all_boxes ) ) {
+		$boxes = $slt_custom_fields_all_boxes;
+	} else {
+		$boxes = $slt_custom_fields['boxes'];
+	}
+
+	// Find fields that use options_type 'terms'
+	foreach ( $boxes as $box_key => $box ) {
+		foreach ( $box['fields'] as $field_key => $field ) {
+			// For multiple checkboxes and select fields which have options_type 'terms', using the same taxonomy
+			if ( ( $field['type'] == 'checkboxes' || ( $field['type'] == 'select' && $field['multiple'] ) ) && $field['options_type'] == 'terms' && ( $taxonomy == $field['options_query']['taxonomies'] || ( is_array( $field['options_query']['taxonomies'] ) && in_array( $taxonomy, $field['options_query']['taxonomies'] ) ) ) ) {
+
+				// Which meta table to look in?
+				$meta_table = $box['type'] == 'user' ? 'usermeta' : 'postmeta';
+				$meta_type = $box['type'] == 'user' ? 'user' : 'post';
+				$meta_key = slt_cf_field_key( $field['name'], $box['type'] );
+				$object_id_column = $meta_type . '_id';
+
+				// Get all records for this field
+				$field_records = $wpdb->get_results("
+					SELECT		*
+					FROM		" . $wpdb->prefix . $meta_table . "
+					WHERE		meta_key	= '" . $meta_key . "'
+				");
+
+				// Check if any contain the old term ID
+				foreach ( $field_records as $field_record ) {
+					$new_field_value = null;
+
+					// Check for a serialise single entry
+					if ( $field['single'] ) {
+
+						// Cater for serialized arrays
+						$field_values = maybe_unserialize( $field_record->meta_value );
+						if ( ! is_array( $field_values ) ) {
+							// Just in case
+							$field_values = (array) $field_values;
+						}
+
+						// If there are instance of the old term ID...
+						if ( in_array( $old_term_id, $field_values ) ) {
+
+							// Update them
+							foreach ( $field_values as &$field_value ) {
+								if ( $field_value == $old_term_id ) {
+									$field_value = $new_term_id;
+								}
+							}
+
+							// Pass them through to update the DB
+							$new_field_value = $field_values;
+
+						}
+
+						if ( ! is_null( $new_field_value ) ) {
+							update_metadata( $meta_type, $field_record->{$object_id_column}, $meta_key, $new_field_value );
+						}
+
+					} else {
+
+						// Just a single value record, pass through to update the DB
+						if ( $field_record->meta_value == $old_term_id ) {
+							$new_field_value = $new_term_id;
+						}
+
+						if ( ! is_null( $new_field_value ) ) {
+							// Multiple fields, need to pass old value to make sure the right entry is replaced
+							update_metadata( $meta_type, $field_record->{$object_id_column}, $meta_key, $new_field_value, $old_term_id );
+						}
+
+					}
+
+				}
+
+			}
+		}
+	}
+
+}
