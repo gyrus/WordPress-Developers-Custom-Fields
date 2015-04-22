@@ -28,7 +28,7 @@ function slt_cf_admin_notices() {
 
 }
 
-add_action( 'in_plugin_update_message-' . plugin_basename(__FILE__), 'slt_cf_upgrade_warnings' );
+add_action( 'in_plugin_update_message-' . SLT_CF_PRIMARY_FILE_PATH, 'slt_cf_upgrade_warnings' );
 /**
  * Check for any plugin update warning notices
  *
@@ -36,29 +36,35 @@ add_action( 'in_plugin_update_message-' . plugin_basename(__FILE__), 'slt_cf_upg
  */
 function slt_cf_upgrade_warnings() {
 
-	// Get the warnings json file from GitHub
-	if ( $version_warnings_json = file_get_contents('https://raw.githubusercontent.com/gyrus/WordPress-Developers-Custom-Fields/master/slt-cf-version-warnings.json') ) {
+	// Get the warnings JSON file and the readme from SVN trunk
+	$svn_root_url = 'http://plugins.svn.wordpress.org/developers-custom-fields/trunk/';
+	$version_warnings_json = file_get_contents( $svn_root_url . 'slt-cf-version-warnings.json' );
+	$readme = file_get_contents( $svn_root_url . 'readme.txt' );
+	if ( $version_warnings_json && $readme ) {
 
-		// Decode the json
-		$version_warnings = json_decode($version_warnings_json);
+		// Parse the current stable tag from readme
+		if ( preg_match( '/^Stable tag: ([0-9\.]+)$/m', $readme, $readme_matches ) === 1 ) {
+			$stable_version = $readme_matches[1];
 
-		// Loop through the warnings
-		$current_warnings = array();
-		foreach ( $version_warnings as $version => $warning ) {
+			// Loop through the warnings
+			$current_warnings = array();
+			foreach ( json_decode( $version_warnings_json ) as $warning_version => $warning ) {
 
-			// If the warning version is greater than the installed version
-			if ( (float) $version > (float) SLT_CF_VERSION ) {
+				// Add warning if it's for higher than current version, but lower than or equal to stable release version
+				if ( version_compare( $warning_version, SLT_CF_VERSION, '>' ) && version_compare( $warning_version, $stable_version, '<=' ) ) {
 
-				// Add the warning
-				$current_warnings[] = '<dt style="color:#d54e21;font-size:1.1em;font-weight:bold">Version '. $version .'</dt><dd style="margin-left: 0;">' . $warning . '</dd>';
+					// Add the warning
+					$current_warnings[] = '<dt style="color:#d54e21;font-size:1.1em;font-weight:bold">Version '. $warning_version .'</dt><dd style="margin-left: 0;">' . $warning . '</dd>';
+
+				}
 
 			}
 
-		}
+			// Warnings to output?
+			if ( $current_warnings ) {
+				echo '<dl>' . implode( "\n", $current_warnings ) . '</dl>';
+			}
 
-		// Warnings to output?
-		if ( $current_warnings ) {
-			echo '<dl>' . implode( "\n", $current_warnings ) . '</dl>';
 		}
 
 	}
