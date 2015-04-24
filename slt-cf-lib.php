@@ -733,7 +733,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	}
 
 	// Map container
-	$output .= '<div id="' . $id . '" class="gmap_' . $type . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"></div>' . "\n";
+	$output .= '<style type="text/css">.gmap_output img {max-width:none;}</style><div id="' . $id . '" class="gmap_' . $type . '" style="width:' . esc_attr( $width ) . 'px;height:' . esc_attr( $height ) . 'px;"></div>' . "\n";
 
 	// Hidden fields?
 	if ( $type == 'input' ) {
