@@ -177,32 +177,37 @@
 
       }
 
-      // Set a variable to store double click status
-      slt_cf_maps[container_id].doubleClick = false;
+      // Only do this on input maps
+      if (map_mode === 'input') {
 
-      // Function to deal with double clicks
-      google.maps.event.addListener( slt_cf_maps[container_id].map, 'dblclick', function() {
+        // Set a variable to store double click status
+        slt_cf_maps[container_id].doubleClick = false;
 
-        // Set the double click status to true so single click functions doesn't get triggered
-        slt_cf_maps[container_id].doubleClick = true;
+        // Function to deal with double clicks
+        google.maps.event.addListener( slt_cf_maps[container_id].map, 'dblclick', function() {
 
-        // Reset double click status once the delay for a potential single click has passed
-        window.setTimeout(function(){ slt_cf_maps[container_id].doubleClick = false; }, 250);
+          // Set the double click status to true so single click functions doesn't get triggered
+          slt_cf_maps[container_id].doubleClick = true;
 
-      });
+          // Reset double click status once the delay for a potential single click has passed
+          window.setTimeout(function(){ slt_cf_maps[container_id].doubleClick = false; }, 250);
 
-      // Listen for a click on the map
-      google.maps.event.addListener(slt_cf_maps[container_id].map, 'click', function(e) {
+        });
 
-        // Wait 250ms to see if there's a double click
-        window.setTimeout(function(){ if (!slt_cf_maps[container_id].doubleClick) {
+        // Listen for a click on the map
+        google.maps.event.addListener(slt_cf_maps[container_id].map, 'click', function(e) {
 
-          // Add the marker to the map
-          add_marker(container_id, e.latLng);
+          // Wait 250ms to see if there's a double click
+          window.setTimeout(function(){ if (!slt_cf_maps[container_id].doubleClick) {
 
-        } }, 250);
+            // Add the marker to the map
+            add_marker(container_id, e.latLng);
 
-      });
+          } }, 250);
+
+        });
+
+      }
 
     }
 
