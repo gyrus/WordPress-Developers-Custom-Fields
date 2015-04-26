@@ -91,8 +91,11 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
-= 1.1.1 =
+= 1.2 =
 * Changed Google maps integration to allow multiple markers (thanks adriantoll!) - please read [the release notes](http://sltaylor.co.uk/blog/developers-custom-fields-1-1/)
+
+= 1.1.1 =
+* Fixed issue with max-width: 100% messing up Google controls
 
 = 1.1 =
 * Added `slt_cf_file_select_button_enqueue()`, for using file select button outside this plugin
