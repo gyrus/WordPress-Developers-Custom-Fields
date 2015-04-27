@@ -4,7 +4,7 @@
 /* global google, slt_cf_gmaps */
 /* exported slt_cf_gmap_init */
 
-  // Set up an array for multiple maps and markers
+  // Set up array for multiple maps and markers
   var slt_cf_maps = [];
 
 
