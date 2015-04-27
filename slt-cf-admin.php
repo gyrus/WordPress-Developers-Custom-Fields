@@ -14,6 +14,11 @@
 function slt_cf_admin_notices() {
 	global $slt_cf_admin_notices;
 
+
+	?>
+	<div class="notice updated is-dismissible"><p>Please note that the way Google map field data is stored has been changed to accomodate multiple markers. The transition should be seamless unless you've done some custom data handling which accesses the value from the postmeta table directly. See <a href='http://sltaylor.co.uk/blog/developers-custom-fields-1-1/'>this post</a> for details.</p></div>
+	<?php
+
 	/*
 	// jQuery UI autocomplete for Gmaps
 	$gmap_fields = slt_cf_get_field_names( array(), array( 'gmap' ) );

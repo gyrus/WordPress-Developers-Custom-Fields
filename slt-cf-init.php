@@ -52,6 +52,19 @@ function slt_cf_admin_init() {
 	// Notices to output?
 	$slt_cf_admin_notices = array();
 
+	// Check which relevant version warnings haven't been seen yet
+	if ( ( $version_warnings_json = file_get_contents( plugin_dir_path( __FILE__ ) . 'slt-cf-version-warnings.json' ) ) !== false ) {
+		$version_warnings = json_decode( $version_warnings_json, true );
+		if ( ! empty( $version_warnings ) ) {
+			$relevant_version_warnings = array();
+			foreach ( $version_warnings as $version => $warning ) {
+				if ( version_compare( $version, SLT_CF_VERSION, '<=' ) && ( empty( $slt_custom_fields['options']['seen_version_warnings'] ) || ! in_array( $version, $slt_custom_fields['options']['seen_version_warnings'] ) ) ) {
+					$relevant_version_warnings[ $version ] = $warning;
+				}
+			}
+		}
+	}
+
 	// Determine some paths
 	if ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ) {
 		$slt_js_admin = plugins_url( 'js/slt-cf-admin.js', __FILE__ );
