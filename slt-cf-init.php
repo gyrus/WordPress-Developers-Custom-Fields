@@ -56,11 +56,10 @@ function slt_cf_admin_init() {
 	if ( ( $version_warnings_json = file_get_contents( plugin_dir_path( __FILE__ ) . 'slt-cf-version-warnings.json' ) ) !== false ) {
 		$version_warnings = json_decode( $version_warnings_json, true );
 		if ( ! empty( $version_warnings ) ) {
-			$relevant_version_warnings = array();
 			foreach ( $version_warnings as $version => $warning ) {
-				if ( version_compare( $version, SLT_CF_VERSION, '<=' ) && ( empty( $slt_custom_fields['options']['seen_version_warnings'] ) || ! in_array( $version, $slt_custom_fields['options']['seen_version_warnings'] ) ) ) {
-					$relevant_version_warnings[ $version ] = $warning;
-				}
+				//if ( version_compare( $version, SLT_CF_VERSION, '<=' ) && ( empty( $slt_custom_fields['options']['seen_version_warnings'] ) || ! in_array( $version, $slt_custom_fields['options']['seen_version_warnings'] ) ) ) {
+					$slt_cf_admin_notices[ $version ] = $warning;
+				//}
 			}
 		}
 	}
@@ -129,10 +128,22 @@ function slt_cf_login_enqueue_scripts() {
  * @return	void
  */
 function slt_cf_admin_enqueue_scripts( $hook ) {
-	global $pagenow;
+	global $pagenow, $slt_cf_admin_notices;
 	$screen = get_current_screen();
 	$edit_screen = in_array( $screen->base, array( 'post', 'user-edit', 'profile' ) );
 	//echo '<pre>'; print_r( $screen ); echo '</pre>'; exit;
+
+	// Global stuff
+	$script_vars = array( 'ajaxurl' => admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) );
+	// Nonces for dismissal of notices
+	if ( $slt_cf_admin_notices ) {
+		foreach ( $slt_cf_admin_notices as $notice_slug => $notice_content ) {
+			$script_vars[ 'notice_nonce_' . sanitize_title( $notice_slug ) ] = wp_create_nonce( 'notice_dismiss_' . sanitize_title( $notice_slug ) );
+		}
+	}
+	wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', $script_vars );
+	wp_enqueue_script( 'slt-cf-scripts' );
+	wp_enqueue_style( 'slt-cf-styles' );
 
 	// Check for an edit screen
 	// Also, for now include media uploader scripts for all "Appearance" and "Settings" pages,
@@ -140,13 +151,6 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 	if ( $edit_screen || in_array( $pagenow, array( 'themes.php', 'options-general.php' ) ) ) {
 
 		if ( $edit_screen ) {
-
-			// Global scripts and styles
-			wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', array(
-					'ajaxurl'	=> admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL )
-			));
-			wp_enqueue_script( 'slt-cf-scripts' );
-			wp_enqueue_style( 'slt-cf-styles' );
 
 			// Colorpicker
 			/*

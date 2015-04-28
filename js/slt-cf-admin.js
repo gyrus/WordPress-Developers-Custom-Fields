@@ -5,6 +5,7 @@ jQuery( document ).ready( function($) {
 	var	cp = $( '.slt-cf-color-preview' ),
 		cpick = $( 'input.slt-cf-colorpicker' ),
 		s = $( '.slt-cf-sortable' ),
+		n = $( '.slt-cf-notice' ),
 		i, box;
 
 	/* Move meta boxes above content editor
@@ -64,6 +65,28 @@ jQuery( document ).ready( function($) {
 
 	/* Handling notices
 	*****************************************************************/
+	if ( n.length ) {
+		n.on( 'click', '.slt-cf-dismiss', function( e ) {
+			e.preventDefault();
+			var el = $( this );
+			var notice = el.attr( 'href' ).replace( '?slt-cf-dismiss=', '' );
+			$.post(
+				slt_custom_fields.ajaxurl,
+				{
+					'action': 'slt_cf_notice_dismiss',
+					'notice': notice,
+					'notice-dismiss-nonce': slt_custom_fields[ 'notice_nonce_' + notice ]
+				},
+				function( data ) {
+					if ( data == 'updated' ) {
+						$( 'a#slt-cf-dismiss_alert-07-cleanup' ).parents( 'div#message' ).fadeOut( 600, function() { $( this ).remove(); } );
+					} else {
+						alert( slt_custom_fields.update_option_fail );
+					}
+				}
+			);
+		});
+	}
 
 
 	/* Cloning

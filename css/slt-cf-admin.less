@@ -11,23 +11,15 @@
 .slt-cf-cf:after { clear: both; }
 .slt-cf-cf { zoom: 1; }
 
-div.slt-cf-warning, div.slt-cf-alert {
-	border-width: 1px;
-	border-style: solid;
-	padding: 0 0.6em;
-	-moz-border-radius: 3px;
-	-khtml-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px;
-	margin: 5px 0 15px;
-}
-div.slt-cf-warning {
-	background-color: #FFEBE8;
-	border-color: #C00;
-}
-div.slt-cf-alert {
-	background-color: #ffffe0;
-	border-color: #e6db55;
+/* Notices */
+.slt-cf-notice {
+	.dashicons-dismiss {
+		&:before {
+			margin-right: .1em;
+			color: #c00;
+			font-size: 16px;
+		}
+	}
 }
 
 /* Multiple input fields */

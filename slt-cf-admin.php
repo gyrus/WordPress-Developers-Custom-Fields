@@ -14,10 +14,13 @@
 function slt_cf_admin_notices() {
 	global $slt_cf_admin_notices;
 
-
-	?>
-	<div class="notice updated is-dismissible"><p>Please note that the way Google map field data is stored has been changed to accomodate multiple markers. The transition should be seamless unless you've done some custom data handling which accesses the value from the postmeta table directly. See <a href='http://sltaylor.co.uk/blog/developers-custom-fields-1-1/'>this post</a> for details.</p></div>
-	<?php
+	if ( ! empty( $slt_cf_admin_notices ) ) {
+		foreach ( $slt_cf_admin_notices as $notice_slug => $notice_content ) {
+			?>
+			<div class="notice updated slt-cf-notice"><p><?php echo $notice_content; ?></p><p><a class="slt-cf-dismiss dashicons-before dashicons-dismiss" href="?slt-cf-dismiss=<?php echo sanitize_title( $notice_slug ); ?>"><?php _e( 'Dismiss this notice', SLT_CF_TEXT_DOMAIN ); ?></a></p></div>
+			<?php
+		}
+	}
 
 	/*
 	// jQuery UI autocomplete for Gmaps
