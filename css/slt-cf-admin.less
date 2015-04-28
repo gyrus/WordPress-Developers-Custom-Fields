@@ -12,13 +12,19 @@
 .slt-cf-cf { zoom: 1; }
 
 /* Notices */
-.slt-cf-notice {
-	.dashicons-dismiss {
-		&:before {
-			margin-right: .1em;
-			color: #c00;
-			font-size: 16px;
-		}
+.slt-cf-dismiss {
+	padding: 0;
+	border: none;
+	background-color: transparent;
+	color: #0073aa;
+	cursor: pointer;
+	&:before {
+		margin: .1em .1em 0 0;
+		color: #c00;
+		font-size: 16px;
+	}
+	&:hover, &:focus {
+		color: #00a0d2;
 	}
 }
 

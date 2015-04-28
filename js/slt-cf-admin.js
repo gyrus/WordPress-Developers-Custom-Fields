@@ -69,19 +69,20 @@ jQuery( document ).ready( function($) {
 		n.on( 'click', '.slt-cf-dismiss', function( e ) {
 			e.preventDefault();
 			var el = $( this );
-			var notice = el.attr( 'href' ).replace( '?slt-cf-dismiss=', '' );
+			var ns = el.data( 'notice-slug' );
 			$.post(
 				slt_custom_fields.ajaxurl,
 				{
 					'action': 'slt_cf_notice_dismiss',
-					'notice': notice,
-					'notice-dismiss-nonce': slt_custom_fields[ 'notice_nonce_' + notice ]
+					'notice': ns,
+					'notice-dismiss-nonce': slt_custom_fields[ 'notice_nonce_' + ns ]
 				},
-				function( data ) {
-					if ( data == 'updated' ) {
-						$( 'a#slt-cf-dismiss_alert-07-cleanup' ).parents( 'div#message' ).fadeOut( 600, function() { $( this ).remove(); } );
+				function( r ) {
+					console.log( r );
+					if ( r == 'ok' ) {
+						el.parents( '.slt-cf-notice' ).fadeOut( 600, function() { $( this ).remove(); } );
 					} else {
-						alert( slt_custom_fields.update_option_fail );
+						alert( 'There was a problem with dimissing this notice.' );
 					}
 				}
 			);

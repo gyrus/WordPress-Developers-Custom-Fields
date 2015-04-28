@@ -15,11 +15,12 @@ function slt_cf_admin_notices() {
 	global $slt_cf_admin_notices;
 
 	if ( ! empty( $slt_cf_admin_notices ) ) {
-		foreach ( $slt_cf_admin_notices as $notice_slug => $notice_content ) {
-			?>
-			<div class="notice updated slt-cf-notice"><p><?php echo $notice_content; ?></p><p><a class="slt-cf-dismiss dashicons-before dashicons-dismiss" href="?slt-cf-dismiss=<?php echo sanitize_title( $notice_slug ); ?>"><?php _e( 'Dismiss this notice', SLT_CF_TEXT_DOMAIN ); ?></a></p></div>
-			<?php
-		}
+		foreach ( $slt_cf_admin_notices as $notice ) { ?>
+			<div class="notice updated slt-cf-notice">
+				<p><strong><?php echo $notice['label']; ?>:</strong> <?php echo $notice['text']; ?></p>
+				<p><button class="slt-cf-dismiss dashicons-before dashicons-dismiss" data-notice-slug="<?php echo sanitize_title( $notice['label'] ); ?>"><?php _e( 'Dismiss this notice', SLT_CF_TEXT_DOMAIN ); ?></button></p>
+			</div>
+		<?php }
 	}
 
 	/*
@@ -35,6 +36,46 @@ function slt_cf_admin_notices() {
 	*/
 
 }
+
+
+add_action( 'wp_ajax_slt_cf_notice_dismiss', 'slt_cf_notice_dismiss' );
+/**
+ * Dismiss a notice from an AJAX call
+ *
+ * Input:
+ * string	$_REQUEST['notice']					The label for the notice, formatted with sanitize_title()
+ * string	$_REQUEST['notice-dismiss-nonce']	Security nonce
+ *
+ * Output:
+ * string										'ok' | 'nonce_error' | 'update_option_error'
+ *
+ * @since	1.2
+ * @return	void
+ */
+function slt_cf_notice_dismiss() {
+	$return = 'nonce_error';
+
+	// Check nonce
+	if ( check_ajax_referer( 'notice_dismiss_' . $_REQUEST['notice'], 'notice-dismiss-nonce' ) ) {
+
+		// Get current options
+		$options = get_option( 'slt_cf_options' );
+
+		// Register the notice as being dismissed
+		$options['dismissed_notices'] = empty( $options['dismissed_notices'] ) ? array() : $options['dismissed_notices'];
+		if ( ! in_array( $_REQUEST['notice'], $options['dismissed_notices'] ) ) {
+			$options['dismissed_notices'][] = $_REQUEST['notice'];
+		}
+
+		// Save
+		$return = update_option( 'slt_cf_options', $options ) ? 'ok' : 'update_option_error';
+
+	}
+
+	echo $return;
+	exit( 0 );
+}
+
 
 add_action( 'in_plugin_update_message-' . SLT_CF_PRIMARY_FILE_PATH, 'slt_cf_upgrade_warnings' );
 /**

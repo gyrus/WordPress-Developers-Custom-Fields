@@ -15,10 +15,21 @@
   zoom: 1;
 }
 /* Notices */
-.slt-cf-notice .dashicons-dismiss:before {
-  margin-right: .1em;
+.slt-cf-dismiss {
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: #0073aa;
+  cursor: pointer;
+}
+.slt-cf-dismiss:before {
+  margin: .1em .1em 0 0;
   color: #c00;
   font-size: 16px;
+}
+.slt-cf-dismiss:hover,
+.slt-cf-dismiss:focus {
+  color: #00a0d2;
 }
 /* Multiple input fields */
 div.slt-cf-fixed-width {

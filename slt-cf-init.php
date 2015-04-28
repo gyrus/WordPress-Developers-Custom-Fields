@@ -48,6 +48,7 @@ function slt_cf_init() {
 // Admin initialization
 function slt_cf_admin_init() {
 	global $slt_cf_admin_notices, $slt_custom_fields, $pagenow;
+	$options = get_option( 'slt_cf_options' );
 
 	// Notices to output?
 	$slt_cf_admin_notices = array();
@@ -57,9 +58,17 @@ function slt_cf_admin_init() {
 		$version_warnings = json_decode( $version_warnings_json, true );
 		if ( ! empty( $version_warnings ) ) {
 			foreach ( $version_warnings as $version => $warning ) {
-				//if ( version_compare( $version, SLT_CF_VERSION, '<=' ) && ( empty( $slt_custom_fields['options']['seen_version_warnings'] ) || ! in_array( $version, $slt_custom_fields['options']['seen_version_warnings'] ) ) ) {
-					$slt_cf_admin_notices[ $version ] = $warning;
-				//}
+				$warning_label = "Developer's Custom Fields " . $version;
+				// Make sure the notice hasn't already been dismissed
+				// And that warning is for a version less than or equal to current version
+				if (	( empty( $options['dismissed_notices'] ) || ! is_array( $options['dismissed_notices'] ) || ! in_array( sanitize_title( $warning_label ), $options['dismissed_notices'] ) ) &&
+						version_compare( $version, SLT_CF_VERSION, '<=' )
+				) {
+					$slt_cf_admin_notices[] = array(
+						'label'		=> $warning_label,
+						'text'		=> $warning,
+					);
+				}
 			}
 		}
 	}
@@ -137,8 +146,8 @@ function slt_cf_admin_enqueue_scripts( $hook ) {
 	$script_vars = array( 'ajaxurl' => admin_url( 'admin-ajax.php', SLT_CF_REQUEST_PROTOCOL ) );
 	// Nonces for dismissal of notices
 	if ( $slt_cf_admin_notices ) {
-		foreach ( $slt_cf_admin_notices as $notice_slug => $notice_content ) {
-			$script_vars[ 'notice_nonce_' . sanitize_title( $notice_slug ) ] = wp_create_nonce( 'notice_dismiss_' . sanitize_title( $notice_slug ) );
+		foreach ( $slt_cf_admin_notices as $notice ) {
+			$script_vars[ 'notice_nonce_' . sanitize_title( $notice['label'] ) ] = wp_create_nonce( 'notice_dismiss_' . sanitize_title( $notice['label'] ) );
 		}
 	}
 	wp_localize_script( 'slt-cf-scripts', 'slt_custom_fields', $script_vars );

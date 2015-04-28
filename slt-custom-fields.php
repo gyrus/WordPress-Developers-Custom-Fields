@@ -236,7 +236,6 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 
 	/* Includes
 	***************************************************************************************/
-	require_once( 'slt-cf-admin.php' );
 	require_once( 'slt-cf-display.php' );
 	require_once( 'slt-cf-save.php' );
 
@@ -244,5 +243,6 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 
 // Leave these functions available for AJAX requests
 require_once( 'slt-cf-init.php' );
+require_once( 'slt-cf-admin.php' );
 require_once( 'slt-cf-lib.php' );
 require_once( 'slt-cf-query-vars.php' );
