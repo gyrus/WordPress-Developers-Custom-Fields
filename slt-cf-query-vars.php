@@ -132,13 +132,24 @@ function slt_cf_manage_query_string( $query ) {
 						}
 
 
+					} else if ( is_array( $value ) ) {
+
+						// Add each item in array separately
+						foreach ( $value as $value_item ) {
+							$new_clauses[] = array(
+								'key'		=> slt_cf_field_key( $key ),
+								'value'		=> $value_item,
+								'compare'	=> '=',
+							);
+						}
+
 					} else {
 
 						// Simple pass-through
 						$new_clauses[] = array(
 							'key'		=> slt_cf_field_key( $key ),
 							'value'		=> $value,
-							'compare'	=> is_array( $value ) ? 'IN' : '=',
+							'compare'	=> '=',
 						);
 
 					}

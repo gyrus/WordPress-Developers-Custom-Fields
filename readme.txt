@@ -94,7 +94,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 1.2 =
 * Changed Google maps integration to allow multiple markers (thanks adriantoll!) - please read [the release notes](http://sltaylor.co.uk/blog/developers-custom-fields-1-1/)
 * Changed query filtering for Simple Events date fields to use WP 4.1+ syntax to better handle start and end dates
-* Fix to use 'IN' comparison for array values in query filtering
+* Fix to add array values individually in query filtering
 
 = 1.1.1 =
 * Fixed issue with max-width: 100% messing up Google controls
