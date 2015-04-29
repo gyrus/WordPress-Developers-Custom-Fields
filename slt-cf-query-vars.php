@@ -46,6 +46,10 @@ function slt_cf_manage_query_string( $query ) {
 		// Get custom taxonomies in case we need to deal with them
 		$custom_taxonomies = get_taxonomies( array( '_builtin' => false ) );
 
+		// Init matching type for multiple values
+		$matching = $query->get( 'dcf_query_string_matching' );
+		$matching = ( $matching == 'exclusive' ) ? 'exclusive' : 'inclusive';
+
 		// Go through the query vars already parsed by the main request, and add in
 		foreach ( $wp->query_vars as $key => $value ) {
 
@@ -134,13 +138,26 @@ function slt_cf_manage_query_string( $query ) {
 
 					} else if ( is_array( $value ) ) {
 
-						// Add each item in array separately
-						foreach ( $value as $value_item ) {
+						// Add each item in array separately if exclusive matching
+						if ( $matching == 'exclusive' ) {
+
+							foreach ( $value as $value_item ) {
+								$new_clauses[] = array(
+									'key'		=> slt_cf_field_key( $key ),
+									'value'		=> $value_item,
+									'compare'	=> '=',
+								);
+							}
+
+						// Or add item in with 'IN' comparison for inclusive matching
+						} else {
+
 							$new_clauses[] = array(
 								'key'		=> slt_cf_field_key( $key ),
-								'value'		=> $value_item,
-								'compare'	=> '=',
+								'value'		=> $value,
+								'compare'	=> 'IN',
 							);
+
 						}
 
 					} else {
@@ -166,7 +183,8 @@ function slt_cf_manage_query_string( $query ) {
 						// Add to tax_query
 						$query->set( 'tax_query', array_merge( $query->get( 'tax_query' ), array( array(
 							'taxonomy'	=> $key,
-							'terms'		=> $value
+							'terms'		=> $value,
+							'operator'	=> ( $matching == 'exclusive' ) ? 'AND' : 'IN'
 						))));
 
 					}
