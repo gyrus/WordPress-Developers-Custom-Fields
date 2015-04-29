@@ -138,7 +138,7 @@ function slt_cf_manage_query_string( $query ) {
 						$new_clauses[] = array(
 							'key'		=> slt_cf_field_key( $key ),
 							'value'		=> $value,
-							'compare'	=> '=',
+							'compare'	=> is_array( $value ) ? 'IN' : '=',
 						);
 
 					}
