@@ -3,7 +3,7 @@ Contributors: gyrus, adriantoll, saurabhshukla
 Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.5
-Tested up to: 4.2
+Tested up to: 4.2.1
 Stable tag: 1.2
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
@@ -91,6 +91,9 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
+= 1.2.1 =
+* Better version suffixes for styles
+
 = 1.2 =
 * Changed Google maps integration to allow multiple markers (thanks adriantoll!) - please read [the release notes](http://sltaylor.co.uk/blog/developers-custom-fields-1-1/)
 * Changed query filtering for Simple Events date fields to use WP 4.1+ syntax to better handle start and end dates

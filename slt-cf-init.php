@@ -86,12 +86,12 @@ function slt_cf_admin_init() {
 	wp_register_script( 'slt-cf-scripts', $slt_js_admin, array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_script( 'slt-cf-media', $slt_js_media, array( 'jquery' ), SLT_CF_VERSION );
 	wp_register_script( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/js/colorpicker.js', __FILE__ ), array( 'jquery' ), SLT_CF_VERSION );
-	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'] );
-	wp_register_style( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/css/colorpicker.css', __FILE__ ) );
+	wp_register_style( 'slt-cf-styles', $slt_custom_fields['css_url'], array(), SLT_CF_VERSION );
+	wp_register_style( 'slt-cf-colorpicker', plugins_url( 'js/colorpicker/css/colorpicker.css', __FILE__ ), array(), SLT_CF_VERSION );
 
 	// Register jQuery UI Addon Timepicker for date and time fields
 	wp_register_script( 'jquery-ui-timepicker', plugins_url( 'js/jquery-ui/jquery-ui-timepicker-addon.min.js', __FILE__ ), array( 'jquery-ui-datepicker', 'jquery-ui-slider' ), '1.8.16', true );
-	wp_register_style( 'jquery-ui-smoothness', $slt_custom_fields['ui_css_url'] );
+	wp_register_style( 'jquery-ui-smoothness', $slt_custom_fields['ui_css_url'], array(), '1.8.16' );
 
 	// Make sure forms allow file uploads
 	if ( in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) {
