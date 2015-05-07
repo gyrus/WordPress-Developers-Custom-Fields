@@ -14,7 +14,7 @@
 function slt_cf_admin_notices() {
 	global $slt_cf_admin_notices;
 
-	if ( ! empty( $slt_cf_admin_notices ) ) {
+	if ( ! empty( $slt_cf_admin_notices ) && current_user_can( 'update_core' ) ) {
 		foreach ( $slt_cf_admin_notices as $notice ) { ?>
 			<div class="notice updated slt-cf-notice">
 				<p><strong><?php echo $notice['label']; ?>:</strong> <?php echo $notice['text']; ?></p>

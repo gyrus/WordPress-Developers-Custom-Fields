@@ -91,6 +91,9 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
+= 1.2.2 =
+* Changed admin notices so they only show for admins
+
 = 1.2.1 =
 * Better version suffixes for styles
 
