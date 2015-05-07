@@ -58,7 +58,7 @@ function slt_cf_admin_init() {
 		$version_warnings = json_decode( $version_warnings_json, true );
 		if ( ! empty( $version_warnings ) ) {
 			foreach ( $version_warnings as $version => $warning ) {
-				$warning_label = "Developer's Custom Fields " . $version;
+				$warning_label = "Developer's Custom Fields plugin version " . $version;
 				// Make sure the notice hasn't already been dismissed
 				// And that warning is for a version less than or equal to current version
 				if (	( empty( $options['dismissed_notices'] ) || ! is_array( $options['dismissed_notices'] ) || ! in_array( sanitize_title( $warning_label ), $options['dismissed_notices'] ) ) &&
