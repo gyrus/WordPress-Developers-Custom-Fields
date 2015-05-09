@@ -662,7 +662,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 								$field['options_query']['post__not_in'][] = $post->ID;
 						}
 						// Add sorting by post type if multiple post types, in order to group in output
-						$multiple_post_types = ( isset( $field['options_query'] ) && is_array( $field['options_query'] ) && isset( $field['options_query']['post_type'] ) && is_array( $field['options_query']['post_type'] ) && count( $field['options_query']['post_type'] ) > 1 );
+						$multiple_post_types = ( isset( $field['options_query'] ) && is_array( $field['options_query'] ) && isset( $field['options_query']['post_type'] ) && is_array( $field['options_query']['post_type'] ) );
 						if ( $multiple_post_types ) {
 							add_action( 'pre_get_posts', 'slt_cf_sort_queries_by_post_type' );
 						}
