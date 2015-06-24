@@ -92,6 +92,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 
 == Changelog ==
 = 1.3 =
+* `user_new_form` hook used to add fields to new user form (to include fields in new user form, set scope as per including them in registration form, e.g. `array( 'registration', 'subscriber' )` - the latter being the default user role)
 * `group_by_post_type` now includes option group label even if there's only one post type in the options
 
 = 1.2.2 =
