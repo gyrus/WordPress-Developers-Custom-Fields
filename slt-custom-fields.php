@@ -142,6 +142,7 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 	***************************************************************************************/
 	add_action( 'add_meta_boxes', 'slt_cf_display_post_attachment', 10, 2 );
 	add_action( 'do_meta_boxes', 'slt_cf_remove_default_meta_box', 1, 3 );
+	add_action( 'user_new_form', 'slt_cf_display_user', 12, 1 );
 	add_action( 'show_user_profile', 'slt_cf_display_user', 12, 1 );
 	add_action( 'edit_user_profile', 'slt_cf_display_user', 12, 1 );
 	add_action( 'register_form', 'slt_cf_display_user', 12 );
@@ -173,10 +174,12 @@ if ( ! defined( 'DOING_AJAX' ) || ! DOING_AJAX ) {
 		$user_role = 'registration';
 		$user_id = null;
 		if ( ! empty( $user ) ) {
-			// Editing a profile, not registering a new user
-			$user_roles = $user->roles;
-			$user_role = array_shift( $user_roles );
-			$user_id = $user->ID;
+			if ( $user != 'add-new-user' ) {
+				// Editing a profile, not registering a new user
+				$user_roles = $user->roles;
+				$user_role = array_shift( $user_roles );
+				$user_id = $user->ID;
+			}
 		}
 		slt_cf_init_fields( 'user', $user_role, $user_id );
 		if ( count( $slt_custom_fields['boxes'] ) ) {
