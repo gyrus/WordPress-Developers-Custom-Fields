@@ -32,7 +32,6 @@
 
     // Write to the input
     document.getElementById(container_id + '_map_markers').value = markers_string;
-    //console.log(markers_string);
 
   }
 
@@ -58,50 +57,63 @@
     // Otherwise it's an input map
     else {
 
-      // Add an interactive marker to the map
-      marker = new google.maps.Marker({
-        draggable: true,
-        map: slt_cf_maps[container_id].map,
-        position: new_marker_latlng,
-        title: 'Drag to move, click to delete',
-      });
+      // Only add a marker if there's no maximum or we haven't reached the maximum number of markers
+      if ( slt_cf_maps[container_id].markers_max === false || slt_cf_maps[container_id].marker_total < slt_cf_maps[container_id].markers_max ) {
 
-      // Increment the number of markers
-      slt_cf_maps[container_id].marker_total++;
+        // Add an interactive marker to the map
+        marker = new google.maps.Marker({
+          draggable: true,
+          map: slt_cf_maps[container_id].map,
+          position: new_marker_latlng,
+          title: 'Drag to move, click to delete',
+        });
 
-      // Set a variable for ease of use
-      marker.id = slt_cf_maps[container_id].marker_total;
+        // Increment the number of markers
+        slt_cf_maps[container_id].marker_total++;
 
-      // Add the marker latlng to the markers array
-      slt_cf_maps[container_id].markers[marker.id] = marker.position.toString();
+        // Set a variable for ease of use
+        marker.id = slt_cf_maps[container_id].marker_total;
 
-      // Update the <input> array
-      write_markers(container_id);
-
-      // Set an event listener for a click on the marker
-      google.maps.event.addListener(marker, 'click', function() {
-
-        // Remove the marker from the array
-        delete slt_cf_maps[container_id].markers[marker.id];
-
-        // Remove the marker from the map
-        this.setMap(null);
+        // Add the marker latlng to the markers array
+        slt_cf_maps[container_id].markers[marker.id] = marker.position.toString();
 
         // Update the <input> array
         write_markers(container_id);
 
-      });
+        // Set an event listener for a click on the marker
+        google.maps.event.addListener(marker, 'click', function() {
 
-      // Set an event listener for the end of a marker being dragged
-      google.maps.event.addListener(marker, 'dragend', function(e) {
+          // Remove the marker from the array
+          delete slt_cf_maps[container_id].markers[marker.id];
 
-        // Set the new position in an array
-        slt_cf_maps[container_id].markers[marker.id] = e.latLng.toString();
+          // Decrement the total number of markers
+          slt_cf_maps[container_id].marker_total--;
 
-        // Update the <input> array
-        write_markers(container_id);
+          // Remove the marker from the map
+          this.setMap(null);
 
-      });
+          // Update the <input> array
+          write_markers(container_id);
+
+        });
+
+        // Set an event listener for the end of a marker being dragged
+        google.maps.event.addListener(marker, 'dragend', function(e) {
+
+          // Set the new position in an array
+          slt_cf_maps[container_id].markers[marker.id] = e.latLng.toString();
+
+          // Update the <input> array
+          write_markers(container_id);
+
+        });
+
+      // Otherwise pop up an alert box
+      } else {
+
+        alert('You have reached the maximum number of markers allowed for this map. Please delete or move an existing marker.')
+
+      }
 
     }
 
@@ -109,7 +121,7 @@
 
 
   // Write out a map for input or output
-  function slt_cf_gmap_init( container_id, map_mode, markers_available, map_markers, map_center_latlng, map_zoom, gmap_type, callback ) {
+  function slt_cf_gmap_init( container_id, map_mode, markers_available, map_markers, map_center_latlng, map_zoom, gmap_type, callback, markers_max ) {
 
     // Set the map type
     if      (gmap_type === 'hybrid')    { gmap_type = google.maps.MapTypeId.HYBRID; }
@@ -137,6 +149,12 @@
     // Set the container_id as a variable in the map object
     slt_cf_maps[container_id].map._slt_cf_mapname = container_id;
 
+    // Default the maximum number of markers to false
+    markers_max = ( typeof markers_max !== 'undefined' ) ? markers_max : false;
+
+    // Set the max number of markers as a variable in the map object
+    slt_cf_maps[container_id].markers_max = markers_max;
+
     // Store whether the map is an input map or not
     if (map_mode === 'input') { slt_cf_maps[container_id].map._slt_cf_input_map = true; }
     else { slt_cf_maps[container_id].map._slt_cf_input_map = false; }
@@ -149,9 +167,6 @@
 
       // Set the current number of markers
       slt_cf_maps[container_id].marker_total = 0;
-
-      // Catch old single marker fields - possibly not necessary but just in case
-      if ( ! map_markers instanceof Array) { map_markers = [ map_markers ]; }
 
       // If there are existing markers
       if (map_markers.length > 0) {
@@ -251,7 +266,17 @@
 
           // Make the marker instructions conditional
           var marker_instructions = '';
-          if (markers_available) { marker_instructions = '<small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br><br></small>'; }
+          if (markers_available) {
+
+            marker_instructions =  '<small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br>';
+            if ( slt_cf_maps[container_id].markers_max !== false ) {
+
+              marker_instructions += '<strong>The maximum number of markers you can use on this map is: ' + slt_cf_maps[container_id].markers_max + '</strong><br>';
+
+            }
+            marker_instructions += '<br></small>';
+
+          }
 
           // Write the autocomplete form
           $( '#' + container_id ).after( '<p class="gmap-address">' + marker_instructions + '<label for="' + container_id + '_address" class="' + gmap_geocoder_label_class + '">' + slt_cf_gmaps.geocoder_label + ':</label><input type="text" id="' + container_id + '_address" name="' + container_id + '_address" value="" class="regular-text" style="width:100%;" placeholder="Find an address" /></p>' );
