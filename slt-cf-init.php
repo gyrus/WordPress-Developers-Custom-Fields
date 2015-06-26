@@ -431,7 +431,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'datepicker_format'			=> $slt_custom_fields['datepicker_default_format'],
 				'timepicker_format'			=> $slt_custom_fields['timepicker_default_format'],
 				'timepicker_ampm'			=> $slt_custom_fields['timepicker_default_ampm'],
-				'location_marker'			=> true,
+				'location_marker'			=> 1,
 				'gmap_type'					=> 'roadmap',
 				'edit_on_profile'			=> false,
 				'attachments_list_options'	=> array(),
