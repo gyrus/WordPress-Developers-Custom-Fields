@@ -431,7 +431,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 				'datepicker_format'			=> $slt_custom_fields['datepicker_default_format'],
 				'timepicker_format'			=> $slt_custom_fields['timepicker_default_format'],
 				'timepicker_ampm'			=> $slt_custom_fields['timepicker_default_ampm'],
-				'location_marker'			=> true,
+				'location_marker'			=> 1,
 				'gmap_type'					=> 'roadmap',
 				'edit_on_profile'			=> false,
 				'attachments_list_options'	=> array(),
@@ -486,7 +486,7 @@ function slt_cf_init_fields( $request_type, $scope, $object_id ) {
 						$field['default'] = array(
 							"centre_latlng"	=> "52.337946593485135,-1.667382812500029",
 							"zoom"			=> "6",
-							"marker_latlng"	=> "52.24386921477694,-0.9203125000000227",
+							"map_markers"	=> array( "52.24386921477694,-0.9203125000000227" ),
 							"bounds_sw"		=> "50.27802587971423,-7.160546875000023",
 							"bounds_ne"		=> "54.306194393010095,3.8257812499999773"
 						);

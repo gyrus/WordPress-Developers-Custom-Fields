@@ -607,7 +607,7 @@ function slt_cf_reverse_date( $date_string, $sep = '/', $to_timestamp = false ) 
 if ( SLT_CF_USE_GMAPS ) :
 
 // Output a map (for display or input)
-function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $width = 0, $height = 0, $location_marker = null, $map_type_id = '', $echo = true, $js_callback = '', $required = true, $object_type = 'post' ) {
+function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $width = 0, $height = 0, $location_markers = null, $map_type_id = '', $echo = true, $js_callback = '', $required = true, $object_type = 'post' ) {
 	$output = '';
 	$using_default_name = false;
 	static $map_count = 1;
@@ -623,11 +623,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	} else if ( in_array( $object_type, array( 'post', 'user' ) ) && ( strlen( $name ) < slt_cf_prefix( $object_type ) || substr( $name, 0, strlen( slt_cf_prefix( $object_type ) ) ) != slt_cf_prefix( $object_type ) ) ) {
 		$name = slt_cf_field_key( $name, $object_type );
 	}
-	if ( $location_marker === null ) {
-		$location_marker = 'true';
-	} else {
-		$location_marker = $location_marker ? 'true' : 'false';
-	}
+	$location_markers = (int) $location_markers; // This should handle pre-1.3 booleans
 	if ( empty( $map_type_id ) ) {
 		$map_type_id = 'roadmap';
 	}
@@ -780,7 +776,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	// JavaScript
 	$inline_script = "jQuery( document ).ready( function($) {\n";
 	// Output multiple markers array as JS array
-	$inline_script .= "slt_cf_gmap_init( '{$id}', '{$type}', {$location_marker}, [ '" . implode( "','", $values['map_markers'] ) . "' ], '{$values['centre_latlng']}', {$values['zoom']}, '{$map_type_id}'";
+	$inline_script .= "slt_cf_gmap_init( '{$id}', '{$type}', {$location_markers}, [ '" . implode( "','", $values['map_markers'] ) . "' ], '{$values['centre_latlng']}', {$values['zoom']}, '{$map_type_id}'";
 	// Callback?
 	if ( $js_callback ) {
 		$inline_script .= ", '{$js_callback}'";
