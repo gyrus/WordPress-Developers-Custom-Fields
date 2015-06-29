@@ -153,6 +153,15 @@ div.slt-cf-checkboxes.thumbnails ul.slt-cf-sortable li.ui-state-default img {
   color: #fff !important;
   cursor: pointer !important;
 }
+/* Gmap max markers error highlighting*/
+#markers_max_message {
+  display:inline-block;
+  padding:2px 4px;
+}
+.markers_max_message_error {
+  background:#f00;
+  color:#fff;
+}
 /* Timepicker related styles */
 .ui-timepicker-div .ui-widget-header {
   margin-bottom: 8px;
