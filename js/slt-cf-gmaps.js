@@ -121,7 +121,7 @@
 
 
   // Write out a map for input or output
-  function slt_cf_gmap_init( container_id, map_mode, markers_available, map_markers, map_center_latlng, map_zoom, gmap_type, callback, markers_max ) {
+  function slt_cf_gmap_init( container_id, map_mode, location_marker, map_markers, map_center_latlng, map_zoom, gmap_type, callback, markers_max ) {
 
     // Set the map type
     if      (gmap_type === 'hybrid')    { gmap_type = google.maps.MapTypeId.HYBRID; }
@@ -160,7 +160,7 @@
     else { slt_cf_maps[container_id].map._slt_cf_input_map = false; }
 
     // Extra settings for markers
-    if (markers_available) {
+    if (location_marker) {
 
       // Add a markers array to the map container
       slt_cf_maps[container_id].markers = [];
@@ -266,7 +266,7 @@
 
           // Make the marker instructions conditional
           var marker_instructions = '';
-          if (markers_available) {
+          if (location_marker) {
 
             marker_instructions =  '<small>Click on the map to add a marker. Click a marker to remove it. Click and drag a marker to change its location.<br>';
             if ( slt_cf_maps[container_id].markers_max !== false ) {
@@ -329,7 +329,7 @@
               slt_cf_maps[container_id].map.panTo(newLocation);
 
               // Add a marker if appropriate
-              if ( markers_available ){ add_marker(container_id,newLocation); }
+              if ( location_marker ){ add_marker(container_id,newLocation); }
 
             }
 
