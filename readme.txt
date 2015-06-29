@@ -95,6 +95,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 * `user_new_form` hook used to add fields to new user form (to include fields in new user form, set scope as per including them in registration form, e.g. `array( 'registration', 'subscriber' )` - the latter being the default user role)
 * `group_by_post_type` now includes option group label even if there's only one post type in the options
 * Changed `location_marker` field parameter to accept integers, to control how many markers can be set (default is one)
+* Google Maps JavaScript: Reworked code for more efficiency, prevent addition of more markers to a map than set in `location_marker`, variable instructions based on maximum number of markers, geocode moves single map marker (as in previous single-marker releases) or adds new markers on maps with multiple markers
 
 = 1.2.2 =
 * Changed admin notices so they only show for admins
