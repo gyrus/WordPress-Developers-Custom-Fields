@@ -623,7 +623,6 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	} else if ( in_array( $object_type, array( 'post', 'user' ) ) && ( strlen( $name ) < slt_cf_prefix( $object_type ) || substr( $name, 0, strlen( slt_cf_prefix( $object_type ) ) ) != slt_cf_prefix( $object_type ) ) ) {
 		$name = slt_cf_field_key( $name, $object_type );
 	}
-	$location_markers = (int) $location_markers; // This should handle pre-1.3 booleans
 	if ( empty( $map_type_id ) ) {
 		$map_type_id = 'roadmap';
 	}
@@ -726,6 +725,14 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	foreach ( $values as $key => $value ) {
 		$values[ $key ] = str_replace( ' ', '', $value );
 	}
+
+	// Default location markers, maybe based on number of markers in values
+	if ( is_null( $location_markers ) ) {
+		$location_markers = count( $values[ 'map_markers' ] );
+	} else {
+		$location_markers = (int) $location_markers; // This should handle pre-1.3 booleans
+	}
+
 
 	// Name might contain square brackets for PHP $_POST arrays - set the ID right
 	$id = str_replace( array( '[', ']' ), array( '_', '' ), $name ) . '_map_container';
