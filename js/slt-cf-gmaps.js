@@ -358,7 +358,7 @@
 
 
 
- // HIDE AND SHOW MAPS
+// HIDE AND SHOW MAPS
 
   // Wait for the document to load
   jQuery( document ).ready( function( $ ) {
@@ -368,7 +368,7 @@
 
       // Set the map container id and wrapper selector
       var map_container_id = $(this).attr('data-map-id');
-      var map_wrapper_selector = '#' + $(this).attr('data-map-id') + '_wrapper';
+      var map_wrapper_selector = '#' + map_container_id + '_wrapper';
 
       // If it's the "yes" button
       if ($(this).hasClass('yes')) {
@@ -381,7 +381,7 @@
           // Get the map's intended center
           var mapCenter = slt_cf_maps[map_container_id].map.getCenter();
 
-          // Trigget the map resize event to fill the wrapper
+          // Trigger the map resize event to fill the wrapper
           google.maps.event.trigger( slt_cf_maps[map_container_id].map, "resize" );
 
           // Reset the map center with the new bounds
