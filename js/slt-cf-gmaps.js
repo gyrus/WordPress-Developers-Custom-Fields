@@ -357,28 +357,47 @@
   }
 
 
-  // Hide and show the input map
+
+ // HIDE AND SHOW MAPS
+
+  // Wait for the document to load
   jQuery( document ).ready( function( $ ) {
 
-    if ( $( 'div.gmap_input' ).length ) {
-      $( 'div.gmap_input' ).each( function() {
-        var id, mapCenter;
-        id = $( this ).attr( 'id' );
-        if ( $( "input.gmap_toggle_display" ).length ) {
-          // Toggle map view
-          $( "input.gmap_toggle_display" ).change( function() {
-            if ( $( this ).hasClass( "yes" ) ) {
-              $( "#" + id + "_wrapper" ).slideDown('fast', function() {
-                     mapCenter = slt_cf_maps[ id ].map.getCenter();
-                     google.maps.event.trigger( slt_cf_maps[ id ].map, "resize" );
-                     slt_cf_maps[ id ].map.setCenter(mapCenter);
-              });
-            } else {
-              $( "#" + id + "_wrapper" ).slideUp();
-            }
-          });
-        }
-      });
-    }
+    // Listen for a change to the display radio buttons
+    $('input.gmap_toggle_display').change( function() {
+
+      // Set the map container id and wrapper selector
+      var map_container_id = $(this).attr('data-map-id');
+      var map_wrapper_selector = '#' + $(this).attr('data-map-id') + '_wrapper';
+
+      // If it's the "yes" button
+      if ($(this).hasClass('yes')) {
+
+        // Slide the map wrapper down
+        $(map_wrapper_selector).slideDown('fast', function() {
+
+          // When the transition has finished:
+
+          // Get the map's intended center
+          var mapCenter = slt_cf_maps[map_container_id].map.getCenter();
+
+          // Trigget the map resize event to fill the wrapper
+          google.maps.event.trigger( slt_cf_maps[map_container_id].map, "resize" );
+
+          // Reset the map center with the new bounds
+          slt_cf_maps[map_container_id].map.setCenter(mapCenter);
+
+        });
+
+      }
+
+      // Otherwise, default to closing the map
+      else {
+
+        $(map_wrapper_selector).slideUp();
+
+      }
+
+    });
 
   });

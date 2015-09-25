@@ -744,7 +744,29 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 		if ( ! $required ) {
 			$initial_display_value = isset( $values["display"] ) ? $values["display"] : '0';
 
-			$output .= '<p>' . __( 'Use location map?', SLT_CF_TEXT_DOMAIN ) . ' <input class="gmap_toggle_display yes" type="radio" name="' . $name . '[display]" id="' . $id . '_display_yes" value="1"' . checked( $initial_display_value, '1', false ) . ' /> <label for="' . $id . '_toggle_display_yes">' . __( 'Yes', SLT_CF_TEXT_DOMAIN ) . '</label> <input class="gmap_toggle_display no" type="radio" name="' . $name . '[display]" id="' . $id . '_display_no" value="0"' . checked( $initial_display_value, '0', false ) . ' /> <label for="' . $id . '_display_no">' . __( 'No', SLT_CF_TEXT_DOMAIN ) . '</label></p>';
+			$output .= '<p>';
+				$output .=  __( 'Use location map?', SLT_CF_TEXT_DOMAIN );
+				$output .= '<input ';
+					$output .= 'class="gmap_toggle_display yes" ';
+					$output .= 'type="radio" ';
+					$output .= 'name="' . $name . '[display]" ';
+					$output .= 'id="' . $id . '_display_yes" ';
+					$output .= 'value="1" ';
+					$output .= checked( $initial_display_value, '1', false );
+					$output .= 'data-map-id="' . $id . '" ';
+				$output .= ' />';
+				$output .= '<label for="' . $id . '_toggle_display_yes">' . __( 'Yes', SLT_CF_TEXT_DOMAIN ) . '</label>';
+				$output .= '<input ';
+					$output .= 'class="gmap_toggle_display no" ';
+					$output .= 'type="radio" ';
+					$output .= 'name="' . $name . '[display]" ';
+					$output .= 'id="' . $id . '_display_no" ';
+					$output .= 'value="1" ';
+					$output .= checked( $initial_display_value, '0', false );
+					$output .= 'data-map-id="' . $id . '" ';
+				$output .= ' />';
+				$output .= '<label for="' . $id . '_display_no">' . __( 'No', SLT_CF_TEXT_DOMAIN ) . '</label>';
+			$output .= '</p>';
 
 			// Wrapper
 			$output .= '<div id="' . $id . '_wrapper" style="width:' . esc_attr( $width ) . 'px;';
