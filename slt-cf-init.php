@@ -32,7 +32,7 @@ function slt_cf_init() {
 	if ( defined( 'SLT_CF_GMAPS_API_KEY' ) && SLT_CF_GMAPS_API_KEY ) {
 		$gmaps_api_url = esc_url( add_query_arg( 'key', SLT_CF_GMAPS_API_KEY, $gmaps_api_url ) );
 	}
-	wp_register_script( 'google-maps-api', $gmaps_api_url, array(), false, true );
+	wp_register_script( 'google-maps-api', $gmaps_api_url, array(), null, true );
 	$gmaps_deps = array( 'jquery', 'jquery-ui-core', 'jquery-ui-autocomplete' );
 	wp_register_script( 'slt-cf-gmaps', $slt_js_gmaps, $gmaps_deps, SLT_CF_VERSION, true );
 
