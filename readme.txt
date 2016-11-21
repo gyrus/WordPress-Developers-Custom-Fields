@@ -94,6 +94,7 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 = 1.3.X =
 * Set version when registering Google Maps API script to `null`
 * Fixed an issue where multiple maps on a single post would all display and hide at the same time when only one radio button changed
+* Fixed defaulting issues with `slt_cf_file_select_button_enqueue()`
 
 = 1.3.1 (2015-08-25) =
 * Fixed issue with `slt_cf_gmap` handling of new `$location_markers` integer default

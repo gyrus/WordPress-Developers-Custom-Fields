@@ -230,9 +230,9 @@ function slt_cf_file_select_button_enqueue( $file_upload_fields = array() ) {
 		// Pass through values for all registered buttons
 		foreach ( $file_upload_fields as $file_upload_field ) {
 			$field_name = slt_cf_prefix( 'post' ) . $file_upload_field['name'];
-			$media_localization['dialog_title__' . $field_name ] = $file_upload_field['file_dialog_title'];
-			$media_localization['restrict_to_type__' . $field_name ] = $file_upload_field['file_restrict_to_type'];
-			$media_localization['attach_to_post__' . $field_name ] = $file_upload_field['file_attach_to_post'] ? 'yes' : 'no';
+			$media_localization['dialog_title__' . $field_name ] = ! empty( $file_upload_field['file_dialog_title'] ) ? $file_upload_field['file_dialog_title'] : __( 'Select file', SLT_CF_TEXT_DOMAIN );
+			$media_localization['restrict_to_type__' . $field_name ] = ! empty( $file_upload_field['file_restrict_to_type'] ) ? $file_upload_field['file_restrict_to_type'] : '';
+			$media_localization['attach_to_post__' . $field_name ] = ! empty( $file_upload_field['file_attach_to_post'] ) ? ( $file_upload_field['file_attach_to_post'] ? 'yes' : 'no' ) : 'yes';
 		}
 
 	}
