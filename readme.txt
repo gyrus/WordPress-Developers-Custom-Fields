@@ -91,8 +91,9 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
-= 1.3.X =
+= 1.3.2 (2017-??-??) =
 * Set version when registering Google Maps API script to `null`
+* Fixed an issue where option values with spaces used for multiple checkbox fields don't get saved if selected
 * Fixed an issue where multiple maps on a single post would all display and hide at the same time when only one radio button changed
 * Fixed defaulting issues with `slt_cf_file_select_button_enqueue()`
 

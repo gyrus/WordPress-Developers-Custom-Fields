@@ -302,7 +302,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 							echo '<img src="' . $checkbox_thumbnail[0] . '" alt="' . get_the_title( $value ) . ' thumbnail"> ';
 						}
 						// Input
-						echo '<input type="checkbox" name="' . $field_name . '_' . $value . '" id="' . $field_name . '_' . $value . '" value="yes"';
+						echo '<input type="checkbox" name="' . $field_name . '_' . slt_cf_sanitize_string( $value ) . '" id="' . $field_name . '_' . slt_cf_sanitize_string( $value ) . '" value="yes"';
 						if ( ( is_array( $field_value ) && in_array( $value, $field_value ) ) || ( $field['sortable'] && $field['default'] === 'force-all' ) ) {
 							echo ' checked="checked"';
 							if ( $field['sortable'] && $field['default'] === 'force-all' ) {
@@ -311,7 +311,7 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 						}
 						echo ' />';
 						// Label
-						echo ' <label for="' . $field_name .'_' . $value . '">' . $key . '</label>';
+						echo ' <label for="' . $field_name .'_' . slt_cf_sanitize_string( $value ) . '">' . $key . '</label>';
 
 						echo '</' . $cb_tag . '>';
 					}
@@ -347,12 +347,12 @@ function slt_cf_display_box( $object, $custom_data, $request_type = 'post' ) {
 					foreach ( $field['options'] as $key => $value ) {
 						echo '<div class="' . implode( ' ', $multi_field_classes ) . '" style="' . implode( ';', $multi_field_styles ) . '">';
 						// Input
-						echo '<input type="radio" name="' . $field_name . '" id="' . $field_name . '_' . $value . '" value="' . $value . '"';
+						echo '<input type="radio" name="' . $field_name . '" id="' . $field_name . '_' . slt_cf_sanitize_string( $value ) . '" value="' . $value . '"';
 						if ( $field_value == $value )
 							echo ' checked="checked"';
 						echo ' />';
 						// Label
-						echo ' <label for="' . $field_name .'_' . $value . '">' . $key . '</label>';
+						echo ' <label for="' . $field_name .'_' . slt_cf_sanitize_string( $value ) . '">' . $key . '</label>';
 						echo '</div>';
 					}
 				}

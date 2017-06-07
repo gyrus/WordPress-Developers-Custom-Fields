@@ -87,7 +87,7 @@ function slt_cf_save( $request_type, $object_id, $object, $extras = array() ) {
 					*************************************************************/
 					$value = array();
 					foreach ( $field['options'] as $opt_key => $opt_value ) {
-						if ( isset( $_POST[ $field_name . '_' . $opt_value ] ) )
+						if ( isset( $_POST[ $field_name . '_' . slt_cf_sanitize_string( $opt_value ) ] ) )
 							$value[] = $opt_value;
 					}
 

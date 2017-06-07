@@ -1237,3 +1237,15 @@ function slt_cf_sort_queries_by_post_type( $query ) {
 		$query->set( 'orderby', 'post_type ' . $query->query_vars['orderby'] );
 	}
 }
+
+
+/**
+ * Sanitise a string for use in an attribute etc.
+ *
+ * @since	1.3.2
+ * @param	string	$s
+ * @return	string
+ */
+function slt_cf_sanitize_string( $s ) {
+	return str_replace( ' ', '_', $s );
+}
