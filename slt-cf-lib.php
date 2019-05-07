@@ -761,7 +761,7 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 					$output .= 'type="radio" ';
 					$output .= 'name="' . $name . '[display]" ';
 					$output .= 'id="' . $id . '_display_no" ';
-					$output .= 'value="1" ';
+					$output .= 'value="0" ';
 					$output .= checked( $initial_display_value, '0', false );
 					$output .= 'data-map-id="' . $id . '" ';
 				$output .= ' />';
