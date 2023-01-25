@@ -620,15 +620,24 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	wp_enqueue_script( 'slt-cf-gmaps' );
 
 	// Defaults
-	if ( empty( $name ) ) {
+	if ( empty( $name ) ) :
 		$name = 'gmap_' . $map_count;
 		$using_default_name = true;
-	} else if ( in_array( $object_type, array( 'post', 'user' ) ) && ( strlen( $name ) < slt_cf_prefix( $object_type ) || substr( $name, 0, strlen( slt_cf_prefix( $object_type ) ) ) != slt_cf_prefix( $object_type ) ) ) {
+	elseif (
+		in_array( $object_type, [ 'post', 'user' ] ) &&
+		(
+			strlen( $name ) < strlen( slt_cf_prefix( $object_type ) ) ||
+			strcmp(
+				substr( $name, 0, strlen( slt_cf_prefix( $object_type ) ) ),
+				slt_cf_prefix( $object_type )
+			) !== 0
+		)
+	) :
 		$name = slt_cf_field_key( $name, $object_type );
-	}
-	if ( empty( $map_type_id ) ) {
+	endif;
+	if ( empty( $map_type_id ) ) :
 		$map_type_id = 'roadmap';
-	}
+	endif;
 
 	// Values
 	if ( $type == 'output' && $object_type != 'custom' && ( empty( $values ) || $values == 'stored_data' ) ) {
@@ -735,7 +744,6 @@ function slt_cf_gmap( $type = 'output', $name = '', $values = 'stored_data', $wi
 	} else {
 		$location_markers = (int) $location_markers; // This should handle pre-1.3 booleans
 	}
-
 
 	// Name might contain square brackets for PHP $_POST arrays - set the ID right
 	$id = str_replace( array( '[', ']' ), array( '_', '' ), $name ) . '_map_container';
