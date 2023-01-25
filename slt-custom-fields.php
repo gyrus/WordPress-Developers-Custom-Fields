@@ -9,7 +9,7 @@ Plugin Name: Developer's Custom Fields
 Plugin URI: http://wordpress.org/extend/plugins/developers-custom-fields/
 Description: Provides theme developers with tools for managing custom fields.
 Author: Steve Taylor
-Version: 1.3.4
+Version: 1.4
 Author URI: http://sltaylor.co.uk
 License: GPLv2
 Text Domain: slt-custom-fields

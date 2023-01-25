@@ -686,7 +686,7 @@ function slt_cf_input_text( $field_name, $field_value = '', $prefix = '', $suffi
 }
 
 // Select
-function slt_cf_input_select( $field_name, $field_value, $prefix = '', $suffix = '', $input_styles = array(), $input_classes = array(), $echo = true, $options, $multiple = false, $empty_option = false, $empty_option_text = '', $no_options = '' ) {
+function slt_cf_input_select( $field_name, $field_value, $prefix = '', $suffix = '', $input_styles = [], $input_classes = [], $echo = true, $options = [], $multiple = false, $empty_option = false, $empty_option_text = '', $no_options = '' ) {
 	$output = '';
 
 	// No options?

@@ -95,6 +95,9 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 
 == Changelog ==
 
+= 1.4 (2023-??-??) =
+* PHP compatibility fixes
+
 = 1.3.4 (2019-05-07) =
 * Version fix
 

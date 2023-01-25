@@ -312,19 +312,22 @@ function slt_cf_check_scope( $field, $request_type, $request_scope, $object_id )
 
 				// Page template matching
 				$custom_fields = get_post_custom_values( '_wp_page_template', $object_id );
-				$page_template = $custom_fields[0];
-				foreach ( (array) $scope_value as $scope_template ) {
-					if ( $scope_template == $page_template ) {
-						$scope_match = true;
-						break;
-					}
-				}
-				if ( $scope_match )
+				if ( ! empty( $custom_fields ) ) :
+					$page_template = $custom_fields[0];
+					foreach ( (array) $scope_value as $scope_template ) :
+						if ( $scope_template == $page_template ) :
+							$scope_match = true;
+							break;
+						endif;
+					endforeach;
+				endif;
+				if ( $scope_match ) :
 					break;
+				endif;
 
 			} else if ( is_string( $scope_key ) && $request_type == 'post' && $scope_key == 'post_format' && get_post_type( $object_id ) == 'post' ) {
 
-				// Post format matching matching
+				// Post format matching
 				foreach ( (array) $scope_value as $scope_format_name ) {
 					if ( has_post_format( $scope_format_name, $object_id ) ) {
 						$scope_match = true;
