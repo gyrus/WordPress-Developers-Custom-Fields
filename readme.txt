@@ -4,7 +4,7 @@ Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.5
 Tested up to: 5.1.1
-Stable tag: 1.4
+Stable tag: 1.4.1
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
 
@@ -94,6 +94,9 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 **NOTE:** Some people have found compatibility issues between the [WPMU DEV Events+](http://premium.wpmudev.org/project/events-plus/) plugin and this plugin (see [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/23) and [here](https://github.com/gyrus/WordPress-Developers-Custom-Fields/issues/24)). If you find an apparent issue with this plugin and you're also using WPMU DEV Events+, please check for incompatibilities before posting an issue.
 
 == Changelog ==
+
+= 1.4.1 (2023-01-26) =
+* Fixed console error re: Google Maps API callback
 
 = 1.4 (2023-01-26) =
 * Fixed issue with field name prefix being duped in slt_cf_gmap()
