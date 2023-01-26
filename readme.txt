@@ -4,7 +4,7 @@ Donate link: http://www.babyloniantimes.co.uk/index.php?page=donate
 Tags: admin, administration, custom, meta, page, pages, post, posts, attachments, custom fields, form, user, profile
 Requires at least: 3.5
 Tested up to: 5.1.1
-Stable tag: 1.3.4
+Stable tag: 1.4
 
 Provides developers with powerful and flexible tools for managing post and user custom fields.
 
@@ -95,7 +95,8 @@ Please raise any issues via [GitHub](https://github.com/gyrus/WordPress-Develope
 
 == Changelog ==
 
-= 1.4 (2023-??-??) =
+= 1.4 (2023-01-26) =
+* Fixed issue with field name prefix being duped in slt_cf_gmap()
 * PHP compatibility fixes
 
 = 1.3.4 (2019-05-07) =
