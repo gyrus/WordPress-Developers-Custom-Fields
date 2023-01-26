@@ -28,7 +28,7 @@ function slt_cf_init() {
 	 * Google Maps stuff is registered to go in the footer, so it can be enqueued dynamically
 	 * on the front-end, as the map is output
 	 */
-	$gmaps_api_url = SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js';
+	$gmaps_api_url = SLT_CF_REQUEST_PROTOCOL . 'maps.google.com/maps/api/js?callback=Function.prototype';
 	if ( defined( 'SLT_CF_GMAPS_API_KEY' ) && SLT_CF_GMAPS_API_KEY ) {
 		$gmaps_api_url = esc_url( add_query_arg( 'key', SLT_CF_GMAPS_API_KEY, $gmaps_api_url ) );
 	}
